@@ -1,0 +1,17 @@
+:root {
+  /* Cores principais */
+  --branco: #ffffff;
+  --preto: #000000;
+  --vermelho-icc: #b20000;
+  /* Gradiente de cores */
+  --vermelho-maior: #cf2d2d;
+  /* Aqui seria o vermelho ICC */
+  --vermelho-escuro: #7b001e;
+  --vinho: #5a0f1b;
+  /* Escalas de cinza */
+  --cinza-contraste: #111111;
+  --cinza-intermediario: #333333;
+  --cinza-auxiliar: #666666;
+  --cinza-botoes: #e5e5e5;
+  --cinza-leves: #f5f5f5;
+}
