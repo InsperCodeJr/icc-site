@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { api } from "../../api"
 import type { MemberDetail } from "../../types"
 import "./index.css"
@@ -21,7 +21,5 @@ export default function PerfilMembro() {
   if (loading) return <p>Carregando...</p>
   if (!member) return <p>Membro não encontrado.</p>
 
-  return (
-    /* codigo */
-  )
+  return;
 }
