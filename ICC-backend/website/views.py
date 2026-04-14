@@ -7,7 +7,7 @@ def participe(request):
     Receberá POST com name, email, course, semester, reason.
     """
     if request.method == 'POST':
-        name = request.POST.get('name')a
+        name = request.POST.get('name')
         email = request.POST.get('email')
         course = request.POST.get('course')
         semester = request.POST.get('semester')
