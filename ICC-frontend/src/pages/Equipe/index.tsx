@@ -17,7 +17,10 @@ export default function Equipe() {
 
   if (loading) return <p>Carregando...</p>
 
-  return (
-    /* codigo */
-  )
+return (
+  <div>
+    <h1>Página da Equipe</h1>
+    {/* Seu conteúdo aqui */}
+  </div>
+)
 }
