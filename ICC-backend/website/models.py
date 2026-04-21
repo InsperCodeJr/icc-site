@@ -39,19 +39,74 @@ class Partner(models.Model):
         return self.name
 
 
+BADGE_CHOICES = [
+    ('badge--continuo', 'Contínuo'),
+    ('badge--semanal', 'Semanal'),
+    ('badge--mensal', 'Mensal'),
+    ('badge--semestral', 'Semestral'),
+]
+
+SEMESTER_CHOICES = [
+    ('1', 'Primeiro Semestre'),
+    ('2', 'Segundo Semestre'),
+    ('both', 'Ambos'),
+]
+
+IMAGE_ALIGN_CHOICES = [
+    ('right', 'Imagem à direita'),
+    ('left', 'Imagem à esquerda'),
+    ('center', 'Imagem centralizada (sem texto)'),
+]
+
+
+class ActivityCategory(models.Model):
+    slug = models.SlugField(max_length=50, unique=True, verbose_name='Slug (identificador na URL)')
+    label = models.CharField(max_length=200, verbose_name='Nome')
+    description = models.TextField(verbose_name='Descrição')
+    highlights = models.TextField(verbose_name='Tópicos', blank=True, help_text='Um tópico por linha.')
+    icon = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Ícone do card')
+    badge = models.CharField(max_length=50, verbose_name='Frequência (badge)')
+    badge_class = models.CharField(max_length=50, choices=BADGE_CHOICES, verbose_name='Estilo do badge', default='badge--semanal')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Categoria de Atividade'
+        verbose_name_plural = 'Categorias de Atividades'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.label
+
+    def get_highlights_list(self):
+        return [line.strip() for line in self.highlights.splitlines() if line.strip()]
+
+
+class CalendarMonth(models.Model):
+    month = models.CharField(max_length=50, verbose_name='Mês')
+    items = models.TextField(verbose_name='Tópicos', help_text='Um tópico por linha.')
+    semester = models.CharField(max_length=10, choices=SEMESTER_CHOICES, default='both', verbose_name='Semestre')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Mês do Calendário'
+        verbose_name_plural = 'Calendário Anual'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.month
+
+    def get_items_list(self):
+        return [line.strip() for line in self.items.splitlines() if line.strip()]
+
+
 class Project(models.Model):
-    '''
-    Modelo de Projetos de Consultoria:
-    Título, Descrição, Parceiros envolvidos, Data de início e fim
-    '''
     title = models.CharField(max_length=200, verbose_name='Título')
     description = models.TextField(verbose_name='Descrição')
-    partners = models.ManyToManyField(
-        Partner,
-        blank=True,
-        verbose_name='Parceiros envolvidos',
-        related_name='projects'
+    category = models.ForeignKey(
+        ActivityCategory, on_delete=models.SET_NULL,
+        null=True, blank=True, verbose_name='Categoria', related_name='projects'
     )
+    partners = models.ManyToManyField(Partner, blank=True, verbose_name='Parceiros envolvidos', related_name='projects')
     start_date = models.DateField(verbose_name='Data de início')
     end_date = models.DateField(null=True, blank=True, verbose_name='Data de conclusão')
 
@@ -61,6 +116,61 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='images', verbose_name='Projeto')
+    image = models.ImageField(upload_to='projects/images/', verbose_name='Imagem')
+    caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Imagem do Projeto'
+        verbose_name_plural = 'Imagens do Projeto'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Imagem {self.order} — {self.project.title}"
+
+
+class ProjectTimelineEvent(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='timeline_events', verbose_name='Projeto')
+    date = models.DateField(verbose_name='Data')
+    title = models.CharField(max_length=200, verbose_name='Título do evento')
+    description = models.TextField(blank=True, verbose_name='Descrição')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Evento do Cronograma'
+        verbose_name_plural = 'Eventos do Cronograma'
+        ordering = ['date', 'order']
+
+    def __str__(self):
+        return f"{self.date} — {self.title}"
+
+
+class ProjectContentBlock(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='content_blocks', verbose_name='Projeto')
+    title = models.CharField(max_length=200, blank=True, verbose_name='Título do bloco (opcional)')
+    text = models.TextField(blank=True, verbose_name='Texto')
+    image = models.ImageField(upload_to='projects/content/', null=True, blank=True, verbose_name='Imagem (opcional)')
+    image_caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda da imagem')
+    image_align = models.CharField(
+        max_length=10,
+        choices=IMAGE_ALIGN_CHOICES,
+        default='right',
+        verbose_name='Posição da imagem',
+        help_text='Se não houver texto, a imagem ficará centralizada independente desta opção.'
+    )
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Bloco de Conteúdo'
+        verbose_name_plural = 'Blocos de Conteúdo'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Bloco {self.order} — {self.project.title}"
 
 
 class Team_Member(models.Model):
@@ -73,12 +183,7 @@ class Team_Member(models.Model):
     exit_date = models.DateField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True, verbose_name='Email')
     linkedin = models.URLField(null=True, blank=True, verbose_name='LinkedIn')
-    projects = models.ManyToManyField(
-        Project,
-        blank=True,
-        verbose_name='Projetos participados',
-        related_name='members'
-    )
+    projects = models.ManyToManyField(Project, blank=True, verbose_name='Projetos participados', related_name='members')
 
     class Meta:
         verbose_name_plural = 'Membros do Time'
@@ -94,13 +199,56 @@ class Team_Member(models.Model):
 class Activity(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    responsible_partner = models.ForeignKey(Partner, on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(
+        ActivityCategory, on_delete=models.SET_NULL,
+        null=True, blank=True, verbose_name='Categoria', related_name='activities'
+    )
+    responsible_partner = models.ForeignKey(Partner, on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Atividades'
 
     def __str__(self):
         return self.title
+
+
+class ActivityImage(models.Model):
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='images', verbose_name='Atividade')
+    image = models.ImageField(upload_to='activities/images/', verbose_name='Imagem')
+    caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Imagem da Atividade'
+        verbose_name_plural = 'Imagens da Atividade'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Imagem {self.order} — {self.activity.title}"
+
+
+class ActivityContentBlock(models.Model):
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='content_blocks', verbose_name='Atividade')
+    title = models.CharField(max_length=200, blank=True, verbose_name='Título do bloco (opcional)')
+    text = models.TextField(blank=True, verbose_name='Texto')
+    image = models.ImageField(upload_to='activities/content/', null=True, blank=True, verbose_name='Imagem (opcional)')
+    image_caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda da imagem')
+    image_align = models.CharField(
+        max_length=10,
+        choices=IMAGE_ALIGN_CHOICES,
+        default='right',
+        verbose_name='Posição da imagem',
+        help_text='Se não houver texto, a imagem ficará centralizada independente desta opção.'
+    )
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Bloco de Conteúdo'
+        verbose_name_plural = 'Blocos de Conteúdo'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Bloco {self.order} — {self.activity.title}"
 
 
 class Media(models.Model):
@@ -141,5 +289,3 @@ class Participant(models.Model):
 
     def __str__(self):
         return self.name
-
-    

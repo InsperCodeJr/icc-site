@@ -26,6 +26,8 @@ export default function Home() {
   if (loading) return <p>Carregando...</p>
 
   return (
-    /* codigo */
+    <body>
+      a
+    </body>
   )
 }
