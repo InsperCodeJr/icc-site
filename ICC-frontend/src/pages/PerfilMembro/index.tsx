@@ -1,42 +1,31 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { api } from "../../api";
+import type { MemberDetail } from "../../types";
 import "./index.css";
 
-const members = [
-  {
-    slug: "ana-carolina-silva",
-    name: "Ana Carolina Silva",
-    role: "Presidente",
-    course: "Administração",
-    year: "4º ano",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900",
-    description:
-      "Apaixonada por estratégia e inovação, lidero o ICC com foco em desenvolver os melhores talentos em consultoria do Brasil.",
-    skills: ["Estratégia", "Liderança", "Business Analytics", "Gestão de Projetos"],
-    projects: ["Projeto Estratégico - Ambev", "Due Diligence - Startup Fintech", "Pesquisa de Mercado - Retail"],
-  },
-  {
-    slug: "pedro-henrique-costa",
-    name: "Pedro Henrique Costa",
-    role: "Vice-Presidente",
-    course: "Economia",
-    year: "4º ano",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900",
-    description: "Atua no apoio à presidência e na coordenação de iniciativas estratégicas do clube.",
-    skills: ["Negócios", "Análise Financeira", "Gestão"],
-    projects: ["Plano de expansão - varejo"],
-  },
-];
+export default function PerfilMembro() {
+  const { id } = useParams();
 
-export default function EquipeDetalhe() {
-  const { slug } = useParams();
+  const [member, setMember] = useState<MemberDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const member = members.find((item) => item.slug === slug);
+  useEffect(() => {
+    if (id) {
+      api.getMember(Number(id)).then((data) => {
+        setMember(data);
+        setLoading(false);
+      });
+    }
+  }, [id]);
+
+  if (loading) return <p>Carregando...</p>;
 
   if (!member) {
     return (
       <main style={{ padding: 24 }}>
         <Link to="/equipe">← Voltar para equipe</Link>
-        <h1>Perfil não encontrado</h1>
+        <h1>Membro não encontrado</h1>
       </main>
     );
   }
@@ -48,16 +37,23 @@ export default function EquipeDetalhe() {
       </Link>
 
       <section className="member-hero">
-        <img src={member.image} alt={member.name} className="member-hero-image" />
+        <img
+          src={member.image}
+          alt={member.name}
+          className="member-hero-image"
+        />
 
         <div className="member-hero-content">
           <h1>{member.name}</h1>
           <h2>{member.role}</h2>
+
           <p className="member-meta">
             {member.course} • {member.year}
           </p>
 
-          <p className="member-description">{member.description}</p>
+          <p className="member-description">
+            {member.description}
+          </p>
 
           <div className="detail-actions">
             <a href="#" className="detail-button linkedin">
@@ -73,7 +69,7 @@ export default function EquipeDetalhe() {
       <section className="detail-box">
         <h3>Competências</h3>
         <div className="tags">
-          {member.skills.map((skill) => (
+          {member.skills?.map((skill) => (
             <span key={skill} className="tag">
               {skill}
             </span>
@@ -84,7 +80,7 @@ export default function EquipeDetalhe() {
       <section className="detail-box">
         <h3>Projetos Realizados</h3>
         <ul className="projects-list">
-          {member.projects.map((project) => (
+          {member.projects?.map((project) => (
             <li key={project}>{project}</li>
           ))}
         </ul>
