@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import MemberCard from "../../components/MemberCard";
 import { api } from "../../api";
-import type { Member } from "../../types";
 import "./index.css";
 
 export default function Equipe() {
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,15 +16,14 @@ export default function Equipe() {
 
   if (loading) return <p>Carregando...</p>;
 
-  // separa os grupos baseado no cargo
   const directors = members.filter(
     (m) =>
-      m.role.toLowerCase().includes("presidente") ||
-      m.role.toLowerCase().includes("diretor")
+      m.position?.toLowerCase().includes("presidente") ||
+      m.position?.toLowerCase().includes("diretor")
   );
 
   const consultants = members.filter((m) =>
-    m.role.toLowerCase().includes("consultor")
+    m.position?.toLowerCase().includes("consultor")
   );
 
   return (
@@ -42,11 +40,7 @@ export default function Equipe() {
         <h2>Diretoria</h2>
         <div className="cards-grid">
           {directors.map((member) => (
-            <MemberCard
-              key={member.id}
-              nome={member.name}
-              member_id={member.id}
-            />
+            <MemberCard key={member.id} member={member} />
           ))}
         </div>
       </section>
@@ -55,11 +49,7 @@ export default function Equipe() {
         <h2>Projetos</h2>
         <div className="cards-grid">
           {consultants.map((member) => (
-            <MemberCard
-              key={member.id}
-              nome={member.name}
-              member_id={member.id}
-            />
+            <MemberCard key={member.id} member={member} />
           ))}
         </div>
       </section>

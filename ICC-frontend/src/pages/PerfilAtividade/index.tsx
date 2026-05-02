@@ -31,6 +31,6 @@ export default function PerfilAtividade() {
   if (!project) return <p>Projeto não encontrado.</p>
 
   return (
-    /* codigo */
+    <div></div>
   )
 }

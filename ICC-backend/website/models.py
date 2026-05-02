@@ -68,6 +68,10 @@ class Team_Member(models.Model):
     photo_url = models.ImageField(upload_to='team/', null=True, blank=True)
     biography = models.TextField(max_length=200)
     position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True)
+
+    course = models.CharField(max_length=200, null=True, blank=True)
+    year = models.CharField(max_length=50, null=True, blank=True)
+
     hours = models.IntegerField()
     entry_date = models.DateField()
     exit_date = models.DateField(null=True, blank=True)
@@ -79,13 +83,6 @@ class Team_Member(models.Model):
         verbose_name='Projetos participados',
         related_name='members'
     )
-
-    class Meta:
-        verbose_name_plural = 'Membros do Time'
-
-    def __str__(self):
-        return self.name
-
     @property
     def number_of_projects(self):
         return self.projects.count()

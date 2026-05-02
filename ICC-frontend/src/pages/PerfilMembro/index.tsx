@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../api";
-import type { MemberDetail } from "../../types";
+import linkedinIcon from "../../assets/simbolo_linkedin.png";
+import emailIcon from "../../assets/simbolo_email.png";
 import "./index.css";
 
 export default function PerfilMembro() {
   const { id } = useParams();
 
-  const [member, setMember] = useState<MemberDetail | null>(null);
+  const [member, setMember] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,53 +39,59 @@ export default function PerfilMembro() {
 
       <section className="member-hero">
         <img
-          src={member.image}
+          src={member.photo_url || "https://placehold.co/400x500"}
           alt={member.name}
           className="member-hero-image"
         />
 
         <div className="member-hero-content">
           <h1>{member.name}</h1>
-          <h2>{member.role}</h2>
 
-          <p className="member-meta">
-            {member.course} • {member.year}
-          </p>
+          {/* posição agora é string */}
+          <h2>{member.position}</h2>
 
-          <p className="member-description">
-            {member.description}
-          </p>
+          {/* campos opcionais */}
+          {member.entry_date && (
+            <p className="member-meta">
+              Entrou em: {member.entry_date}
+            </p>
+          )}
+
+          {member.biography && (
+            <p className="member-description">
+              {member.biography}
+            </p>
+          )}
 
           <div className="detail-actions">
-            <a href="#" className="detail-button linkedin">
-              LinkedIn
-            </a>
-            <a href="#" className="detail-button email">
-              Email
-            </a>
+            {member.linkedin && (
+              <a href={member.linkedin} className="detail-button linkedin">
+                <img src={linkedinIcon} alt="linkedin" />
+                <span>LinkedIn</span>
+              </a>
+            )}
+
+            {member.email && (
+              <a href={`mailto:${member.email}`} className="detail-button email">
+                <img src={emailIcon} alt="email" />
+                <span>Email</span>
+              </a>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="detail-box">
-        <h3>Competências</h3>
-        <div className="tags">
-          {member.skills?.map((skill) => (
-            <span key={skill} className="tag">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="detail-box">
-        <h3>Projetos Realizados</h3>
-        <ul className="projects-list">
-          {member.projects?.map((project) => (
-            <li key={project}>{project}</li>
-          ))}
-        </ul>
-      </section>
+      {/* só mostra se existir */}
+      {member.projects && member.projects.length > 0 && (
+        <section className="detail-box">
+          <h3>Projetos</h3>
+          <ul className="projects-list">
+            {member.projects.map((project: any) => (
+              <li key={project.id}>{project.title}</li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }

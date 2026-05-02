@@ -18,6 +18,6 @@ export default function Parceiros() {
   if (loading) return <p>Carregando...</p>
 
   return (
-    /* codigo */
+    <div></div>
   )
 }

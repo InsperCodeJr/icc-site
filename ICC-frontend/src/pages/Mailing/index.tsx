@@ -1,3 +1,3 @@
 export default function Mailing() {
-  return (/* codigo */)
+  return (<div></div>)
 }
