@@ -1,38 +1,34 @@
 import { Link } from "react-router-dom";
+import linkedinIcon from "../../assets/simbolo_linkedin.png";
+import emailIcon from "../../assets/simbolo_email.png";
 import "./index.css";
 
-export type Member = {
-  slug: string;
+type Member = {
+  id: number;
   name: string;
-  role: string;
-  course: string;
-  year: string;
-  image: string;
+  position: string;
+  photo_url: string | null;
 };
 
-type MemberCardProps = {
-  member: Member;
-};
-
-export default function MemberCard({ member }: MemberCardProps) {
+export default function MemberCard({ member }: { member: Member }) {
   return (
-    <Link to={`/equipe/${member.slug}`} className="member-card-link">
-      <article className="member-card">
-        <img className="member-image" src={member.image} alt={member.name} />
+    <Link to={`/equipe/${member.id}`} className="member-card">
+      <img
+        src={member.photo_url || "https://placehold.co/400x400"}
+        alt={member.name}
+        className="member-image"
+      />
 
-        <div className="member-content">
-          <h3 className="member-name">{member.name}</h3>
-          <p className="member-role">{member.role}</p>
-          <p className="member-info">
-            {member.course} • {member.year}
-          </p>
+      <div className="member-content">
+        <h3 className="member-name">{member.name}</h3>
+        <p className="member-role">{member.position}</p>
+        <p className="member-info">{member.course} • {member.year}</p>
 
-          <div className="member-actions">
-            <span className="icon-button">in</span>
-            <span className="icon-button">✉</span>
-          </div>
+        <div className="member-actions">
+          <img src={linkedinIcon} className="icon-button" alt="LinkedIn" />
+          <img src={emailIcon} className="icon-button" alt="Email" />
         </div>
-      </article>
+      </div>
     </Link>
   );
 }

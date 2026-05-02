@@ -1,5 +1,6 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
+console.log("API URL:", import.meta.env.VITE_API_URL);
 export const api = {
   getMembers: () =>
     fetch(`${apiUrl}/members/`).then((res) => res.json()),
