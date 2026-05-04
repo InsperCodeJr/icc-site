@@ -1,3 +1,5 @@
 export default function Mailing() {
-  return (/* codigo */)
+  return (    <body>
+      a
+    </body>)
 }
