@@ -1,5 +1,39 @@
 from rest_framework import serializers
-from .models import Team_Member, Partner, Statistic, Project
+from .models import (
+    Team_Member, Partner, Statistic, Project, ProjectImage,
+    ProjectTimelineEvent, ProjectContentBlock,
+    Activity, ActivityImage, ActivityContentBlock,
+    ActivityCategory, CalendarMonth
+)
+
+
+class ActivityCategorySerializer(serializers.ModelSerializer):
+    highlights = serializers.SerializerMethodField()
+    icon_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ActivityCategory
+        fields = ["id", "slug", "label", "description", "highlights", "icon_url", "badge", "badge_class", "order"]
+
+    def get_highlights(self, obj):
+        return obj.get_highlights_list()
+
+    def get_icon_url(self, obj):
+        request = self.context.get("request")
+        if obj.icon and request:
+            return request.build_absolute_uri(obj.icon.url)
+        return None
+
+
+class CalendarMonthSerializer(serializers.ModelSerializer):
+    items = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CalendarMonth
+        fields = ["id", "month", "items", "semester", "order"]
+
+    def get_items(self, obj):
+        return obj.get_items_list()
 
 
 class PartnerSerializer(serializers.ModelSerializer):
@@ -17,24 +51,109 @@ class PartnerSerializer(serializers.ModelSerializer):
         return None
 
 
+class ProjectImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProjectImage
+        fields = ["id", "image_url", "caption", "order"]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class ProjectTimelineEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectTimelineEvent
+        fields = ["id", "date", "title", "description", "order"]
+
+
+class ContentBlockSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = ["id", "title", "text", "image_url", "image_caption", "image_align", "order"]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class ProjectContentBlockSerializer(ContentBlockSerializer):
+    class Meta(ContentBlockSerializer.Meta):
+        model = ProjectContentBlock
+
+
+class ActivityContentBlockSerializer(ContentBlockSerializer):
+    class Meta(ContentBlockSerializer.Meta):
+        model = ActivityContentBlock
+
+
+class ActivityImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ActivityImage
+        fields = ["id", "image_url", "caption", "order"]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
 class ProjectListSerializer(serializers.ModelSerializer):
     partners = serializers.StringRelatedField(many=True)
+    category = serializers.SlugRelatedField(slug_field='slug', read_only=True)
 
     class Meta:
         model = Project
-        fields = ["id", "title", "description", "partners", "start_date", "end_date"]
+        fields = ["id", "title", "description", "category", "partners", "start_date", "end_date"]
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
     partners = PartnerSerializer(many=True)
+    category = ActivityCategorySerializer()
     members = serializers.SerializerMethodField()
+    images = ProjectImageSerializer(many=True)
+    timeline_events = ProjectTimelineEventSerializer(many=True)
+    content_blocks = ProjectContentBlockSerializer(many=True)
 
     class Meta:
         model = Project
-        fields = ["id", "title", "description", "partners", "start_date", "end_date", "members"]
+        fields = [
+            "id", "title", "description", "category",
+            "partners", "start_date", "end_date",
+            "members", "images", "timeline_events", "content_blocks"
+        ]
 
     def get_members(self, obj):
         return [{"id": m.id, "name": m.name} for m in obj.members.all()]
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(slug_field='slug', read_only=True)
+
+    class Meta:
+        model = Activity
+        fields = ["id", "title", "description", "category"]
+
+
+class ActivityDetailSerializer(serializers.ModelSerializer):
+    category = ActivityCategorySerializer()
+    images = ActivityImageSerializer(many=True)
+    content_blocks = ActivityContentBlockSerializer(many=True)
+    responsible_partner = PartnerSerializer()
+
+    class Meta:
+        model = Activity
+        fields = ["id", "title", "description", "category", "images", "content_blocks", "responsible_partner"]
 
 
 class TeamMemberListSerializer(serializers.ModelSerializer):
