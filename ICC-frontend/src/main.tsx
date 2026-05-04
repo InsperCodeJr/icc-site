@@ -34,10 +34,10 @@ const router = createBrowserRouter([
       { path: "atividades/item/:id", element: <PerfilAtividadeItem /> },
     ],
   },
-])
+]);
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
   </StrictMode>,
-)
+);
