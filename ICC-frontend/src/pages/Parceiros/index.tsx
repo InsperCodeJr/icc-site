@@ -9,7 +9,6 @@ export default function Parceiros() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-<<<<<<< HEAD
     api
       .getPartners()
       .then((data) => {
@@ -85,17 +84,3 @@ export default function Parceiros() {
     </div>
   )
 }
-=======
-    api.getPartners().then((data) => {
-      setPartners(data)
-      setLoading(false)
-    })
-  }, [])
-
-  if (loading) return <p>Carregando...</p>
-
-  return (
-    /* codigo */
-  )
-}
->>>>>>> 6b1a5a32110e17b7231ce776cf9ff4fbdc08672e

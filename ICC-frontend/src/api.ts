@@ -1,11 +1,6 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const api = {
-<<<<<<< HEAD
-  getPartners: () =>
-    fetch(`${apiUrl}/partners/`).then((res) => res.json()),
-};
-=======
   getMembers: () =>
     fetch(`${apiUrl}/members/`).then((res) => res.json()),
 
@@ -27,4 +22,3 @@ export const api = {
   getStatistics: () =>
     fetch(`${apiUrl}/statistics/`).then((res) => res.json()),
 };
->>>>>>> 6b1a5a32110e17b7231ce776cf9ff4fbdc08672e
