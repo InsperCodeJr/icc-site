@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <div className="header">
       <Link to={"/"} className="link-img">
-        <img src="https://placehold.co/300x200" alt="Logo ICC" />
+        <img src="src\images\Logotipo Fundo Transparente Vermelho.png" alt="Logo ICC" />
       </Link>
       <section>
         <Link to={"/equipe"} className="link-text">Nossa Equipe</Link>
