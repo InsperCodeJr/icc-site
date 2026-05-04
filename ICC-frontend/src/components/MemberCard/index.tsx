@@ -1,17 +1,33 @@
 import { Link } from "react-router-dom";
-import "./index.css"
+import linkedinIcon from "../../assets/simbolo_linkedin.png";
+import emailIcon from "../../assets/simbolo_email.png";
+import "./index.css";
 
-interface MemberCardProps {
-  nome: string;
-  member_id: string;
-}
+type Member = {
+  id: number;
+  name: string;
+  position: string;
+  photo_url: string | null;
+};
 
-export default function MemberCard({ nome, member_id }: MemberCardProps) {
+export default function MemberCard({ member }: { member: Member }) {
   return (
-    <Link to={`/equipe/${member_id}`}>
-      <div className="card">
-        <img src="https://placehold.co/200x300" alt="Foto do membro" />
-        <h3>{nome}</h3>
+    <Link to={`/equipe/${member.id}`} className="member-card">
+      <img
+        src={member.photo_url || "https://placehold.co/400x400"}
+        alt={member.name}
+        className="member-image"
+      />
+
+      <div className="member-content">
+        <h3 className="member-name">{member.name}</h3>
+        <p className="member-role">{member.position}</p>
+        <p className="member-info">{member.course} • {member.year}</p>
+
+        <div className="member-actions">
+          <img src={linkedinIcon} className="icon-button" alt="LinkedIn" />
+          <img src={emailIcon} className="icon-button" alt="Email" />
+        </div>
       </div>
     </Link>
   );
