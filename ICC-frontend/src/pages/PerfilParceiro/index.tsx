@@ -22,6 +22,8 @@ export default function PerfilParceiro() {
   if (!partner) return <p>Parceiro não encontrado.</p>
 
   return (
-    /* codigo */
+        <body>
+      a
+    </body>
   )
 }
