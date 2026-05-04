@@ -1,3 +1,5 @@
 export default function Mailing() {
-  return (<div></div>)
+  return (    <body>
+      a
+    </body>)
 }
