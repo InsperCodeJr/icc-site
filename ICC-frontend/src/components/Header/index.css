@@ -9,16 +9,17 @@
 }
 
 img {
-  width: 30%;
-  height: 80%;
+  width: 5rem;
 }
 
+
 .link-img {
-  margin-left: 1rem;
-  margin-bottom: .5rem;
+  margin: .5rem 0 .5rem 1rem;
+  height: inherit;
 }
 
 section {
+  width: fit-content;
   margin: 1rem;
 }
 
