@@ -8,14 +8,9 @@
   height: 15%;
 }
 
-img {
-  width: 5rem;
-}
-
-
 .link-img {
   margin: .5rem 0 .5rem 1rem;
-  height: inherit;
+  width: 8rem;
 }
 
 section {
