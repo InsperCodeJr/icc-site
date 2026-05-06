@@ -18,6 +18,8 @@ ICC-Site/
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+__Depois de baixar o Docker Desktop, os comandos do Docker devem ser realizados <br> na pasta raiz do repositório COM O DOCKER DESKTOP ABERTO__
+
 ---
 
 ## Como rodar o projeto
