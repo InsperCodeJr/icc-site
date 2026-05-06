@@ -16,9 +16,7 @@ ICC-Site/
 
 ## Pré-requisitos
 
-- [Python 3.10+](https://www.python.org/downloads/)
-- [Node.js LTS](https://nodejs.org/)
-- [Git](https://git-scm.com/download/win)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ---
 
@@ -33,61 +31,43 @@ cd ICC-Site
 
 ---
 
-### 2. Rodar o Backend (Django)
+### 2. Subir os containers
 
 ```bash
-cd ICC-backend
+docker-compose up --build
 ```
 
-Crie e ative o ambiente virtual:
+Isso irá subir três serviços:
+- **db** — banco de dados PostgreSQL (porta `5432`)
+- **backend** — Django (porta `8000`), já roda as migrations automaticamente
+- **frontend** — React + Vite (porta `5173`)
 
-```bash
-# Windows
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-
-# Mac/Linux
-python -m venv .venv
-source .venv/bin/activate
-```
-
-Instale as dependências:
-
-```bash
-pip install -r requirements.txt
-pip install djangorestframework django-cors-headers
-```
-
-Rode as migrations:
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-Crie um superusuário para acessar o Admin:
-
-```bash
-python manage.py createsuperuser
-```
-
-Inicie o servidor:
-
-```bash
-python manage.py runserver
 ---
 
-### 3. Rodar o Frontend (React)
-
-Em um **novo terminal**:
+### 3. Criar as migrations do backend (primeira vez)
 
 ```bash
-cd ICC-frontend
-npm install
-npm run dev
+docker-compose exec backend python manage.py makemigrations website
+docker-compose exec backend python manage.py migrate
 ```
 
-O frontend estará disponível em `http://localhost:5173`.
+---
+
+### 4. Criar um superusuário para acessar o Admin
+
+```bash
+docker-compose exec backend python manage.py createsuperuser
+```
+
+---
+
+## Acessos
+
+| Serviço | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend (API) | http://localhost:8000/api |
+| Django Admin | http://localhost:8000/admin |
 
 ---
 
@@ -107,10 +87,19 @@ O frontend estará disponível em `http://localhost:5173`.
 
 ## Cadastro de dados
 
-Com o backend rodando, acesse `http://127.0.0.1:8000/admin` e faça login com o superusuário criado. Por lá é possível cadastrar membros, parceiros, projetos e estatísticas.
+Com os containers rodando, acesse `http://localhost:8000/admin` e faça login com o superusuário criado. Por lá é possível cadastrar membros, parceiros, projetos e estatísticas.
 
 ---
 
-## Observações
+## Comandos úteis
 
-- O backend e o frontend precisam estar rodando **simultaneamente** em terminais separados.
+```bash
+# Parar os containers
+docker-compose down
+
+# Ver logs do backend
+docker-compose logs backend
+
+# Rodar qualquer comando Django
+docker-compose exec backend python manage.py <comando>
+```

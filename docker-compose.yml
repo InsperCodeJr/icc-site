@@ -1,5 +1,17 @@
 services:
 
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=iccsite
+      - POSTGRES_USER=iccuser
+      - POSTGRES_PASSWORD=iccpassword
+    restart: unless-stopped
+
   backend:
     build:
       context: ./ICC-backend
@@ -11,6 +23,13 @@ services:
       - media_files:/app/media
     environment:
       - DEBUG=True
+      - DB_NAME=iccsite
+      - DB_USER=iccuser
+      - DB_PASSWORD=iccpassword
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
     restart: unless-stopped
 
   frontend:
@@ -30,3 +49,4 @@ services:
 
 volumes:
   media_files:
+  postgres_data:
