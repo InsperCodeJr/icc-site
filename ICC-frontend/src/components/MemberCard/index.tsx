@@ -8,6 +8,8 @@ type Member = {
   name: string;
   position: string;
   photo_url: string | null;
+  course: string;
+  year: number
 };
 
 export default function MemberCard({ member }: { member: Member }) {

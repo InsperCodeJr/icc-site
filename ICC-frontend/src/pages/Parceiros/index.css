@@ -1,8 +1,12 @@
 .parceiros-page {
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
   color: var(--branco);
+  align-items: center;
+  justify-content: center;
 }
 
 .parceiros-loading,
