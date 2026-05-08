@@ -73,12 +73,13 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 2rem;
-  background: var(--cinza-destaque);
+  /* background: var(--cinza-destaque); */
   border: 1px solid #222;
   text-decoration: none;
   color: inherit;
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   border-radius: 16px;
+  background-color: var(--branco);
 }
 
 .parceiro-card:hover {
@@ -115,7 +116,7 @@
 .parceiro-nome {
   font-size: 1.15rem;
   margin: 0 0 0.75rem;
-  color: var(--branco);
+  color: var(--cinza-destaque);
 }
 
 .parceiro-saiba {
@@ -128,7 +129,7 @@
 
 .parceiros-cta {
   padding: 5rem 2rem;
-  background: var(--cinza-destaque);
+  background: var(--branco);
   text-align: center;
   margin-bottom: 4rem;
   border-top: 2px solid var(--vermelho-2);
@@ -138,7 +139,7 @@
 .parceiros-cta h2 {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   margin: 0 0 1rem;
-  color: var(--branco);
+  color: var(--cinza-destaque);
 }
 
 .parceiros-cta p {
