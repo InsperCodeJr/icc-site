@@ -30,7 +30,7 @@ section {
 }
 
 .link-text:hover {
-  color: var(--preto);
+  color: white;
   background-color: var(--vermelho-icc);
   box-shadow: 0 0 8px 2px var(--vermelho-icc);
 }

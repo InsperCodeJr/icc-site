@@ -77,7 +77,7 @@ export default function Parceiros() {
           Conecte sua empresa aos melhores talentos do Insper e contribua para
           a formação em consultoria.
         </p>
-        <Link to="/" className="parceiros-btn">
+        <Link to="/contato" className="parceiros-btn">
           Entre em contato →
         </Link>
       </section>
