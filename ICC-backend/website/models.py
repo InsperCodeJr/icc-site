@@ -293,3 +293,20 @@ class Participant(models.Model):
 
     def __str__(self):
         return self.name
+
+class Contact(models.Model):
+
+    class ContactType(models.TextChoices):
+        ALUNO = 'aluno', 'Aluno'
+        EMPRESA = 'empresa', 'empresa'
+    
+    name = models.CharField(max_length=200, verbose_name="Nome")
+    email = models.EmailField(verbose_name="Email")
+    phone = models.CharField(max_length=200, verbose_name="Telefone")
+    contact_type = models.CharField(
+        max_length=8,
+        choices=ContactType.choices
+    )
+    
+    def __str__(self):
+        return self.name

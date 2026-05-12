@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/activities/', api_views.ActivityListView.as_view(), name='api-activities-list'),
     path('api/activities/<int:pk>/', api_views.ActivityDetailView.as_view(), name='api-activities-detail'),
     path('api/statistics/', api_views.StatisticListView.as_view(), name='api-statistics-list'),
+    path('api/contact/', api_views.ContactCreateView.as_view(), name='api-contact-create'),
 ]

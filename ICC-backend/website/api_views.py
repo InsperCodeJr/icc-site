@@ -1,11 +1,12 @@
 from rest_framework import generics
-from .models import Team_Member, Partner, Statistic, Project, Activity, ActivityCategory, CalendarMonth
+from .models import Team_Member, Partner, Statistic, Project, Activity, ActivityCategory, CalendarMonth, Contact
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
     PartnerSerializer, StatisticSerializer,
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
+    ContactSerializer
 )
 
 
@@ -96,3 +97,7 @@ class ActivityDetailView(generics.RetrieveAPIView):
 class StatisticListView(generics.ListAPIView):
     serializer_class = StatisticSerializer
     queryset = Statistic.objects.all().order_by("order")
+
+class ContactCreateView(generics.CreateAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()

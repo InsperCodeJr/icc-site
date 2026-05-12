@@ -3,7 +3,7 @@ from .models import (
     Team_Member, Partner, Statistic, Project, ProjectImage,
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
-    ActivityCategory, CalendarMonth
+    ActivityCategory, CalendarMonth, Contact
 )
 
 
@@ -215,3 +215,8 @@ class StatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistic
         fields = ["id", "value", "description", "order"]
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'phone', 'contact_type']
