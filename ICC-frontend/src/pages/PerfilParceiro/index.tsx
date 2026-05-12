@@ -23,7 +23,7 @@ export default function PerfilParceiro() {
 
   return (
         <body>
-      <h1>Em construcão</h1>
+      <h1>Em construção</h1>
     </body>
   )
 }
