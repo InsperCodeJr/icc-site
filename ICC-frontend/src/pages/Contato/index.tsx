@@ -1,6 +1,6 @@
-import './index.css'
+import './index.css';
 
-export default function Processo() {
+export default function Contato() {
   return (    <body>
       <h1>Em construcão</h1>
     </body>)

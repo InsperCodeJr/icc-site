@@ -18,7 +18,7 @@ export default function Parceiros() {
         console.error("Erro ao buscar parceiros:", err)
         setPartners([])
       })
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(false));
   }, [])
 
   if (loading) {
