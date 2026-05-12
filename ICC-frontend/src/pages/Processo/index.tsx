@@ -1,5 +1,7 @@
+import './index.css'
+
 export default function Processo() {
   return (    <body>
-      a
+      <h1>Em construcão</h1>
     </body>)
 }
