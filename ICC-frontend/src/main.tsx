@@ -15,6 +15,7 @@ import Home from './pages/Home/index.tsx'
 import Contato from './pages/Contato/index.tsx'
 import Processo from './pages/Processo/index.tsx'
 import PerfilAtividadeItem from './pages/PerfilAtividadeItem/index.tsx'
+import Noticias from './pages/Noticias/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -29,10 +30,11 @@ const router = createBrowserRouter([
       { path: "atividades/:id", element: <PerfilAtividade /> },
       { path: "parceiros", element: <Parceiros /> },
       { path: "parceiros/:id", element: <PerfilParceiro /> },
-      { path: "processo", element: <Processo /> },
+      { path: "mailing", element: <Contato /> },
+      { path: "participe", element: <Processo /> },
       { path: "atividades/item/:id", element: <PerfilAtividadeItem /> },
-      { path: "contato", element: <Contato /> },
-      
+      { path: "news", element: <Noticias /> },
+      { path: "contato", element:  <Contato /> }
     ],
   },
 ]);
