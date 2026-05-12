@@ -1,0 +1,43 @@
+.contato {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--cinza-bordas);
+    width: 50%;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+    width: 70%
+}
+
+.campo > label {
+    align-self: flex-start;
+    margin: .5rem;
+    font-size: larger;
+}
+
+input, select {
+    border: 1px solid var(--cinza-bordas);
+    width: 90%;
+    scale: 1.2;
+    padding: .5rem;
+    border-radius: 10px;
+}
+
+select {
+    background-color: var(--branco);
+}
+
+button {
+    background-color: var(--vermelho-icc);
+    color: var(--branco);
+    height: 3rem;
+    width: 90%;
+    border-radius: 30px;
+    font-size: x-large;
+}
