@@ -3,7 +3,7 @@ from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
     Partner, Team_Member, Media, Member_Position, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
-    ActivityCategory, CalendarMonth
+    ActivityCategory, CalendarMonth, Contact
 )
 
 admin.site.register(Partner_Category)
@@ -12,6 +12,7 @@ admin.site.register(Team_Member)
 admin.site.register(Media)
 admin.site.register(Member_Position)
 admin.site.register(Participant)
+admin.site.register(Contact)
 
 
 # ── Inlines ───────────────────────────────────────────────────────────────────
