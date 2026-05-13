@@ -308,5 +308,8 @@ class Contact(models.Model):
         choices=ContactType.choices
     )
     
+    class Meta:
+        verbose_name_plural = "Pedidos de contato"
+    
     def __str__(self):
         return self.name
