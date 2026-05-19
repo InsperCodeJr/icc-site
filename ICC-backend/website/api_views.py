@@ -1,11 +1,17 @@
 from rest_framework import generics
-from .models import Team_Member, Partner, Statistic, Project, Activity, ActivityCategory, CalendarMonth
+from django.shortcuts import get_object_or_404
+from .models import (
+    Team_Member, Partner, Statistic, Project, Activity,
+    ActivityCategory, CalendarMonth, SelectionProcess,
+    Media, ContactInfo
+)
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
     PartnerSerializer, StatisticSerializer,
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
+    SelectionProcessSerializer, MediaSerializer, ContactInfoSerializer
 )
 
 
@@ -96,3 +102,29 @@ class ActivityDetailView(generics.RetrieveAPIView):
 class StatisticListView(generics.ListAPIView):
     serializer_class = StatisticSerializer
     queryset = Statistic.objects.all().order_by("order")
+
+
+class MediaListView(generics.ListAPIView):
+    serializer_class = MediaSerializer
+    queryset = Media.objects.all()
+
+
+class ContactInfoView(generics.RetrieveAPIView):
+    serializer_class = ContactInfoSerializer
+
+    def get_object(self):
+        return get_object_or_404(ContactInfo, is_active=True)
+
+
+class SelectionProcessView(generics.RetrieveAPIView):
+    serializer_class = SelectionProcessSerializer
+ 
+    def get_object(self):
+        return get_object_or_404(
+            SelectionProcess.objects.prefetch_related(
+                'stages', 'steps', 'requirements',
+                'materials', 'materials__items'
+            ),
+            is_active=True
+        )
+ 

@@ -155,13 +155,7 @@ class ProjectContentBlock(models.Model):
     text = models.TextField(blank=True, verbose_name='Texto')
     image = models.ImageField(upload_to='projects/content/', null=True, blank=True, verbose_name='Imagem (opcional)')
     image_caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda da imagem')
-    image_align = models.CharField(
-        max_length=10,
-        choices=IMAGE_ALIGN_CHOICES,
-        default='right',
-        verbose_name='Posição da imagem',
-        help_text='Se não houver texto, a imagem ficará centralizada independente desta opção.'
-    )
+    image_align = models.CharField(max_length=10, choices=IMAGE_ALIGN_CHOICES, default='right', verbose_name='Posição da imagem')
     order = models.IntegerField(default=0, verbose_name='Ordem')
 
     class Meta:
@@ -178,10 +172,8 @@ class Team_Member(models.Model):
     photo_url = models.ImageField(upload_to='team/', null=True, blank=True)
     biography = models.TextField(max_length=200)
     position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True)
-
     course = models.CharField(max_length=200, null=True, blank=True)
     year = models.CharField(max_length=50, null=True, blank=True)
-
     hours = models.IntegerField()
     entry_date = models.DateField()
     exit_date = models.DateField(null=True, blank=True)
@@ -237,13 +229,7 @@ class ActivityContentBlock(models.Model):
     text = models.TextField(blank=True, verbose_name='Texto')
     image = models.ImageField(upload_to='activities/content/', null=True, blank=True, verbose_name='Imagem (opcional)')
     image_caption = models.CharField(max_length=200, blank=True, verbose_name='Legenda da imagem')
-    image_align = models.CharField(
-        max_length=10,
-        choices=IMAGE_ALIGN_CHOICES,
-        default='right',
-        verbose_name='Posição da imagem',
-        help_text='Se não houver texto, a imagem ficará centralizada independente desta opção.'
-    )
+    image_align = models.CharField(max_length=10, choices=IMAGE_ALIGN_CHOICES, default='right', verbose_name='Posição da imagem')
     order = models.IntegerField(default=0, verbose_name='Ordem')
 
     class Meta:
@@ -256,12 +242,18 @@ class ActivityContentBlock(models.Model):
 
 
 class Media(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    link = models.URLField()
+    title = models.CharField(max_length=200, verbose_name='Título')
+    description = models.TextField(verbose_name='Descrição')
+    link = models.URLField(verbose_name='Link')
+    image = models.ImageField(upload_to='news/', null=True, blank=True, verbose_name='Imagem de capa')
+    source = models.CharField(max_length=200, blank=True, verbose_name='Fonte')
+    date = models.DateField(null=True, blank=True, verbose_name='Data de publicação')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
+        verbose_name = 'Notícia'
         verbose_name_plural = 'Notícias'
+        ordering = ['-date', 'order']
 
     def __str__(self):
         return self.title
@@ -293,3 +285,127 @@ class Participant(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ContactInfo(models.Model):
+    email = models.EmailField(blank=True, verbose_name='Email')
+    instagram = models.URLField(blank=True, verbose_name='Instagram (URL)')
+    linkedin = models.URLField(blank=True, verbose_name='LinkedIn (URL)')
+    whatsapp = models.CharField(max_length=20, blank=True, verbose_name='WhatsApp')
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+
+    class Meta:
+        verbose_name = 'Informações de Contato'
+        verbose_name_plural = 'Informações de Contato'
+
+    def __str__(self):
+        return f"Contato — {self.email}"
+
+
+class SelectionProcess(models.Model):
+    title = models.CharField(max_length=200, default='Próximo Processo Seletivo', verbose_name='Título')
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+
+    class Meta:
+        verbose_name = 'Processo Seletivo'
+        verbose_name_plural = 'Processos Seletivos'
+
+    def __str__(self):
+        return self.title
+
+
+class SelectionProcessStage(models.Model):
+    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='stages', verbose_name='Processo Seletivo')
+    label = models.CharField(max_length=200, verbose_name='Nome da etapa')
+    date = models.CharField(max_length=200, verbose_name='Data / Período')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Data do Processo'
+        verbose_name_plural = 'Datas do Processo'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.label} — {self.date}"
+
+
+class SelectionProcessStep(models.Model):
+    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='steps', verbose_name='Processo Seletivo')
+    number = models.CharField(max_length=10, verbose_name='Número')
+    title = models.CharField(max_length=200, verbose_name='Título')
+    description = models.TextField(verbose_name='Descrição')
+    image = models.ImageField(upload_to='process/steps/', null=True, blank=True, verbose_name='Ícone do quadrado')
+    duration = models.CharField(max_length=100, blank=True, verbose_name='Duração')
+    tips = models.TextField(blank=True, verbose_name='Dicas', help_text='Um tópico por linha.')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Etapa Detalhada'
+        verbose_name_plural = 'Etapas Detalhadas'
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.number}. {self.title}"
+
+    def get_tips_list(self):
+        return [line.strip() for line in self.tips.splitlines() if line.strip()]
+
+
+class SelectionProcessRequirement(models.Model):
+    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='requirements', verbose_name='Processo Seletivo')
+    text = models.CharField(max_length=300, verbose_name='Texto do requisito')
+    icon = models.ImageField(upload_to='process/requirements/', null=True, blank=True, verbose_name='Ícone (imagem)')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Requisito'
+        verbose_name_plural = 'Requisitos'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.text
+    
+class PreparationMaterial(models.Model):
+    """
+    Categoria de material de preparação.
+    Ex: Case Interview, Frameworks, Soft Skills
+    """
+    process = models.ForeignKey(
+        SelectionProcess,
+        on_delete=models.CASCADE,
+        related_name='materials',
+        verbose_name='Processo Seletivo'
+    )
+    title = models.CharField(max_length=200, verbose_name='Título')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+ 
+    class Meta:
+        verbose_name = 'Material de Preparação'
+        verbose_name_plural = 'Materiais de Preparação'
+        ordering = ['order']
+ 
+    def __str__(self):
+        return self.title
+ 
+ 
+class PreparationMaterialItem(models.Model):
+    """
+    Item de um material de preparação.
+    Ex: Victor Cheng - Case Interview Secrets
+    """
+    material = models.ForeignKey(
+        PreparationMaterial,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name='Material'
+    )
+    text = models.CharField(max_length=300, verbose_name='Texto')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+ 
+    class Meta:
+        verbose_name = 'Item'
+        verbose_name_plural = 'Itens'
+        ordering = ['order']
+ 
+    def __str__(self):
+        return self.text
