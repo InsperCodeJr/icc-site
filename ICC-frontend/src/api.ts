@@ -1,6 +1,5 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-
 const headers = {
   "Accept": "application/json",
   "Content-Type": "application/json",
@@ -39,4 +38,13 @@ export const api = {
 
   getStatistics: () =>
     fetch(`${apiUrl}/statistics/`, { headers }).then((res) => res.json()),
+
+  getNews: () =>
+    fetch(`${apiUrl}/news/`, { headers }).then((res) => res.json()),
+
+  getContact: () =>
+    fetch(`${apiUrl}/contact/`, { headers }).then((res) => res.json()),
+
+  getSelectionProcess: () =>
+    fetch(`${apiUrl}/selection-process/`, { headers }).then((res) => res.json()),
 };

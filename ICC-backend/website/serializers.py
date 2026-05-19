@@ -3,7 +3,9 @@ from .models import (
     Team_Member, Partner, Statistic, Project, ProjectImage,
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
-    ActivityCategory, CalendarMonth
+    ActivityCategory, CalendarMonth,
+    SelectionProcess, SelectionProcessStage, SelectionProcessStep, SelectionProcessRequirement,
+    Media, ContactInfo,PreparationMaterialItem,PreparationMaterial
 )
 
 
@@ -162,14 +164,7 @@ class TeamMemberListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team_Member
-        fields = [
-            "id",
-            "name",
-            "position",
-            "photo_url",
-            "course",
-            "year"
-        ]
+        fields = ["id", "name", "position", "photo_url", "course", "year"]
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
@@ -187,20 +182,9 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team_Member
         fields = [
-            "id",
-            "name",
-            "position",
-            "photo_url",
-            "biography",
-            "number_of_projects",
-            "projects",
-            "hours",
-            "entry_date",
-            "exit_date",
-            "course",
-            "year",
-            "email",
-            "linkedin"
+            "id", "name", "position", "photo_url", "biography",
+            "number_of_projects", "projects", "hours",
+            "entry_date", "exit_date", "course", "year", "email", "linkedin",
         ]
 
     def get_photo_url(self, obj):
@@ -208,10 +192,90 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
         if obj.photo_url and request:
             return request.build_absolute_uri(obj.photo_url.url)
         return None
-        
 
 
 class StatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistic
         fields = ["id", "value", "description", "order"]
+
+
+class MediaSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Media
+        fields = ["id", "title", "description", "link", "image_url", "source", "date", "order"]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class ContactInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactInfo
+        fields = ["id", "email", "instagram", "linkedin", "whatsapp"]
+
+
+class SelectionProcessStageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SelectionProcessStage
+        fields = ["id", "label", "date", "order"]
+
+
+class SelectionProcessStepSerializer(serializers.ModelSerializer):
+    tips = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SelectionProcessStep
+        fields = ["id", "number", "title", "description", "image_url", "duration", "tips", "order"]
+
+    def get_tips(self, obj):
+        return obj.get_tips_list()
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class SelectionProcessRequirementSerializer(serializers.ModelSerializer):
+    icon_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SelectionProcessRequirement
+        fields = ["id", "text", "icon_url", "order"]
+
+    def get_icon_url(self, obj):
+        request = self.context.get("request")
+        if obj.icon and request:
+            return request.build_absolute_uri(obj.icon.url)
+        return None
+
+class PreparationMaterialItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreparationMaterialItem
+        fields = ['id', 'text', 'order']
+ 
+ 
+class PreparationMaterialSerializer(serializers.ModelSerializer):
+    items = PreparationMaterialItemSerializer(many=True)
+ 
+    class Meta:
+        model = PreparationMaterial
+        fields = ['id', 'title', 'items', 'order']
+ 
+class SelectionProcessSerializer(serializers.ModelSerializer):
+    stages = SelectionProcessStageSerializer(many=True)
+    steps = SelectionProcessStepSerializer(many=True)
+    requirements = SelectionProcessRequirementSerializer(many=True)
+    materials = PreparationMaterialSerializer(many=True)
+ 
+    class Meta:
+        model = SelectionProcess
+        fields = ['id', 'title', 'stages', 'steps', 'requirements', 'materials']
