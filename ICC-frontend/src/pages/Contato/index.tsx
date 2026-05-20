@@ -22,14 +22,15 @@ export default function Contato() {
   return (
     <div className="contato-page">
 
-      <section className="contato-header">
+      <div id="main-area">
         <h1 className="contato-header__title">Contato</h1>
         <p className="contato-header__subtitle">
           Entre em contato com o Insper Consulting Club
         </p>
-      </section>
+        <FormContato />
+      </div>
 
-      <section className="contato-section">
+      {/* <section className="contato-section">
         {loading ? (
           <div className="contato-loading">
             <div className="contato-loading__spinner" />
@@ -125,7 +126,7 @@ export default function Contato() {
 
           </div>
         )}
-      </section>
+      </section> */}
 
     </div>
   )

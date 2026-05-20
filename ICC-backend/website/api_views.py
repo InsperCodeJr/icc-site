@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from .models import (
     Team_Member, Partner, Statistic, Project, Activity,
     ActivityCategory, CalendarMonth, SelectionProcess,
-    Media, ContactInfo
+    Media, Contact
 )
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
@@ -11,7 +11,8 @@ from .serializers import (
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
-    SelectionProcessSerializer, MediaSerializer, ContactInfoSerializer
+    SelectionProcessSerializer, MediaSerializer, 
+    ContactSerializer
 )
 
 
@@ -109,11 +110,11 @@ class MediaListView(generics.ListAPIView):
     queryset = Media.objects.all()
 
 
-class ContactInfoView(generics.RetrieveAPIView):
-    serializer_class = ContactInfoSerializer
+# class ContactInfoView(generics.RetrieveAPIView):
+#     serializer_class = ContactInfoSerializer
 
-    def get_object(self):
-        return get_object_or_404(ContactInfo, is_active=True)
+#     def get_object(self):
+#         return get_object_or_404(ContactInfo, is_active=True)
 
 
 class SelectionProcessView(generics.RetrieveAPIView):
@@ -127,4 +128,7 @@ class SelectionProcessView(generics.RetrieveAPIView):
             ),
             is_active=True
         )
- 
+
+class ContactCreateView(generics.CreateAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
