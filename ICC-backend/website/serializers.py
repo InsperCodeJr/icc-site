@@ -4,8 +4,10 @@ from .models import (
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
     ActivityCategory, CalendarMonth,
-    SelectionProcess, SelectionProcessStage, SelectionProcessStep, SelectionProcessRequirement,
-    Media, ContactInfo,PreparationMaterialItem,PreparationMaterial
+    Media, Contact, 
+    SelectionProcess, SelectionProcessRequirement, 
+    SelectionProcessStage, SelectionProcessStep,
+    PreparationMaterial, PreparationMaterialItem
 )
 
 
@@ -214,10 +216,10 @@ class MediaSerializer(serializers.ModelSerializer):
         return None
 
 
-class ContactInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContactInfo
-        fields = ["id", "email", "instagram", "linkedin", "whatsapp"]
+# class ContactInfoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ContactInfo
+#         fields = ["id", "email", "instagram", "linkedin", "whatsapp"]
 
 
 class SelectionProcessStageSerializer(serializers.ModelSerializer):
@@ -279,3 +281,8 @@ class SelectionProcessSerializer(serializers.ModelSerializer):
     class Meta:
         model = SelectionProcess
         fields = ['id', 'title', 'stages', 'steps', 'requirements', 'materials']
+    
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'phone', 'contact_type']

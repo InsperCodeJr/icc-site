@@ -304,4 +304,122 @@ class Contact(models.Model):
         verbose_name_plural = "Pedidos de contato"
     
     def __str__(self):
+        return f"{self.name} | {self.contact_type}"
+    
+class SelectionProcess(models.Model):
+    title = models.CharField(
+        max_length=200,
+        default="Próximo Processo Seletivo",
+        verbose_name="Título"
+    )
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+    
+    class Meta:
+        verbose_name = "Processo Seletivo"
+        verbose_name_plural = "Processos Seletivos"
+    
+    def __str__(self):
+        return self.title
+    
+
+class SelectionProcessStage(models.Model):
+    process = models.ForeignKey(
+        SelectionProcess, 
+        on_delete=models.CASCADE, 
+        related_name='stages', 
+        verbose_name='Processo Seletivo'
+        )
+    label = models.CharField(max_length=200, verbose_name="Nome da etapa")
+    date = models.CharField(max_length=200, verbose_name="Data/Período")
+    order = models.IntegerField(default=0, verbose_name="Ordem")
+    
+    class Meta:
+        verbose_name = "Data do Processo"
+        verbose_name_plural = "Datas do Processo"
+        ordering = ['order']
+        
+    def __str__(self):
+        return f"{self.label} - {self.date}"
+
+class SelectionProcessStep(models.Model):
+    process = models.ForeignKey(
+        SelectionProcess,
+        on_delete=models.CASCADE, 
+        related_name='steps', 
+        verbose_name='Processo Seletivo'
+    )
+    number = models.CharField(max_length=10, verbose_name='Número')
+    title = models.CharField(max_length=200, verbose_name='Título')
+    description = models.TextField(verbose_name='Descrição')
+    image = models.ImageField(upload_to='process/steps/', null=True, blank=True, verbose_name='Ícone do quadrado')
+    duration = models.CharField(max_length=100, blank=True, verbose_name='Duração')
+    tips = models.TextField(blank=True, verbose_name='Dicas', help_text='Um tópico por linha.')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+    
+    class Meta:
+        verbose_name = 'Etapa Detalhada'
+        verbose_name_plural = 'Etapas Detalhadas'
+        ordering = ['order']
+    
+    def __str__(self):
+        return f"{self.number}. {self.title}"
+    
+    def get_tips_list(self):
+        return [line.strip() for line in self.tips.splitlines() if line.strip()]
+
+
+class SelectionProcessRequirement(models.Model):
+    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='requirements', verbose_name='Processo Seletivo')
+    text = models.CharField(max_length=300, verbose_name='Texto do requisito')
+    icon = models.ImageField(upload_to='process/requirements/', null=True, blank=True, verbose_name='Ícone (imagem)')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Requisito'
+        verbose_name_plural = 'Requisitos'
+        ordering = ['order']
+    
+    def __str__(self):
+        return self.text
+    
+
+class PreparationMaterial(models.Model):
+    process = models.ForeignKey(
+        SelectionProcess, 
+        on_delete=models.CASCADE,
+        related_name='materials',
+        verbose_name='Processo Seletivo'
+    )
+    title = models.CharField(max_length=200, verbose_name='Título')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+    
+    class Meta:
+        verbose_name = 'Material de Preparação'
+        verbose_name_plural = 'Materiais de Preparação'
+        ordering = ['order']
+    
+    def __str__(self):
+        return self.title
+
+
+class PreparationMaterialItem(models.Model):
+    """
+    Item de um material de preparação.
+    Ex: Victor Cheng - Case Interview Secrets
+    """
+    material = models.ForeignKey(
+        PreparationMaterial,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name='Material'
+    )
+    text = models.CharField(max_length=300, verbose_name='Texto')
+    order = models.IntegerField(default=0, verbose_name='Ordem')
+
+    class Meta:
+        verbose_name = 'Item'
+        verbose_name_plural = 'Itens'
+        ordering = ['order']
+
+    def __str__(self):
         return self.text

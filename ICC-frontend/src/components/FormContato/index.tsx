@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./index.css";
+import { api } from "../../api";
 
 export default function FormContato() {
   const [contactType, setContactType] = useState("");
@@ -7,13 +8,29 @@ export default function FormContato() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await api.postContact({
+      name: nome,
+      email: email,
+      phone: phone,
+      contact_type: contactType as "aluno" | "empresa"
+    }).then(() => {
+      setNome("");
+      setEmail("");
+      setPhone("");
+      setContactType("");
+    });
+  }
+
   return (
-    <form method="post" className="contato">
+    <form onSubmit={handleSubmit} className="contato">
       <section className="campo">
         <label htmlFor="nome">Nome *</label>
         <input
           type="text"
           placeholder="Nome completo"
+          name="nome"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
         />

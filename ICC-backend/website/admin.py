@@ -3,7 +3,7 @@ from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
     Partner, Team_Member, Media, Member_Position, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
-    ActivityCategory, CalendarMonth
+    ActivityCategory, CalendarMonth, Contact
 )
 
 admin.site.register(Partner_Category)
@@ -11,6 +11,7 @@ admin.site.register(Partner)
 admin.site.register(Team_Member)
 admin.site.register(Member_Position)
 admin.site.register(Participant)
+admin.site.register(Contact)
 
 
 # ── Inlines ───────────────────────────────────────────────────────────────────
@@ -50,37 +51,37 @@ class ActivityContentBlockInline(admin.StackedInline):
     ordering = ('order',)
 
 
-class SelectionProcessStageInline(admin.TabularInline):
-    model = SelectionProcessStage
-    extra = 1
-    fields = ('label', 'date', 'order')
-    ordering = ('order',)
+# class SelectionProcessStageInline(admin.TabularInline):
+#     model = SelectionProcessStage
+#     extra = 1
+#     fields = ('label', 'date', 'order')
+#     ordering = ('order',)
 
 
-class SelectionProcessStepInline(admin.StackedInline):
-    model = SelectionProcessStep
-    extra = 1
-    fields = ('number', 'title', 'description', 'image', 'duration', 'tips', 'order')
-    ordering = ('order',)
+# class SelectionProcessStepInline(admin.StackedInline):
+#     model = SelectionProcessStep
+#     extra = 1
+#     fields = ('number', 'title', 'description', 'image', 'duration', 'tips', 'order')
+#     ordering = ('order',)
 
 
-class SelectionProcessRequirementInline(admin.TabularInline):
-    model = SelectionProcessRequirement
-    extra = 1
-    fields = ('text', 'icon', 'order')
-    ordering = ('order',)
-class PreparationMaterialItemInline(admin.TabularInline):
-    model = PreparationMaterialItem
-    extra = 1
-    fields = ('text', 'order')
-    ordering = ('order',)
+# class SelectionProcessRequirementInline(admin.TabularInline):
+#     model = SelectionProcessRequirement
+#     extra = 1
+#     fields = ('text', 'icon', 'order')
+#     ordering = ('order',)
+# class PreparationMaterialItemInline(admin.TabularInline):
+#     model = PreparationMaterialItem
+#     extra = 1
+#     fields = ('text', 'order')
+#     ordering = ('order',)
  
  
-class PreparationMaterialInline(admin.StackedInline):
-    model = PreparationMaterial
-    extra = 1
-    fields = ('title', 'order')
-    ordering = ('order',)
+# class PreparationMaterialInline(admin.StackedInline):
+#     model = PreparationMaterial
+#     extra = 1
+#     fields = ('title', 'order')
+#     ordering = ('order',)
  
 
 # ── Model Admins ──────────────────────────────────────────────────────────────
@@ -128,22 +129,22 @@ class MediaAdmin(admin.ModelAdmin):
     ordering = ('-date', 'order')
 
 
-@admin.register(ContactInfo)
-class ContactInfoAdmin(admin.ModelAdmin):
-    list_display = ('email', 'instagram', 'linkedin', 'whatsapp', 'is_active')
+# @admin.register(ContactInfo)
+# class ContactInfoAdmin(admin.ModelAdmin):
+#     list_display = ('email', 'instagram', 'linkedin', 'whatsapp', 'is_active')
 
 
-@admin.register(SelectionProcess)
-class SelectionProcessAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_active')
-    inlines = [
-        SelectionProcessStageInline,
-        SelectionProcessRequirementInline,
-        SelectionProcessStepInline,
-        PreparationMaterialInline,
-    ]
-@admin.register(PreparationMaterial)
-class PreparationMaterialAdmin(admin.ModelAdmin):
-    list_display = ('title', 'process', 'order')
-    inlines = [PreparationMaterialItemInline]
+# @admin.register(SelectionProcess)
+# class SelectionProcessAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'is_active')
+#     inlines = [
+#         SelectionProcessStageInline,
+#         SelectionProcessRequirementInline,
+#         SelectionProcessStepInline,
+#         PreparationMaterialInline,
+#     ]
+# @admin.register(PreparationMaterial)
+# class PreparationMaterialAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'process', 'order')
+#     inlines = [PreparationMaterialItemInline]
  

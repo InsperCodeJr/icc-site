@@ -14,6 +14,6 @@ urlpatterns = [
     path('api/activities/<int:pk>/', api_views.ActivityDetailView.as_view(), name='api-activities-detail'),
     path('api/statistics/', api_views.StatisticListView.as_view(), name='api-statistics-list'),
     path('api/news/', api_views.MediaListView.as_view(), name='api-news-list'),
-    path('api/contact/', api_views.ContactInfoView.as_view(), name='api-contact'),
+    path('api/contact/', api_views.ContactCreateView.as_view(), name='api-contact'),
     path('api/selection-process/', api_views.SelectionProcessView.as_view(), name='api-selection-process'),
 ]
