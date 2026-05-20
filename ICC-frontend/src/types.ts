@@ -131,3 +131,71 @@ export interface Statistic {
   description: string
   order: number
 }
+
+export interface NewsItem {
+  id: number
+  title: string
+  description: string
+  link: string
+  image_url: string | null
+  source: string
+  date: string | null
+  order: number
+}
+
+export interface ContactInfo {
+  id: number
+  email: string
+  instagram: string
+  linkedin: string
+  whatsapp: string
+}
+
+export interface SelectionProcessStage {
+  id: number
+  label: string
+  date: string
+  order: number
+}
+
+export interface SelectionProcessStep {
+  id: number
+  number: string
+  title: string
+  description: string
+  image_url: string | null
+  duration: string
+  tips: string[]
+  order: number
+}
+
+export interface SelectionProcessRequirement {
+  id: number
+  text: string
+  icon_url: string | null
+  order: number
+}
+
+export interface SelectionProcess {
+  id: number
+  title: string
+  stages: SelectionProcessStage[]
+  steps: SelectionProcessStep[]
+  requirements: SelectionProcessRequirement[]
+  materials: PreparationMaterial[]
+}
+ 
+
+export interface PreparationMaterialItem {
+  id: number
+  text: string
+  order: number
+}
+ 
+export interface PreparationMaterial {
+  id: number
+  title: string
+  items: PreparationMaterialItem[]
+  order: number
+}
+ 
