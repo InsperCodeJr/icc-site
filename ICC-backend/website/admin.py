@@ -3,16 +3,17 @@ from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
     Partner, Team_Member, Media, Member_Position, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
-    ActivityCategory, CalendarMonth, Contact
+    ActivityCategory, CalendarMonth,
+    SelectionProcess, SelectionProcessStage, SelectionProcessStep, SelectionProcessRequirement,
+    ContactInfo,PreparationMaterial,PreparationMaterialItem
 )
 
 admin.site.register(Partner_Category)
 admin.site.register(Partner)
 admin.site.register(Team_Member)
-admin.site.register(Media)
 admin.site.register(Member_Position)
 admin.site.register(Participant)
-admin.site.register(Contact)
+# admin.site.register(Contact)
 
 
 # ── Inlines ───────────────────────────────────────────────────────────────────
@@ -52,6 +53,39 @@ class ActivityContentBlockInline(admin.StackedInline):
     ordering = ('order',)
 
 
+class SelectionProcessStageInline(admin.TabularInline):
+    model = SelectionProcessStage
+    extra = 1
+    fields = ('label', 'date', 'order')
+    ordering = ('order',)
+
+
+class SelectionProcessStepInline(admin.StackedInline):
+    model = SelectionProcessStep
+    extra = 1
+    fields = ('number', 'title', 'description', 'image', 'duration', 'tips', 'order')
+    ordering = ('order',)
+
+
+class SelectionProcessRequirementInline(admin.TabularInline):
+    model = SelectionProcessRequirement
+    extra = 1
+    fields = ('text', 'icon', 'order')
+    ordering = ('order',)
+class PreparationMaterialItemInline(admin.TabularInline):
+    model = PreparationMaterialItem
+    extra = 1
+    fields = ('text', 'order')
+    ordering = ('order',)
+ 
+ 
+class PreparationMaterialInline(admin.StackedInline):
+    model = PreparationMaterial
+    extra = 1
+    fields = ('title', 'order')
+    ordering = ('order',)
+ 
+
 # ── Model Admins ──────────────────────────────────────────────────────────────
 
 @admin.register(Project)
@@ -88,3 +122,31 @@ class StatisticAdmin(admin.ModelAdmin):
     list_display = ('value', 'description', 'order')
     list_editable = ('order',)
     ordering = ('order',)
+
+
+@admin.register(Media)
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ('title', 'source', 'date', 'order')
+    list_editable = ('order',)
+    ordering = ('-date', 'order')
+
+
+@admin.register(ContactInfo)
+class ContactInfoAdmin(admin.ModelAdmin):
+    list_display = ('email', 'instagram', 'linkedin', 'whatsapp', 'is_active')
+
+
+@admin.register(SelectionProcess)
+class SelectionProcessAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active')
+    inlines = [
+        SelectionProcessStageInline,
+        SelectionProcessRequirementInline,
+        SelectionProcessStepInline,
+        PreparationMaterialInline,
+    ]
+@admin.register(PreparationMaterial)
+class PreparationMaterialAdmin(admin.ModelAdmin):
+    list_display = ('title', 'process', 'order')
+    inlines = [PreparationMaterialItemInline]
+ 
