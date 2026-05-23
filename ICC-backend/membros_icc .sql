@@ -1,0 +1,25 @@
+-- Criado automaticamente a partir dos dados do ICC
+
+CREATE TABLE IF NOT EXISTS membros (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome       TEXT NOT NULL,
+  data_entrada DATE,
+  foto       TEXT,
+  cargo_atual TEXT,
+  descricao  TEXT
+);
+
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Gabriel Ávila Campos Canaan', '2026-01-01', 'https://drive.google.com/open?id=1uk6dM3tt4X42znQtcHHftABZoMs3OKnC', 'Trainee', 'Entrou como trainee, iniciando sua trajetória com foco em aprendizado e crescimento contínuo.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Luiz Alberto Bordignon Rodrigues da Silva', '2025-07-01', 'https://drive.google.com/open?id=1VUbdLqDrROVCqvqJTtrHlPxLtoTs_rfx', 'Mentor', 'Integrou o grupo campeão do Trainee 2025.2 e assumiu o papel de mentor em 2026.1, contribuindo com a formação dos novos membros.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Sofia Tomazella da Rocha ', '2025-07-01', 'https://drive.google.com/open?id=1urV5zvZLQHxUqy_NrbhJMicsCud4PRD-', 'Diretoria de Marketing', 'Membro da Diretoria de Marketing desde 2026.1, com participação no Challenge da LEK e atuação no projeto Social Planning do GAS.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Anderson Benjamim dos Santos ', '2023-07-01', 'https://drive.google.com/open?id=1Nfr9TnRqk7zeuwxafbLmv-kbnOfKdkpE', 'Diretor Escola de Mentores', 'Bicampeão do Trainee ICC e 3º lugar no Interclubes 2025. Ex-membro de Relações Institucionais, mentor em 2025 e atual Diretor da Escola de Mentores.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Gabriel Carvalho Silva', '2025-07-01', 'https://drive.google.com/open?id=1vV60UwYBPFzaJo38riTDOhK7XfNI7Ejb', 'Diretor de Marketing', 'Campeão do Trainee ICC em 2025.2 e atual Diretor de Marketing, onde lidera as iniciativas de comunicação e posicionamento do clube.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Enrico Simões Pietro', '2025-01-01', 'https://drive.google.com/open?id=16CBuH6YBVlsPeg4BDISNe6_PXQhWK7sB', 'Presidente', 'Ingressou no ICC em 2025.1 e ascendeu à Presidência ainda no mesmo semestre, acumulando 3º lugar no InterClubs à frente da organização.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Manoel Wilson Do Nascimento Neto', '2025-01-01', 'https://drive.google.com/open?id=1ufJVIoKGtFrAZWi1cwq0m-Ln3bOhk4aE', 'Mentor', 'Trainee em 2025.1, evoluiu para mentor nos semestres seguintes. Participou do Interclubs e conquistou o 1º lugar no ON.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Letícia da Silva Aznar', '2025-07-01', 'https://drive.google.com/open?id=1Hg05AYycGiGsE6Z9LGKNg5jmSPkceX0u', 'Diretora de Recursos Humanos', 'Atual Diretora de Recursos Humanos, com participação no Challenge da LEK 2026.1 e trajetória iniciada como trainee em 2025.1.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Pedro Araújo Marinho da Silva ', '2025-07-01', 'https://drive.google.com/open?id=1-wPq2YaHcxq1GgZz1y9ccSfdvWZ-4NfA', 'Membro', 'Ingressou no ICC em 2025.2 como trainee e atua atualmente como membro da equipe.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Fabrizio Antonini Ripoli', '2022-07-01', 'https://drive.google.com/open?id=1zfXBKvCPMy2fpkK9Ij7G1sKIKQ3Bww3r', 'Mentor', 'Membro do ICC desde 2022.2, participou do challenge de 2025.2 e atua como mentor em 2026.1, apoiando o desenvolvimento dos novos integrantes.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Ana Beatriz Da Cunha ', '2026-01-01', 'https://drive.google.com/open?id=1tGlemjaQRTN1sbl1M6gAqyatNTAIoAND', 'Trainee', 'Entrou como trainee, iniciando sua trajetória com foco em aprendizado e crescimento contínuo.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Alexandre Gabriel Gomes Rangel', '2026-01-01', 'https://drive.google.com/open?id=1udIymkWSJ-6bRkfFktaww0OoNHZMZXK3', 'Membro', 'Ingressou no ICC em 2026.1 como membro, dando seus primeiros passos na consultoria universitária.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Ana Luísa Farinha', '2025-01-01', 'https://drive.google.com/open?id=1c1boJzuUV2FHt5K_WDO2P9ZJjIswHN1R', 'Vice-presidente', 'Atual Vice-presidente do ICC, com passagem pela Diretoria de RH e participações no Challenge do Trainee e no Challenge da LEK.');
+INSERT INTO membros (nome, data_entrada, foto, cargo_atual, descricao) VALUES ('Carlos Eduardo Carvalho Vidal ', '2026-01-01', 'https://drive.google.com/open?id=1aJsCvhXcHp5L0us1iAzxK7Bm6NRTcc9M', 'Trainee no ICC', 'Entrou como trainee, iniciando sua trajetória com foco em aprendizado e crescimento contínuo.');
