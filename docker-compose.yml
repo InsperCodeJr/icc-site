@@ -28,6 +28,9 @@ services:
       - DB_PASSWORD=iccpassword
       - DB_HOST=db
       - DB_PORT=5432
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - CONTACT_NOTIFICATION_EMAIL=${CONTACT_NOTIFICATION_EMAIL}
+      - CONTACT_FROM_EMAIL=${CONTACT_FROM_EMAIL}
     depends_on:
       - db
     restart: unless-stopped
