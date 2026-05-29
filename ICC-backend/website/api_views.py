@@ -1,9 +1,11 @@
+import logging
+from django.conf import settings
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from .models import (
     Team_Member, Partner, Statistic, Project, Activity,
     ActivityCategory, CalendarMonth, SelectionProcess,
-    Media, ContactInfo
+    Media, Contact
 )
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
@@ -11,7 +13,8 @@ from .serializers import (
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
-    SelectionProcessSerializer, MediaSerializer, ContactInfoSerializer
+    SelectionProcessSerializer, MediaSerializer,
+    ContactSerializer
 )
 
 
@@ -19,8 +22,10 @@ class TeamMemberListView(generics.ListAPIView):
     serializer_class = TeamMemberListSerializer
 
     def get_queryset(self):
-        show_all = self.request.query_params.get("all", "false").lower() == "true"
-        qs = Team_Member.objects.select_related("position").order_by("position__power", "name")
+        show_all = self.request.query_params.get(
+            "all", "false").lower() == "true"
+        qs = Team_Member.objects.select_related(
+            "position").order_by("position__power", "name")
         if not show_all:
             qs = qs.filter(exit_date__isnull=True)
         return qs
@@ -28,7 +33,8 @@ class TeamMemberListView(generics.ListAPIView):
 
 class TeamMemberDetailView(generics.RetrieveAPIView):
     serializer_class = TeamMemberDetailSerializer
-    queryset = Team_Member.objects.select_related("position").prefetch_related("projects__partners").all()
+    queryset = Team_Member.objects.select_related(
+        "position").prefetch_related("projects__partners").all()
 
 
 class PartnerListView(generics.ListAPIView):
@@ -67,7 +73,8 @@ class ProjectListView(generics.ListAPIView):
     serializer_class = ProjectListSerializer
 
     def get_queryset(self):
-        qs = Project.objects.prefetch_related("partners").select_related("category")
+        qs = Project.objects.prefetch_related(
+            "partners").select_related("category")
         category = self.request.query_params.get("category")
         if category:
             qs = qs.filter(category__slug=category)
@@ -109,16 +116,16 @@ class MediaListView(generics.ListAPIView):
     queryset = Media.objects.all()
 
 
-class ContactInfoView(generics.RetrieveAPIView):
-    serializer_class = ContactInfoSerializer
+# class ContactInfoView(generics.RetrieveAPIView):
+#     serializer_class = ContactInfoSerializer
 
-    def get_object(self):
-        return get_object_or_404(ContactInfo, is_active=True)
+#     def get_object(self):
+#         return get_object_or_404(ContactInfo, is_active=True)
 
 
 class SelectionProcessView(generics.RetrieveAPIView):
     serializer_class = SelectionProcessSerializer
- 
+
     def get_object(self):
         return get_object_or_404(
             SelectionProcess.objects.prefetch_related(
@@ -127,4 +134,40 @@ class SelectionProcessView(generics.RetrieveAPIView):
             ),
             is_active=True
         )
- 
+
+
+class ContactCreateView(generics.CreateAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+
+    def perform_create(self, serializer):
+        contact = serializer.save()
+        self._send_notification(contact)
+
+    def _send_notification(self, contact):
+        api_key = settings.SENDGRID_API_KEY
+        to_email = settings.EMAIL_DESTINATARIO
+        from_email = settings.EMAIL_REMETENTE
+
+        if not api_key or not to_email:
+            return
+
+        try:
+            import sendgrid
+            from sendgrid.helpers.mail import Mail
+
+            message = Mail(
+                from_email=from_email,
+                to_emails=to_email,
+                subject=f"Novo pedido de contato [{contact.get_contact_type_display()}]",
+                html_content=f"""
+                    <h2>Novo pedido de contato recebido!</h2>
+                    <p><strong>Nome:</strong> {contact.name}</p>
+                    <p><strong>Email:</strong> {contact.email}</p>
+                    <p><strong>Telefone:</strong> {contact.phone}</p>
+                """
+            )
+            sg = sendgrid.SendGridAPIClient(api_key=api_key)
+            sg.send(message)
+        except Exception:
+            logging.getLogger(__name__).exception("Falha no envio do email")

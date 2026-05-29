@@ -10,6 +10,11 @@ services:
       - POSTGRES_DB=iccsite
       - POSTGRES_USER=iccuser
       - POSTGRES_PASSWORD=iccpassword
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iccuser -d iccsite"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
 
   backend:
@@ -21,6 +26,8 @@ services:
     volumes:
       - ./ICC-backend:/app
       - media_files:/app/media
+    env_file:
+      - ./ICC-backend/.env
     environment:
       - DEBUG=True
       - DB_NAME=iccsite
@@ -29,7 +36,8 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:

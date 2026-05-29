@@ -47,4 +47,14 @@ export const api = {
 
   getSelectionProcess: () =>
     fetch(`${apiUrl}/selection-process/`, { headers }).then((res) => res.json()),
+
+  postContact: (data: {name: string; email: string; phone: string; contact_type: "aluno" | "empresa"}) => 
+    fetch(`${apiUrl}/contact/`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.ok) return res.json().then((err) => Promise.reject(err));
+      return res.json();
+    }),
 };
