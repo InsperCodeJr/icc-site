@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import linkedinIcon from "../../assets/simbolo_linkedin.png";
 import emailIcon from "../../assets/simbolo_email.png";
+import { drivePhotoUrl } from "../../utils";
 import "./index.css";
 
 type Member = {
@@ -16,7 +17,7 @@ export default function MemberCard({ member }: { member: Member }) {
   return (
     <Link to={`/equipe/${member.id}`} className="member-card">
       <img
-        src={member.photo_url || "https://placehold.co/400x400"}
+        src={drivePhotoUrl(member.photo_url) || "https://placehold.co/400x400"}
         alt={member.name}
         className="member-image"
       />
