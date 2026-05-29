@@ -169,12 +169,13 @@ class ProjectContentBlock(models.Model):
 
 class Team_Member(models.Model):
     name = models.CharField(max_length=200)
-    photo_url = models.ImageField(upload_to='team/', null=True, blank=True)
+    photo_url = models.URLField(null=False)
+    # photo_url = models.ImageField(upload_to='team/', null=True, blank=True)
     biography = models.TextField(max_length=200)
     position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True)
     course = models.CharField(max_length=200, null=True, blank=True)
     year = models.CharField(max_length=50, null=True, blank=True)
-    hours = models.IntegerField()
+    hours = models.IntegerField(null=True)
     entry_date = models.DateField()
     exit_date = models.DateField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True, verbose_name='Email')
@@ -286,51 +287,68 @@ class Participant(models.Model):
     def __str__(self):
         return self.name
 
+class Contact(models.Model):
 
-class ContactInfo(models.Model):
-    email = models.EmailField(blank=True, verbose_name='Email')
-    instagram = models.URLField(blank=True, verbose_name='Instagram (URL)')
-    linkedin = models.URLField(blank=True, verbose_name='LinkedIn (URL)')
-    whatsapp = models.CharField(max_length=20, blank=True, verbose_name='WhatsApp')
-    is_active = models.BooleanField(default=True, verbose_name='Ativo')
-
+    class ContactType(models.TextChoices):
+        ALUNO = 'aluno', 'Aluno'
+        EMPRESA = 'empresa', 'empresa'
+    
+    name = models.CharField(max_length=200, verbose_name="Nome")
+    email = models.EmailField(verbose_name="Email")
+    phone = models.CharField(max_length=200, verbose_name="Telefone")
+    contact_type = models.CharField(
+        max_length=8,
+        choices=ContactType.choices
+    )
+    
     class Meta:
-        verbose_name = 'Informações de Contato'
-        verbose_name_plural = 'Informações de Contato'
-
+        verbose_name_plural = "Pedidos de contato"
+    
     def __str__(self):
-        return f"Contato — {self.email}"
-
-
+        return f"{self.name} | {self.contact_type}"
+    
 class SelectionProcess(models.Model):
-    title = models.CharField(max_length=200, default='Próximo Processo Seletivo', verbose_name='Título')
+    title = models.CharField(
+        max_length=200,
+        default="Próximo Processo Seletivo",
+        verbose_name="Título"
+    )
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
-
+    
     class Meta:
-        verbose_name = 'Processo Seletivo'
-        verbose_name_plural = 'Processos Seletivos'
-
+        verbose_name = "Processo Seletivo"
+        verbose_name_plural = "Processos Seletivos"
+    
     def __str__(self):
         return self.title
-
+    
 
 class SelectionProcessStage(models.Model):
-    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='stages', verbose_name='Processo Seletivo')
-    label = models.CharField(max_length=200, verbose_name='Nome da etapa')
-    date = models.CharField(max_length=200, verbose_name='Data / Período')
-    order = models.IntegerField(default=0, verbose_name='Ordem')
-
+    process = models.ForeignKey(
+        SelectionProcess, 
+        on_delete=models.CASCADE, 
+        related_name='stages', 
+        verbose_name='Processo Seletivo'
+        )
+    label = models.CharField(max_length=200, verbose_name="Nome da etapa")
+    date = models.CharField(max_length=200, verbose_name="Data/Período")
+    order = models.IntegerField(default=0, verbose_name="Ordem")
+    
     class Meta:
-        verbose_name = 'Data do Processo'
-        verbose_name_plural = 'Datas do Processo'
+        verbose_name = "Data do Processo"
+        verbose_name_plural = "Datas do Processo"
         ordering = ['order']
-
+        
     def __str__(self):
-        return f"{self.label} — {self.date}"
-
+        return f"{self.label} - {self.date}"
 
 class SelectionProcessStep(models.Model):
-    process = models.ForeignKey(SelectionProcess, on_delete=models.CASCADE, related_name='steps', verbose_name='Processo Seletivo')
+    process = models.ForeignKey(
+        SelectionProcess,
+        on_delete=models.CASCADE, 
+        related_name='steps', 
+        verbose_name='Processo Seletivo'
+    )
     number = models.CharField(max_length=10, verbose_name='Número')
     title = models.CharField(max_length=200, verbose_name='Título')
     description = models.TextField(verbose_name='Descrição')
@@ -338,15 +356,15 @@ class SelectionProcessStep(models.Model):
     duration = models.CharField(max_length=100, blank=True, verbose_name='Duração')
     tips = models.TextField(blank=True, verbose_name='Dicas', help_text='Um tópico por linha.')
     order = models.IntegerField(default=0, verbose_name='Ordem')
-
+    
     class Meta:
         verbose_name = 'Etapa Detalhada'
         verbose_name_plural = 'Etapas Detalhadas'
         ordering = ['order']
-
+    
     def __str__(self):
         return f"{self.number}. {self.title}"
-
+    
     def get_tips_list(self):
         return [line.strip() for line in self.tips.splitlines() if line.strip()]
 
@@ -361,33 +379,30 @@ class SelectionProcessRequirement(models.Model):
         verbose_name = 'Requisito'
         verbose_name_plural = 'Requisitos'
         ordering = ['order']
-
+    
     def __str__(self):
         return self.text
     
+
 class PreparationMaterial(models.Model):
-    """
-    Categoria de material de preparação.
-    Ex: Case Interview, Frameworks, Soft Skills
-    """
     process = models.ForeignKey(
-        SelectionProcess,
+        SelectionProcess, 
         on_delete=models.CASCADE,
         related_name='materials',
         verbose_name='Processo Seletivo'
     )
     title = models.CharField(max_length=200, verbose_name='Título')
     order = models.IntegerField(default=0, verbose_name='Ordem')
- 
+    
     class Meta:
         verbose_name = 'Material de Preparação'
         verbose_name_plural = 'Materiais de Preparação'
         ordering = ['order']
- 
+    
     def __str__(self):
         return self.title
- 
- 
+
+
 class PreparationMaterialItem(models.Model):
     """
     Item de um material de preparação.
@@ -401,11 +416,11 @@ class PreparationMaterialItem(models.Model):
     )
     text = models.CharField(max_length=300, verbose_name='Texto')
     order = models.IntegerField(default=0, verbose_name='Ordem')
- 
+
     class Meta:
         verbose_name = 'Item'
         verbose_name_plural = 'Itens'
         ordering = ['order']
- 
+
     def __str__(self):
         return self.text
