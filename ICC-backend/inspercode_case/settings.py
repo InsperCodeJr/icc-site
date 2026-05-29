@@ -147,5 +147,5 @@ CORS_ALLOWED_ORIGINS = [
 
 # Email (SendGrid)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
-CONTACT_NOTIFICATION_EMAIL = os.environ.get('CONTACT_NOTIFICATION_EMAIL', '')
-CONTACT_FROM_EMAIL = os.environ.get('CONTACT_FROM_EMAIL', 'noreply@inspercode.com.br')
+EMAIL_DESTINATARIO = os.environ.get('EMAIL_DESTINATARIO', '')
+EMAIL_REMETENTE = os.environ.get('EMAIL_REMETENTE', 'noreply@inspercode.com.br')

@@ -146,8 +146,8 @@ class ContactCreateView(generics.CreateAPIView):
 
     def _send_notification(self, contact):
         api_key = settings.SENDGRID_API_KEY
-        to_email = settings.CONTACT_NOTIFICATION_EMAIL
-        from_email = settings.CONTACT_FROM_EMAIL
+        to_email = settings.EMAIL_DESTINATARIO
+        from_email = settings.EMAIL_REMETENTE
 
         if not api_key or not to_email:
             return
@@ -158,7 +158,7 @@ class ContactCreateView(generics.CreateAPIView):
 
             message = Mail(
                 from_email=from_email,
-                to_email=to_email,
+                to_emails=to_email,
                 subject=f"Novo pedido de contato [{contact.get_contact_type_display()}]",
                 html_content=f"""
                     <h2>Novo pedido de contato recebido!</h2>
