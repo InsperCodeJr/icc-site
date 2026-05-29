@@ -63,7 +63,7 @@ export default function FormContato() {
           value={contactType}
           onChange={(e) => setContactType(e.target.value)}
         >
-          <option value="">Ecolha uma opcao</option>
+          <option value="">Ecolha uma opção</option>
           <option value="aluno">Aluno do Insper</option>
           <option value="empresa">Empresa</option>
         </select>

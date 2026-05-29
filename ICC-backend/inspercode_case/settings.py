@@ -144,3 +144,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # porta padrão do Vite/React
     "http://localhost:3000",  # porta padrão do Create React App
 ]
+
+# Email (SendGrid)
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
+CONTACT_NOTIFICATION_EMAIL = os.environ.get('CONTACT_NOTIFICATION_EMAIL', '')
+CONTACT_FROM_EMAIL = os.environ.get('CONTACT_FROM_EMAIL', 'noreply@inspercode.com.br')
