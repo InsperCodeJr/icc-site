@@ -46,7 +46,7 @@ export default function Processo() {
           <div className="processo-card processo-card--empty">
             <p>Nenhum processo seletivo ativo no momento.</p>
             <p>Cadastre-se para receber atualizações quando abrirmos novas vagas.</p>
-            <Link to="/mailing" className="processo-card__cta">
+            <Link to="/contato" className="processo-card__cta">
               Cadastre-se para receber atualizações →
             </Link>
           </div>

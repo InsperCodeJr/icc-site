@@ -245,7 +245,7 @@ class ActivityContentBlock(models.Model):
 class Media(models.Model):
     title = models.CharField(max_length=200, verbose_name='Título')
     description = models.TextField(verbose_name='Descrição')
-    link = models.URLField(verbose_name='Link')
+    link = models.URLField(verbose_name='Link da notícia')
     image = models.ImageField(upload_to='news/', null=True, blank=True, verbose_name='Imagem de capa')
     source = models.CharField(max_length=200, blank=True, verbose_name='Fonte')
     date = models.DateField(null=True, blank=True, verbose_name='Data de publicação')
