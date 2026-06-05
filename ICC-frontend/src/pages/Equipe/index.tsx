@@ -22,8 +22,14 @@ export default function Equipe() {
       m.position?.toLowerCase().includes("diretor")
   );
 
-  const consultants = members.filter((m) =>
-    m.position?.toLowerCase().includes("consultor")
+  const mentors = members.filter((m) =>
+    m.position?.toLowerCase().includes("mentor") &&
+    !(directors.includes(m))
+  );
+
+  const membros = members.filter((m) => 
+    m.position?.toLowerCase().includes("trainee") ||
+    m.position?.toLowerCase().includes("membro")
   );
 
   return (
@@ -46,13 +52,23 @@ export default function Equipe() {
       </section>
 
       <section className="section">
-        <h2>Projetos</h2>
+        <h2>Mentores</h2>
         <div className="cards-grid">
-          {consultants.map((member) => (
+          {mentors.map((member) => (
             <MemberCard key={member.id} member={member} />
           ))}
         </div>
       </section>
+      
+      <section className="section">
+        <h2>Trainees e Membros</h2>
+        <div className="cards-grid">
+          {membros.map((member) => (
+            <MemberCard key={member.id} member={member} />
+          ))}
+        </div>
+      </section>
+
     </main>
   );
 }
