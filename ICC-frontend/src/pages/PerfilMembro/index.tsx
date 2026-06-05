@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../api";
-import linkedinIcon from "../../assets/simbolo_linkedin.png";
-import emailIcon from "../../assets/simbolo_email.png";
 import { drivePhotoUrl } from "../../utils";
 import "./index.css";
 
@@ -63,22 +61,6 @@ export default function PerfilMembro() {
               {member.biography}
             </p>
           )}
-
-          <div className="detail-actions">
-            {member.linkedin && (
-              <a href={member.linkedin} className="detail-button linkedin">
-                <img src={linkedinIcon} alt="linkedin" />
-                <span>LinkedIn</span>
-              </a>
-            )}
-
-            {member.email && (
-              <a href={`mailto:${member.email}`} className="detail-button email">
-                <img src={emailIcon} alt="email" />
-                <span>Email</span>
-              </a>
-            )}
-          </div>
         </div>
       </section>
 
