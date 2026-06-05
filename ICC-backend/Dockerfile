@@ -19,5 +19,5 @@ COPY . .
 # Cria a pasta de arquivos de mídia
 RUN mkdir -p /app/media
 
-# Roda migrations e inicia o servidor
-CMD ["sh", "-c", "python manage.py makemigrations website && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Roda migrations, importa os membros e inicia o servidor
+CMD ["sh", "-c", "python manage.py makemigrations website && python manage.py migrate && python manage.py importar_membros && python manage.py runserver 0.0.0.0:8000"]
