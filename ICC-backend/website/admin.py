@@ -14,8 +14,6 @@ admin.site.register(Participant)
 admin.site.register(Contact)
 
 
-# ── Inlines ───────────────────────────────────────────────────────────────────
-
 class ProjectImageInline(admin.TabularInline):
     model = ProjectImage
     extra = 1
@@ -49,42 +47,6 @@ class ActivityContentBlockInline(admin.StackedInline):
     extra = 1
     fields = ('title', 'text', 'image', 'image_caption', 'image_align', 'order')
     ordering = ('order',)
-
-
-# class SelectionProcessStageInline(admin.TabularInline):
-#     model = SelectionProcessStage
-#     extra = 1
-#     fields = ('label', 'date', 'order')
-#     ordering = ('order',)
-
-
-# class SelectionProcessStepInline(admin.StackedInline):
-#     model = SelectionProcessStep
-#     extra = 1
-#     fields = ('number', 'title', 'description', 'image', 'duration', 'tips', 'order')
-#     ordering = ('order',)
-
-
-# class SelectionProcessRequirementInline(admin.TabularInline):
-#     model = SelectionProcessRequirement
-#     extra = 1
-#     fields = ('text', 'icon', 'order')
-#     ordering = ('order',)
-# class PreparationMaterialItemInline(admin.TabularInline):
-#     model = PreparationMaterialItem
-#     extra = 1
-#     fields = ('text', 'order')
-#     ordering = ('order',)
- 
- 
-# class PreparationMaterialInline(admin.StackedInline):
-#     model = PreparationMaterial
-#     extra = 1
-#     fields = ('title', 'order')
-#     ordering = ('order',)
- 
-
-# ── Model Admins ──────────────────────────────────────────────────────────────
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -127,24 +89,3 @@ class MediaAdmin(admin.ModelAdmin):
     list_display = ('title', 'source', 'date', 'order')
     list_editable = ('order',)
     ordering = ('-date', 'order')
-
-
-# @admin.register(ContactInfo)
-# class ContactInfoAdmin(admin.ModelAdmin):
-#     list_display = ('email', 'instagram', 'linkedin', 'whatsapp', 'is_active')
-
-
-# @admin.register(SelectionProcess)
-# class SelectionProcessAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'is_active')
-#     inlines = [
-#         SelectionProcessStageInline,
-#         SelectionProcessRequirementInline,
-#         SelectionProcessStepInline,
-#         PreparationMaterialInline,
-#     ]
-# @admin.register(PreparationMaterial)
-# class PreparationMaterialAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'process', 'order')
-#     inlines = [PreparationMaterialItemInline]
- 
