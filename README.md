@@ -104,4 +104,8 @@ docker-compose logs backend
 
 # Rodar qualquer comando Django
 docker-compose exec backend python manage.py <comando>
+
+# Para exibir os membros na página de equipe (com o container rodando)
+docker compose exec backend python manage.py importar_membros
+
 ```
