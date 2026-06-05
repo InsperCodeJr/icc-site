@@ -1,44 +1,86 @@
 .contato {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid var(--cinza-bordas);
-    width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--cinza-bordas);
+  width: 50%;
+  border-radius: 10px;
+  margin-top: 3rem;
 }
 
 .campo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-    width: 70%
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  width: 70%;
+}
+
+.termos {
+  color: var(--cinza-descricoes);
+}
+
+span > a {
+  color: var(--vermelho-icc);
 }
 
 .campo > label {
-    align-self: flex-start;
-    margin: .5rem;
-    font-size: larger;
+  align-self: flex-start;
+  margin: 0.5rem;
+  font-size: larger;
 }
 
-input, select {
-    border: 1px solid var(--cinza-bordas);
-    width: 90%;
-    scale: 1.2;
-    padding: .5rem;
-    border-radius: 10px;
+input,
+select {
+  border: 1px solid var(--cinza-bordas);
+  width: 90%;
+  scale: 1.2;
+  padding: 0.5rem;
+  border-radius: 10px;
 }
 
 select {
-    background-color: var(--branco);
+  background-color: var(--branco);
 }
 
 button {
-    background-color: var(--vermelho-icc);
-    color: var(--branco);
-    height: 3rem;
-    width: 90%;
-    border-radius: 30px;
-    border: none;
-    font-size: x-large;
+  background-color: var(--vermelho-icc);
+  color: var(--branco);
+  height: 3rem;
+  width: 90%;
+  border-radius: 30px;
+  border: none;
+  font-size: x-large;
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--vermelho-icc);
+  color: var(--branco);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fade-in-out 3s ease forwards;
+  z-index: 1000;
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
