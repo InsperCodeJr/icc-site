@@ -20,6 +20,7 @@ export default function MemberCard({ member }: { member: Member }) {
         src={drivePhotoUrl(member.photo_url) || "https://placehold.co/400x400"}
         alt={member.name}
         className="member-image"
+        loading="lazy"
       />
 
       <div className="member-content">
