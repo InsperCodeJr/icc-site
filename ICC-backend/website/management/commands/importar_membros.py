@@ -82,7 +82,9 @@ class Command(BaseCommand):
             _, created = Team_Member.objects.get_or_create(
                 name=m["nome"],
                 defaults={
-                    "photo_url": m["foto"],
+                    # "foto" no SQL legado é um link do Google Drive, que não
+                    # é mais utilizável diretamente (rate limit / 429). As
+                    # fotos agora são enviadas manualmente pelo admin Django.
                     "biography": m["descricao"],
                     "position": posicoes[m["cargo_atual"]],
                     "entry_date": date(int(ano), int(mes), int(dia)),

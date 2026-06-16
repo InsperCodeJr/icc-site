@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../api";
-import { drivePhotoUrl } from "../../utils";
 import "./index.css";
 
 export default function PerfilMembro() {
@@ -38,7 +37,7 @@ export default function PerfilMembro() {
 
       <section className="member-hero">
         <img
-          src={drivePhotoUrl(member.photo_url) || "https://placehold.co/400x500"}
+          src={member.photo_url || "https://placehold.co/400x500"}
           alt={member.name}
           className="member-hero-image"
         />
