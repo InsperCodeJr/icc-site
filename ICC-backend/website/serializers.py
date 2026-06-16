@@ -169,7 +169,10 @@ class TeamMemberListSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "position", "photo_url", "course", "year"]
 
     def get_photo_url(self, obj):
-        return obj.photo_url or None
+        request = self.context.get("request")
+        if obj.photo and request:
+            return request.build_absolute_uri(obj.photo.url)
+        return None
 
 
 class TeamMemberDetailSerializer(serializers.ModelSerializer):
@@ -187,7 +190,10 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_photo_url(self, obj):
-        return obj.photo_url or None
+        request = self.context.get("request")
+        if obj.photo and request:
+            return request.build_absolute_uri(obj.photo.url)
+        return None
 
 
 class StatisticSerializer(serializers.ModelSerializer):

@@ -169,8 +169,7 @@ class ProjectContentBlock(models.Model):
 
 class Team_Member(models.Model):
     name = models.CharField(max_length=200)
-    photo_url = models.URLField(null=False)
-    # photo_url = models.ImageField(upload_to='team/', null=True, blank=True)
+    photo = models.ImageField(upload_to='team/', null=True, blank=True)
     biography = models.TextField(max_length=200)
     position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True)
     course = models.CharField(max_length=200, null=True, blank=True)
