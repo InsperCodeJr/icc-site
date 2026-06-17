@@ -20,4 +20,4 @@ COPY . .
 RUN mkdir -p /app/media
 
 # Roda migrations, importa os membros e inicia o servidor
-CMD ["sh", "-c", "python manage.py makemigrations website && python manage.py migrate && python manage.py importar_membros && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py import_members && python manage.py download_photos && python manage.py runserver 0.0.0.0:8000"]
