@@ -29,34 +29,14 @@ class Partner(models.Model):
     logo_url = models.ImageField(upload_to='partners/')
     name = models.CharField(max_length=200)
     description = models.TextField()
-    category = models.ForeignKey(
-        Partner_Category,
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True
-    )
+    category = models.ForeignKey(Partner_Category, on_delete=models.PROTECT, null=True)
     contato = models.CharField(max_length=20)
-
-    site = models.URLField(
-        max_length=300,
-        blank=True,
-        null=True,
-        verbose_name='Site do parceiro'
-    )
 
     class Meta:
         verbose_name_plural = 'Parceiros'
 
     def __str__(self):
         return self.name
-
-    @property
-    def projects_count(self):
-        return self.projects.count()
-
-    @property
-    def success_cases_count(self):
-        return self.projects.filter(end_date__isnull=False).count()
 
 
 BADGE_CHOICES = [
