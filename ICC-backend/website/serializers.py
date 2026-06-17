@@ -40,20 +40,49 @@ class CalendarMonthSerializer(serializers.ModelSerializer):
         return obj.get_items_list()
 
 
+class PartnerProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ["id", "title", "description", "start_date", "end_date"]
+
+
 class PartnerSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
     logo_url = serializers.SerializerMethodField()
+    projects_count = serializers.SerializerMethodField()
+    success_cases_count = serializers.SerializerMethodField()
+    projects = serializers.SerializerMethodField()
 
     class Meta:
         model = Partner
-        fields = ["id", "name", "description", "category", "contato", "logo_url"]
+        fields = [
+            "id",
+            "name",
+            "description",
+            "category",
+            "contato",
+            "site",
+            "logo_url",
+            "projects_count",
+            "success_cases_count",
+            "projects",
+        ]
+
+    def get_projects_count(self, obj):
+        return obj.projects.count()
+
+    def get_success_cases_count(self, obj):
+        return obj.projects.filter(end_date__isnull=False).count()
+
+    def get_projects(self, obj):
+        qs = obj.projects.filter(end_date__isnull=False).order_by("-end_date")
+        return PartnerProjectSerializer(qs, many=True, context=self.context).data
 
     def get_logo_url(self, obj):
         request = self.context.get("request")
         if obj.logo_url and request:
             return request.build_absolute_uri(obj.logo_url.url)
         return None
-
 
 class ProjectImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
