@@ -87,7 +87,6 @@ export default function Home() {
           statistics.map((stat) => (
             <div className="stats-icc__item" key={stat.id}>
               <span className="stats-icc__value">{stat.value}</span>
-              <span className="stats-icc__label">{stat.label}</span>
             </div>
           ))
         )}
