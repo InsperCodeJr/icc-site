@@ -105,7 +105,10 @@ docker-compose logs backend
 # Rodar qualquer comando Django
 docker-compose exec backend python manage.py <comando>
 
-# Para exibir os membros na página de equipe (com o container rodando)
-docker compose exec backend python manage.py importar_membros
+# Para popular o site local com dados mock completos
+docker compose exec backend python manage.py seed_mock_data
+
+# Para importar apenas o mock legado de membros
+docker compose exec backend python manage.py import_members
 
 ```
