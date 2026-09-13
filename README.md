@@ -1,7 +1,22 @@
 # ICC-Site
 
-Site oficial do **Insper Consulting Club**, desenvolvido com React (frontend) e Django (backend).
+Site oficial da **Liga Insper Consulting Club**, desenvolvido com React (frontend) e Django (backend).
 
+O site do Liga ICC foi feito com o objetivo de apresentar o site da Liga ICC de maneira profissional e moderna, além de seus membros, projetos e parceiros para pessoas e empresas interessadas no trabalho do ICC.
+
+As funcionalidades previstas para o projeto são:
+ - Página de inicio qu apresenta a Liga ICC e seus ideais, resumo de sua história e empresas parceiras.
+ - Área de membros com todos os membros registrados da organização estudantil, incluindo seus cargos e perfis proficionais, além de seu histórico dentro da Liga ICC.
+ - Área de projetos com todos os projetos registrados da organização estudantil, incluindo membros participantes e informações adicionis.
+ - Área admnistrativa que permite a alteração de perfis de membros e projetos já existentes, adição de novos projetos e perfis, e exclusão visando o uso futuro do site pela Liga ICC.
+
+Membros 2026.2:
+ Coordenador:
+  - Matteo Rosso
+ Devs:
+  - Cynthia Naoko
+  - Sophia Kalil
+  - Luan Ferreira
 ---
 
 ## Estrutura do Projeto
