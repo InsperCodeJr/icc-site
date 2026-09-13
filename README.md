@@ -11,9 +11,11 @@ As funcionalidades previstas para o projeto são:
  - Área admnistrativa que permite a alteração de perfis de membros e projetos já existentes, adição de novos projetos e perfis, e exclusão visando o uso futuro do site pela Liga ICC.
 
 Membros 2026.2:
- Coordenador:
+
+Coordenador:
   - Matteo Rosso
- Devs:
+
+Devs:
   - Cynthia Naoko
   - Sophia Kalil
   - Luan Ferreira
