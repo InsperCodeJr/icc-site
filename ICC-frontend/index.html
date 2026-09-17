@@ -3,8 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>icc-frontend</title>
+    <title>Liga Insper Consulting Club</title>
+    <meta
+      name="description"
+      content="A Liga Insper Consulting Club é uma organização estudantil dedicada ao desenvolvimento de futuros consultores."
+    />
     <meta name="theme-color" content="#b20000" />
+
+    <!-- Open Graph: prévia ao compartilhar o link (WhatsApp, LinkedIn, etc).
+         Esses apps não executam JS, então só o que está aqui de forma
+         estática é usado; páginas internas caem nesse mesmo conteúdo
+         padrão (ver src/hooks/usePageTitle.ts para o título da aba, que
+         esse sim muda por página). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Liga Insper Consulting Club" />
+    <meta property="og:title" content="Liga Insper Consulting Club" />
+    <meta
+      property="og:description"
+      content="A Liga Insper Consulting Club é uma organização estudantil dedicada ao desenvolvimento de futuros consultores."
+    />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Logo do hero da Home: preload pra não esperar o CSS terminar de
+         baixar pra começar a buscá-la. -->
+    <link rel="preload" as="image" href="/src/images/logo-icc-branca.png" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

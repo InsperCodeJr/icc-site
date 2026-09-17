@@ -3,44 +3,37 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
-import Equipe from './pages/Equipe/index.tsx'
-import PerfilMembro from './pages/PerfilMembro/index.tsx'
-import Atividades from './pages/Atividades/index.tsx'
-import CategoriaAtividade from './pages/CategoriaAtividade/index.tsx'
-import PerfilAtividade from './pages/PerfilAtividade/index.tsx'
-import PerfilAtividadeItem from './pages/PerfilAtividadeItem/index.tsx'
-import Parceiros from './pages/Parceiros/index.tsx'
-import PerfilParceiro from './pages/PerfilParceiro/index.tsx'
-import Projetos from './pages/Projetos/index.tsx'
-import ProjetoDetalhe from './pages/ProjetoDetalhe/index.tsx'
 import Home from './pages/Home/index.tsx'
-import Processo from './pages/Processo/index.tsx'
-import Noticias from './pages/Noticias/index.tsx'
-import Contato from './pages/Contato/index.tsx'
-import PoliticaPrivacidade from './pages/PoliticaPrivacidade/index.tsx'
-import NaoEncontrada from './pages/NaoEncontrada/index.tsx'
+import CargaInicial from './components/CargaInicial.tsx'
 
+// Cada rota carrega seu próprio código sob demanda (code splitting), exceto
+// a Home: é a porta de entrada mais comum do site, então fica no pacote
+// principal em vez de exigir mais uma viagem de rede pra quem chega aqui
+// pela primeira vez.
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    // Cobre a primeiríssima carga: enquanto a rota batida pela URL ainda
+    // está baixando, mostra isso em vez de tela em branco.
+    HydrateFallback: CargaInicial,
     children: [
-      { index: true, element: <Home /> },
-      { path: "equipe", element: <Equipe /> },
-      { path: "equipe/:id", element: <PerfilMembro /> },
-      { path: "atividades", element: <Atividades /> },
-      { path: "atividades/categoria/:categoria", element: <CategoriaAtividade /> },
-      { path: "atividades/:id", element: <PerfilAtividade /> },
-      { path: "atividades/item/:id", element: <PerfilAtividadeItem /> },
-      { path: "parceiros", element: <Parceiros /> },
-      { path: "parceiros/:id", element: <PerfilParceiro /> },
-      { path: "projetos", element: <Projetos /> },
-      { path: "projetos/:slug", element: <ProjetoDetalhe /> },
-      { path: "processo", element: <Processo /> },
-      { path: "news", element: <Noticias /> },
-      { path: "contato", element: <Contato /> },
-      { path: "politica-de-privacidade", element: <PoliticaPrivacidade /> },
-      { path: "*", element: <NaoEncontrada /> },
+      { index: true, Component: Home },
+      { path: "equipe", lazy: () => import('./pages/Equipe/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "equipe/:id", lazy: () => import('./pages/PerfilMembro/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "atividades", lazy: () => import('./pages/Atividades/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "atividades/categoria/:categoria", lazy: () => import('./pages/CategoriaAtividade/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "atividades/:id", lazy: () => import('./pages/PerfilAtividade/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "atividades/item/:id", lazy: () => import('./pages/PerfilAtividadeItem/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "parceiros", lazy: () => import('./pages/Parceiros/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "projetos", lazy: () => import('./pages/Projetos/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "projetos/:slug", lazy: () => import('./pages/ProjetoDetalhe/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "parceiros/:id", lazy: () => import('./pages/PerfilParceiro/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "processo", lazy: () => import('./pages/Processo/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "news", lazy: () => import('./pages/Noticias/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "contato", lazy: () => import('./pages/Contato/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "politica-de-privacidade", lazy: () => import('./pages/PoliticaPrivacidade/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "*", lazy: () => import('./pages/NaoEncontrada/index.tsx').then((m) => ({ Component: m.default })) },
     ],
   },
 ])
