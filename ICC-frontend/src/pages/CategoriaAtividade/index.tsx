@@ -63,7 +63,7 @@ export default function CategoriaAtividade() {
       {/* Header */}
       <header className="cat-header">
         <div className="cat-header__inner">
-          <span className={`cat-badge ${meta.badge_class}`}>{meta.badge}</span>
+          {meta.badge && <span className={`cat-badge ${meta.badge_class}`}>{meta.badge}</span>}
           <h1 className="cat-header__title">{meta.label}</h1>
           <p className="cat-header__desc">{meta.description}</p>
         </div>
