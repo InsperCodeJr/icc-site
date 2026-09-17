@@ -24,12 +24,36 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d!_*^9%*zdy1ab%led02c59_4sox!%0hw^kpk==k1)el4#sx=w'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY não definida. Defina a variável de ambiente SECRET_KEY "
+        "(ex.: no arquivo ICC-backend/.env)."
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
+
+# Só entra em vigor quando DEBUG=False (publicação de verdade); em
+# desenvolvimento local (DEBUG=True) fica tudo como já era, sem exigir
+# HTTPS nem cookies marcados como seguros.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+
+# Só é seguro confiar no cabeçalho X-Forwarded-Proto quando existe de fato um
+# proxy reverso na frente do Django removendo qualquer valor que o cliente
+# tente forjar; por isso é opt-in por variável de ambiente, não ligado
+# automaticamente junto com SECURE_SSL_REDIRECT. Sem isso configurado atrás de
+# um proxy que termina TLS, o Django nunca vê a requisição como segura e
+# entra em loop de redirecionamento.
+if os.environ.get('BEHIND_PROXY', 'False') == 'True':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -157,10 +181,21 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # porta padrão do Vite/React
-    "http://localhost:3000",  # porta padrão do Create React App
-]
+# Limita quantas vezes o mesmo IP consegue enviar o formulário de contato,
+# já que cada envio dispara um email de verdade.
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_RATES': {
+        'contact': '5/hour',
+    },
+}
+
+# Configurável por ambiente pelo mesmo motivo de ALLOWED_HOSTS: o domínio
+# real de produção só existe quando a hospedagem for definida. Sem
+# CORS_ALLOWED_ORIGINS no ambiente, cai nas portas padrão de desenvolvimento.
+CORS_ALLOWED_ORIGINS = [h for h in os.environ.get(
+    'CORS_ALLOWED_ORIGINS',
+    'http://localhost:5173,http://localhost:3000'
+).split(',') if h]
 
 # Email (SendGrid)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')

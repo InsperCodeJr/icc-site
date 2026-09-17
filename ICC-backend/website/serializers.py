@@ -80,7 +80,6 @@ class PartnerSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "category",
-            "contato",
             "site",
             "logo_url",
             "projects_count",
@@ -242,7 +241,7 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id", "name", "position", "directorate_memberships", "photo_url", "biography",
             "number_of_projects", "projects", "hours",
-            "entry_date", "exit_date", "course", "year", "email", "linkedin",
+            "entry_date", "exit_date", "course", "year", "linkedin",
             "trajetoria",
         ]
 
