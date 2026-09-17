@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { api } from "../../api"
-import iconMala from "../../images/icon_mala.png"
+import type { Partner } from "../../types"
+import { ArrowLeftIcon, ArrowRightIcon, ExternalIcon } from "../../components/Icons"
+import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
 
 type PartnerProject = {
   id: number
   title: string
   description?: string
-  start_date?: string
   end_date?: string | null
   category?: string
-  images?: { image_url?: string }[]
 }
 
 type PartnerDetail = {
@@ -19,210 +19,147 @@ type PartnerDetail = {
   name: string
   description: string
   category?: string
-  contato?: string
   site?: string | null
   logo_url?: string | null
-  projects_count?: number
   projects?: PartnerProject[]
 }
 
 function formatDateBR(dateString?: string | null) {
   if (!dateString) return ""
-  const date = new Date(dateString)
+  // new Date(dateString) leria "AAAA-MM-DD" como meia-noite UTC, que em
+  // horário de Brasília já é o dia anterior; construindo com ano/mês/dia
+  // separados, a data é interpretada no fuso local, sem esse desvio de um dia.
+  const [ano, mes, dia] = dateString.split("-").map(Number)
+  const date = new Date(ano, mes - 1, dia)
   if (Number.isNaN(date.getTime())) return dateString
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date)
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(date)
 }
 
-export default function ParceiroDetalhe() {
+export default function PerfilParceiro() {
   const { id } = useParams<{ id: string }>()
   const [partner, setPartner] = useState<PartnerDetail | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [todos, setTodos] = useState<Partner[]>([])
+  const [loadedId, setLoadedId] = useState<string | undefined>()
+  const loading = loadedId !== id
+  usePageTitle(partner?.name, partner?.description)
 
   useEffect(() => {
     if (!id) return
-
-    setLoading(true)
-    api
-      .getPartner(id)
-      .then((data: PartnerDetail) => {
-        setPartner(data)
-        setOpenIndex(0)
+    Promise.all([api.getPartner(Number(id)), api.getPartners()])
+      .then(([data, lista]: [PartnerDetail, Partner[]]) => {
+        setPartner(data && data.id ? data : null)
+        setTodos(lista || [])
       })
-      .catch((err) => {
-        console.error("Erro ao buscar parceiro:", err)
-        setPartner(null)
-      })
-      .finally(() => setLoading(false))
+      .catch(() => setPartner(null))
+      .finally(() => setLoadedId(id))
   }, [id])
 
-  const successCases = useMemo(() => {
-    const projects = partner?.projects || []
-    return projects
-      .filter((project) => Boolean(project.end_date))
-      .map((project) => ({
-        ...project,
-        dateLabel: formatDateBR(project.end_date),
-      }))
-  }, [partner])
+  const casos = useMemo(
+    () => (partner?.projects || []).filter((project) => Boolean(project.end_date)),
+    [partner]
+  )
 
-  if (loading) {
-    return <div className="partner-detail-page">Carregando...</div>
-  }
+  if (loading) return <p className="loading">Carregando...</p>
 
   if (!partner) {
     return (
-      <div className="partner-detail-page">
-        <div className="partner-detail-container">
+      <section className="section">
+        <div className="container">
           <Link to="/parceiros" className="back-link">
-            ← Voltar para parceiros
+            <ArrowLeftIcon size={14} />
+            Voltar para parceiros
           </Link>
-
-          <div className="partner-empty-state">
+          <p className="state-message">
+            <strong>Parceiro não encontrado</strong>
             Não foi possível carregar esse parceiro.
-          </div>
+          </p>
         </div>
-      </div>
+      </section>
     )
   }
 
-  const projectsCount = partner.projects_count ?? successCases.length
-  const heroImage = partner.logo_url || ""
+  const mesmaCategoria = todos.filter((p) => p.id !== partner.id && p.category === partner.category)
 
   return (
-    <div className="partner-detail-page">
-      <div className="partner-detail-container">
-        <Link to="/parceiros" className="back-link">
-          ← Voltar para parceiros
-        </Link>
+    <div className="parceiro-page">
+      <section className="section parceiro-page__main">
+        <div className="container">
+          <Link to="/parceiros" className="back-link">
+            <ArrowLeftIcon size={14} />
+            Voltar para parceiros
+          </Link>
 
-        <section className="partner-hero-card">
-          <div className="partner-hero-image">
-            {heroImage ? (
-              <img src={heroImage} alt={partner.name} />
-            ) : (
-              <div className="partner-hero-placeholder">
-                {partner.name?.charAt(0)?.toUpperCase() || "?"}
-              </div>
-            )}
-          </div>
-
-          <div className="partner-hero-content">
-            <div className="partner-hero-top">
-              <div className="partner-hero-left">
-                <h1 className="partner-hero-title">{partner.name}</h1>
-                <p className="partner-hero-category">
-                  {partner.category || "Parceiro"}
-                </p>
-
-                <span className="partner-pill">Parceiro Estratégico</span>
-              </div>
-
-              <div className="partner-stat-box">
-                <strong>{projectsCount}</strong>
-                <span>Projetos</span>
-              </div>
+          <div className="parceiro-detalhe">
+            <div className="parceiro-detalhe__logo">
+              {partner.logo_url ? (
+                <img src={partner.logo_url} alt={partner.name} />
+              ) : (
+                <span>{partner.name}</span>
+              )}
             </div>
 
-            <p className="partner-hero-description">{partner.description}</p>
-
-            <div className="partner-hero-actions">
-              {partner.site ? (
-                <a
-                  href={partner.site}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="partner-site-btn"
-                >
-                  Visitar site ↗
+            <div className="parceiro-detalhe__info">
+              {partner.category && <p className="eyebrow">{partner.category}</p>}
+              <h1 className="parceiro-detalhe__nome">{partner.name}</h1>
+              {partner.description && <p className="parceiro-detalhe__descricao">{partner.description}</p>}
+              {partner.site && (
+                <a href={partner.site} target="_blank" rel="noopener noreferrer" className="btn btn--primary parceiro-detalhe__site">
+                  Visitar site
+                  <ExternalIcon />
                 </a>
-              ) : null}
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {casos.length > 0 && (
+        <section className="section section--muted">
+          <div className="container">
+            <div className="section-head">
+              <h2 className="section-title">Casos de sucesso</h2>
+            </div>
+            <div className="grid grid--2">
+              {casos.map((project) => (
+                <article className="card" key={project.id}>
+                  <h3 className="parceiro-caso__titulo">{project.title}</h3>
+                  {project.description && <p className="parceiro-caso__descricao">{project.description}</p>}
+                  <p className="parceiro-caso__meta">
+                    {project.end_date && `Concluído em ${formatDateBR(project.end_date)}`}
+                    {project.category && ` · ${project.category}`}
+                  </p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
+      )}
 
-        <section className="partner-section-card">
-          <div className="section-header">
-            <img
-              src={iconMala}
-              alt="Casos de Sucesso"
-              className="section-icon-img"
-            />
-            <h2>Casos de Sucesso</h2>
-          </div>
-
-          <div className="success-list">
-            {successCases.length === 0 ? (
-              <div className="success-empty">
-                Nenhum projeto concluído encontrado para este parceiro.
-              </div>
-            ) : (
-              successCases.map((project, index) => {
-                const isOpen = openIndex === index
-
-                return (
-                  <div
-                    key={project.id}
-                    className={`success-card ${isOpen ? "is-open" : ""}`}
-                  >
-                    <button
-                      type="button"
-                      className="success-trigger"
-                      onClick={() =>
-                        setOpenIndex(isOpen ? null : index)
-                      }
-                      aria-expanded={isOpen}
-                    >
-                      <span className="success-number">
-                        {index + 1}
-                      </span>
-
-                      <span className="success-trigger-text">
-                        {project.title}
-                      </span>
-
-                      <span className="success-chevron">
-                        {isOpen ? "−" : "+"}
-                      </span>
-                    </button>
-
-                    {isOpen ? (
-                      <div className="success-panel">
-                        {project.description ? (
-                          <p className="success-description">
-                            {project.description}
-                          </p>
-                        ) : (
-                          <p className="success-description muted">
-                            Projeto concluído sem descrição detalhada.
-                          </p>
-                        )}
-
-                        <div className="success-meta">
-                          {project.dateLabel ? (
-                            <span>
-                              Concluído em {project.dateLabel}
-                            </span>
-                          ) : null}
-
-                          {project.category ? (
-                            <span>{project.category}</span>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                )
-              })
-            )}
+      {mesmaCategoria.length > 0 && (
+        <section className="section section--muted">
+          <div className="container">
+            <div className="section-head section-head--row">
+              <h2 className="section-title">Outros parceiros em {partner.category}</h2>
+              <Link to="/parceiros" className="link-arrow">
+                Todos os parceiros
+                <ArrowRightIcon />
+              </Link>
+            </div>
+            <ul className="parceiro-outros">
+              {mesmaCategoria.map((p) => (
+                <li key={p.id}>
+                  <Link to={`/parceiros/${p.id}`} className="parceiro-outros__item">
+                    <span className="parceiro-outros__logo">
+                      {p.logo_url ? <img src={p.logo_url} alt="" loading="lazy" /> : null}
+                    </span>
+                    <span className="parceiro-outros__nome">{p.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
-      </div>
+      )}
     </div>
   )
 }
