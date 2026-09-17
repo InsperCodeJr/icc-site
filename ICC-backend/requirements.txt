@@ -11,3 +11,5 @@ cloudinary==1.42.1
 django-cloudinary-storage==0.3.0
 requests==2.32.4
 python-dotenv==1.1.0
+icalendar==7.3.0
+recurring-ical-events==3.8.2
