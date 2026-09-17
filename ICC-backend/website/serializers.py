@@ -3,12 +3,20 @@ from .models import (
     Team_Member, Partner, Statistic, Project, ProjectImage,
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
-    ActivityCategory, CalendarMonth,
-    Media, Contact, 
-    SelectionProcess, SelectionProcessRequirement, 
+    ActivityCategory, CalendarMonth, DirectorateMembership,
+    Media, Contact,
+    SelectionProcess, SelectionProcessRequirement,
     SelectionProcessStage, SelectionProcessStep,
     PreparationMaterial, PreparationMaterialItem
 )
+
+
+class DirectorateMembershipSerializer(serializers.ModelSerializer):
+    directorate = serializers.StringRelatedField()
+
+    class Meta:
+        model = DirectorateMembership
+        fields = ["directorate", "cargo", "order"]
 
 
 class ActivityCategorySerializer(serializers.ModelSerializer):
@@ -191,11 +199,12 @@ class ActivityDetailSerializer(serializers.ModelSerializer):
 
 class TeamMemberListSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
+    directorate_memberships = DirectorateMembershipSerializer(many=True)
     photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Team_Member
-        fields = ["id", "name", "position", "photo_url", "course", "year"]
+        fields = ["id", "name", "position", "directorate_memberships", "photo_url", "course", "year", "linkedin"]
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
@@ -206,6 +215,7 @@ class TeamMemberListSerializer(serializers.ModelSerializer):
 
 class TeamMemberDetailSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
+    directorate_memberships = DirectorateMembershipSerializer(many=True)
     photo_url = serializers.SerializerMethodField()
     projects = ProjectListSerializer(many=True)
     number_of_projects = serializers.IntegerField()
@@ -213,9 +223,10 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team_Member
         fields = [
-            "id", "name", "position", "photo_url", "biography",
+            "id", "name", "position", "directorate_memberships", "photo_url", "biography",
             "number_of_projects", "projects", "hours",
             "entry_date", "exit_date", "course", "year", "email", "linkedin",
+            "trajetoria",
         ]
 
     def get_photo_url(self, obj):

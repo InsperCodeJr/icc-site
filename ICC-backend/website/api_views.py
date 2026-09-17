@@ -1,5 +1,6 @@
 import logging
 from django.conf import settings
+from django.db.models import Min, F
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from .models import (
@@ -24,8 +25,17 @@ class TeamMemberListView(generics.ListAPIView):
     def get_queryset(self):
         show_all = self.request.query_params.get(
             "all", "false").lower() == "true"
-        qs = Team_Member.objects.select_related(
-            "position").order_by("position__power", "name")
+        # Uma pessoa pode estar em mais de uma diretoria (ex: diretora de
+        # Pedagógico e também mentora), então a ordem é dada pela primeira
+        # (menor order) delas; membros sem nenhuma vão para o fim.
+        qs = Team_Member.objects.select_related("position").prefetch_related(
+            "directorate_memberships__directorate"
+        ).annotate(
+            min_directorate_order=Min("directorate_memberships__directorate__order")
+        ).order_by(
+            F("min_directorate_order").asc(nulls_last=True),
+            "position__power", "name",
+        )
         if not show_all:
             qs = qs.filter(exit_date__isnull=True)
         return qs
@@ -33,15 +43,16 @@ class TeamMemberListView(generics.ListAPIView):
 
 class TeamMemberDetailView(generics.RetrieveAPIView):
     serializer_class = TeamMemberDetailSerializer
-    queryset = Team_Member.objects.select_related(
-        "position").prefetch_related("projects__partners").all()
+    queryset = Team_Member.objects.select_related("position").prefetch_related(
+        "projects__partners", "directorate_memberships__directorate"
+    ).all()
 
 
 class PartnerListView(generics.ListAPIView):
     serializer_class = PartnerSerializer
 
     def get_queryset(self):
-        qs = Partner.objects.select_related("category").order_by("name")
+        qs = Partner.objects.select_related("category").order_by("order", "name")
         category_id = self.request.query_params.get("category")
         if category_id:
             qs = qs.filter(category__id=category_id)
