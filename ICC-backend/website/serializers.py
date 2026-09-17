@@ -61,9 +61,11 @@ class CalendarMonthSerializer(serializers.ModelSerializer):
 
 
 class PartnerProjectSerializer(serializers.ModelSerializer):
+    category = serializers.StringRelatedField()
+
     class Meta:
         model = Project
-        fields = ["id", "title", "description", "start_date", "end_date"]
+        fields = ["id", "title", "description", "category", "start_date", "end_date"]
 
 
 class PartnerSerializer(serializers.ModelSerializer):
