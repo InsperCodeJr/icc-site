@@ -11,6 +11,8 @@ import PerfilAtividade from './pages/PerfilAtividade/index.tsx'
 import PerfilAtividadeItem from './pages/PerfilAtividadeItem/index.tsx'
 import Parceiros from './pages/Parceiros/index.tsx'
 import PerfilParceiro from './pages/PerfilParceiro/index.tsx'
+import Projetos from './pages/Projetos/index.tsx'
+import ProjetoDetalhe from './pages/ProjetoDetalhe/index.tsx'
 import Home from './pages/Home/index.tsx'
 import Processo from './pages/Processo/index.tsx'
 import Noticias from './pages/Noticias/index.tsx'
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
       { path: "atividades/item/:id", element: <PerfilAtividadeItem /> },
       { path: "parceiros", element: <Parceiros /> },
       { path: "parceiros/:id", element: <PerfilParceiro /> },
+      { path: "projetos", element: <Projetos /> },
+      { path: "projetos/:slug", element: <ProjetoDetalhe /> },
       { path: "processo", element: <Processo /> },
       { path: "news", element: <Noticias /> },
       { path: "contato", element: <Contato /> },
