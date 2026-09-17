@@ -4,7 +4,8 @@ from .models import (
     Partner, Team_Member, Media, Member_Position, Directorate,
     DirectorateMembership, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
-    ActivityCategory, CalendarMonth, Contact
+    ActivityCategory, CalendarMonth, Contact,
+    SuccessCase, SuccessCaseParticipant
 )
 
 admin.site.register(Partner_Category)
@@ -31,6 +32,9 @@ class TeamMemberAdmin(admin.ModelAdmin):
     inlines = [DirectorateMembershipInline]
     list_display = ('name', 'get_directorates', 'position', 'exit_date')
     list_filter = ('directorate_memberships__directorate', 'position')
+    # Exigido pelo autocomplete de participantes dos cases, e útil por si só
+    # quando a lista acumula alumni além dos membros ativos.
+    search_fields = ('name',)
 
     def get_directorates(self, obj):
         return ", ".join(m.directorate.name for m in obj.directorate_memberships.all())
@@ -116,3 +120,18 @@ class MediaAdmin(admin.ModelAdmin):
     list_display = ('title', 'source', 'date', 'order')
     list_editable = ('order',)
     ordering = ('-date', 'order')
+
+
+class SuccessCaseParticipantInline(admin.TabularInline):
+    model = SuccessCaseParticipant
+    extra = 1
+    fields = ('member', 'role', 'order')
+    ordering = ('role', 'order')
+    autocomplete_fields = ('member',)
+
+
+@admin.register(SuccessCase)
+class SuccessCaseAdmin(admin.ModelAdmin):
+    inlines = [SuccessCaseParticipantInline]
+    list_display = ('semester', 'area', 'category')
+    list_filter = ('category', 'semester')

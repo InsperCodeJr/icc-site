@@ -8,7 +8,8 @@ from .models import (
     Media, Contact,
     SelectionProcess, SelectionProcessRequirement,
     SelectionProcessStage, SelectionProcessStep,
-    PreparationMaterial, PreparationMaterialItem
+    PreparationMaterial, PreparationMaterialItem,
+    SuccessCase, SuccessCaseParticipant
 )
 
 
@@ -35,7 +36,8 @@ class ActivityCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityCategory
-        fields = ["id", "slug", "label", "description", "highlights", "icon_url", "badge", "badge_class", "order"]
+        fields = ["id", "slug", "label", "subtitle", "description", "highlights",
+                  "icon_url", "badge", "badge_class", "signup_url", "order"]
 
     def get_highlights(self, obj):
         return obj.get_highlights_list()
@@ -341,3 +343,30 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['name', 'email', 'phone', 'contact_type', 'message']
+
+
+class SuccessCaseParticipantSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="member.name", read_only=True)
+    linkedin = serializers.CharField(source="member.linkedin", read_only=True)
+    member_id = serializers.IntegerField(source="member.id", read_only=True)
+
+    class Meta:
+        model = SuccessCaseParticipant
+        fields = ["member_id", "name", "linkedin", "role", "order"]
+
+
+class SuccessCaseSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(slug_field="slug", read_only=True)
+    participants = SuccessCaseParticipantSerializer(many=True, read_only=True)
+
+    panel = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SuccessCase
+        fields = [
+            "id", "category", "semester", "title", "area", "theme", "panel",
+            "award", "publication_url", "participants", "order",
+        ]
+
+    def get_panel(self, obj):
+        return obj.get_panel_list()
