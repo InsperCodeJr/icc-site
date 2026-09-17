@@ -15,6 +15,7 @@ import Home from './pages/Home/index.tsx'
 import Processo from './pages/Processo/index.tsx'
 import Noticias from './pages/Noticias/index.tsx'
 import Contato from './pages/Contato/index.tsx'
+import NaoEncontrada from './pages/NaoEncontrada/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: "processo", element: <Processo /> },
       { path: "news", element: <Noticias /> },
       { path: "contato", element: <Contato /> },
+      { path: "*", element: <NaoEncontrada /> },
     ],
   },
 ])
