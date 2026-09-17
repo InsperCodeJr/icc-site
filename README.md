@@ -50,7 +50,15 @@ cd ICC-Site
 
 ---
 
-### 2. Subir os containers
+### 2. Criar o arquivo de variáveis de ambiente do backend
+
+```bash
+echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(50))')" > ICC-backend/.env
+```
+
+---
+
+### 3. Subir os containers
 
 ```bash
 docker-compose up --build
@@ -63,7 +71,7 @@ Isso irá subir três serviços:
 
 ---
 
-### 3. Criar as migrations do backend (primeira vez)
+### 4. Criar as migrations do backend (primeira vez)
 
 ```bash
 docker-compose exec backend python manage.py makemigrations website
@@ -72,7 +80,7 @@ docker-compose exec backend python manage.py migrate
 
 ---
 
-### 4. Criar um superusuário para acessar o Admin
+### 5. Criar um superusuário para acessar o Admin
 
 ```bash
 docker-compose exec backend python manage.py createsuperuser
