@@ -126,17 +126,27 @@ class ActivityCategory(models.Model):
 
 class CalendarMonth(models.Model):
     month = models.CharField(max_length=50, verbose_name='Mês')
-    items = models.TextField(verbose_name='Tópicos', help_text='Um tópico por linha.')
+    year = models.IntegerField(
+        null=True, blank=True, verbose_name='Ano',
+        help_text='Necessário para o frontend desenhar a grade de dias da semana. Sem ano, só a lista de tópicos é exibida.',
+    )
+    items = models.TextField(
+        verbose_name='Tópicos',
+        help_text='Um tópico por linha. Para aparecer na grade de dias, use o formato "DD/MM - Título" (é o que import_calendar_ics gera).',
+    )
     semester = models.CharField(max_length=10, choices=SEMESTER_CHOICES, default='both', verbose_name='Semestre')
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
         verbose_name = 'Mês do Calendário'
-        verbose_name_plural = 'Calendário Anual'
-        ordering = ['order']
+        verbose_name_plural = 'Calendário do Semestre'
+        ordering = ['year', 'order']
+        constraints = [
+            models.UniqueConstraint(fields=['month', 'year'], name='unique_month_per_year'),
+        ]
 
     def __str__(self):
-        return self.month
+        return f"{self.month}/{self.year}" if self.year else self.month
 
     def get_items_list(self):
         return [line.strip() for line in self.items.splitlines() if line.strip()]

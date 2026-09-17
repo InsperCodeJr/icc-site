@@ -52,7 +52,7 @@ class CalendarMonthSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CalendarMonth
-        fields = ["id", "month", "items", "semester", "order"]
+        fields = ["id", "month", "year", "items", "semester", "order"]
 
     def get_items(self, obj):
         return obj.get_items_list()
