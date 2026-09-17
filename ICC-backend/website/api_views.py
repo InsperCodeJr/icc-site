@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import (
     Team_Member, Partner, Statistic, Project, Activity,
     ActivityCategory, CalendarMonth, SelectionProcess,
-    Media, Contact, Directorate
+    Media, Contact, Directorate, SuccessCase
 )
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
@@ -14,7 +14,7 @@ from .serializers import (
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
-    DirectorateSerializer,
+    DirectorateSerializer, SuccessCaseSerializer,
     SelectionProcessSerializer, MediaSerializer,
     ContactSerializer
 )
@@ -110,6 +110,19 @@ class ActivityListView(generics.ListAPIView):
 
     def get_queryset(self):
         qs = Activity.objects.select_related("category")
+        category = self.request.query_params.get("category")
+        if category:
+            qs = qs.filter(category__slug=category)
+        return qs
+
+
+class SuccessCaseListView(generics.ListAPIView):
+    serializer_class = SuccessCaseSerializer
+
+    def get_queryset(self):
+        qs = SuccessCase.objects.select_related("category").prefetch_related(
+            "participants__member"
+        )
         category = self.request.query_params.get("category")
         if category:
             qs = qs.filter(category__slug=category)

@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/projects/<int:pk>/', api_views.ProjectDetailView.as_view(), name='api-projects-detail'),
     path('api/activities/', api_views.ActivityListView.as_view(), name='api-activities-list'),
     path('api/activities/<int:pk>/', api_views.ActivityDetailView.as_view(), name='api-activities-detail'),
+    path('api/success-cases/', api_views.SuccessCaseListView.as_view(), name='api-success-cases-list'),
     path('api/statistics/', api_views.StatisticListView.as_view(), name='api-statistics-list'),
     path('api/news/', api_views.MediaListView.as_view(), name='api-news-list'),
     path('api/contact/', api_views.ContactCreateView.as_view(), name='api-contact'),

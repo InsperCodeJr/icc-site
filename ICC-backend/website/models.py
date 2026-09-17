@@ -105,11 +105,22 @@ IMAGE_ALIGN_CHOICES = [
 class ActivityCategory(models.Model):
     slug = models.SlugField(max_length=50, unique=True, verbose_name='Slug (identificador na URL)')
     label = models.CharField(max_length=200, verbose_name='Nome')
+    subtitle = models.CharField(
+        max_length=200, blank=True, verbose_name='Subtítulo',
+        help_text='Uma linha descrevendo o formato do programa, exibida abaixo do nome.'
+    )
     description = models.TextField(verbose_name='Descrição')
     highlights = models.TextField(verbose_name='Tópicos', blank=True, help_text='Um tópico por linha.')
     icon = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Ícone do card')
-    badge = models.CharField(max_length=50, verbose_name='Frequência (badge)')
+    badge = models.CharField(
+        max_length=50, blank=True, verbose_name='Frequência (badge)',
+        help_text='Opcional. Deixe vazio quando a categoria não tiver uma periodicidade definida.'
+    )
     badge_class = models.CharField(max_length=50, choices=BADGE_CHOICES, verbose_name='Estilo do badge', default='badge--semanal')
+    signup_url = models.URLField(
+        max_length=300, blank=True, verbose_name='Link de inscrição',
+        help_text='Preenchido apenas nos programas que têm formulário próprio de inscrição.'
+    )
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
@@ -509,3 +520,84 @@ class PreparationMaterialItem(models.Model):
 
     def __str__(self):
         return self.text
+
+class SuccessCase(models.Model):
+    """
+    Case resolvido por um grupo de membros dentro de um programa.
+    Ex: o case final da Jornada do Consultor de 2025.1.
+    """
+    category = models.ForeignKey(
+        ActivityCategory,
+        on_delete=models.CASCADE,
+        related_name='success_cases',
+        verbose_name='Programa'
+    )
+    semester = models.CharField(max_length=10, verbose_name='Semestre', help_text='No formato AAAA.S, por exemplo 2025.1.')
+    title = models.CharField(
+        max_length=100, blank=True, verbose_name='Título',
+        help_text='Só é necessário quando o semestre tem mais de um case, por exemplo "1º Case".'
+    )
+    area = models.CharField(max_length=200, verbose_name='Área')
+    theme = models.TextField(verbose_name='Tema')
+    panel = models.TextField(
+        blank=True, verbose_name='Banca avaliadora',
+        help_text='Uma firma por linha.'
+    )
+    award = models.CharField(max_length=300, blank=True, verbose_name='Premiação')
+    publication_url = models.URLField(max_length=300, blank=True, verbose_name='Link da publicação')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Case de Sucesso'
+        verbose_name_plural = 'Cases de Sucesso'
+        ordering = ['-semester', 'order']
+
+    def __str__(self):
+        return f"{self.semester} {self.title}".strip() + f" - {self.area}"
+
+    def get_panel_list(self):
+        return [line.strip() for line in self.panel.splitlines() if line.strip()]
+
+
+class SuccessCaseParticipant(models.Model):
+    """
+    Participação de um membro num case, como integrante do grupo ou mentor.
+    O vínculo é com o membro, e não com o nome escrito à mão, para que o
+    LinkedIn exibido no case seja sempre o mesmo do perfil da pessoa.
+    Quem já saiu do clube continua cadastrado com data de saída, o que o
+    mantém fora da listagem da Equipe sem tirá-lo dos cases antigos.
+    """
+    class Role(models.TextChoices):
+        INTEGRANTE = 'integrante', 'Integrante do grupo'
+        MENTOR = 'mentor', 'Mentor'
+
+    case = models.ForeignKey(
+        SuccessCase,
+        on_delete=models.CASCADE,
+        related_name='participants',
+        verbose_name='Case'
+    )
+    member = models.ForeignKey(
+        Team_Member,
+        on_delete=models.PROTECT,
+        related_name='success_cases',
+        verbose_name='Membro'
+    )
+    role = models.CharField(
+        max_length=12,
+        choices=Role.choices,
+        default=Role.INTEGRANTE,
+        verbose_name='Papel'
+    )
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Participante do Case'
+        verbose_name_plural = 'Participantes do Case'
+        ordering = ['role', 'order']
+        constraints = [
+            models.UniqueConstraint(fields=['case', 'member'], name='unique_member_per_case'),
+        ]
+
+    def __str__(self):
+        return f"{self.member.name} ({self.get_role_display()})"
