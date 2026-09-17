@@ -340,4 +340,4 @@ class SelectionProcessSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['name', 'email', 'phone', 'contact_type']
+        fields = ['name', 'email', 'phone', 'contact_type', 'message']
