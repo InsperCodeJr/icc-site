@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Partner_Category(models.Model):
@@ -9,6 +10,26 @@ class Partner_Category(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Directorate(models.Model):
+    name = models.CharField(max_length=200, verbose_name='Nome')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Diretoria'
+        verbose_name_plural = 'Diretorias'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def slug(self):
+        # Identificador das âncoras de /equipe. Derivado do nome, e não um
+        # campo próprio, para que criar uma diretoria pelo admin não dependa
+        # de alguém lembrar de preencher mais um campo.
+        return slugify(self.name)
 
 
 class Member_Position(models.Model):
@@ -43,9 +64,11 @@ class Partner(models.Model):
         null=True,
         verbose_name='Site do parceiro'
     )
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
         verbose_name_plural = 'Parceiros'
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
@@ -199,6 +222,10 @@ class Team_Member(models.Model):
     exit_date = models.DateField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True, verbose_name='Email')
     linkedin = models.URLField(null=True, blank=True, verbose_name='LinkedIn')
+    trajetoria = models.JSONField(
+        default=list, blank=True, verbose_name='Trajetória',
+        help_text='Lista de {"semestre": "2026.1", "cargo": "Trainee"}, mais recente por último.'
+    )
     projects = models.ManyToManyField(Project, blank=True, verbose_name='Projetos participados', related_name='members')
 
     class Meta:
@@ -210,6 +237,31 @@ class Team_Member(models.Model):
     @property
     def number_of_projects(self):
         return self.projects.count()
+
+
+class DirectorateMembership(models.Model):
+    """
+    Vincula um membro a uma diretoria com o cargo específico que ele tem
+    nela. Existe como model à parte (em vez de M2M direto ou FK único em
+    Team_Member) porque uma pessoa pode estar em mais de uma diretoria ao
+    mesmo tempo com cargos diferentes em cada uma (ex: Diretora de
+    Pedagógico e, também, Mentora na Escola de Mentores).
+    """
+    member = models.ForeignKey(Team_Member, on_delete=models.CASCADE, related_name='directorate_memberships')
+    directorate = models.ForeignKey(Directorate, on_delete=models.CASCADE, related_name='memberships')
+    cargo = models.CharField(max_length=200, verbose_name='Cargo nessa diretoria')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Vínculo com Diretoria'
+        verbose_name_plural = 'Vínculos com Diretorias'
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(fields=['member', 'directorate'], name='unique_member_per_directorate'),
+        ]
+
+    def __str__(self):
+        return f"{self.member.name} - {self.cargo} ({self.directorate.name})"
 
 
 class Activity(models.Model):

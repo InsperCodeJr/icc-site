@@ -6,6 +6,7 @@ urlpatterns = [
     path('api/members/<int:pk>/', api_views.TeamMemberDetailView.as_view(), name='api-members-detail'),
     path('api/partners/', api_views.PartnerListView.as_view(), name='api-partners-list'),
     path('api/partners/<int:pk>/', api_views.PartnerDetailView.as_view(), name='api-partners-detail'),
+    path('api/directorates/', api_views.DirectorateListView.as_view(), name='api-directorates-list'),
     path('api/categories/', api_views.ActivityCategoryListView.as_view(), name='api-categories-list'),
     path('api/calendar/', api_views.CalendarMonthListView.as_view(), name='api-calendar-list'),
     path('api/projects/', api_views.ProjectListView.as_view(), name='api-projects-list'),
