@@ -51,7 +51,7 @@ export const api = {
   getSelectionProcess: () =>
     fetch(`${apiUrl}/selection-process/`, { headers }).then((res) => res.json()),
 
-  postContact: (data: {name: string; email: string; phone: string; contact_type: "aluno" | "empresa"}) => 
+  postContact: (data: {name: string; email: string; phone: string; contact_type: "aluno" | "empresa" | "alumni" | "imprensa" | "outro"; message: string}) =>
     fetch(`${apiUrl}/contact/`, {
       method: "POST",
       headers,
