@@ -30,6 +30,9 @@ export const api = {
   getProject: (id: number) =>
     fetch(`${apiUrl}/projects/${id}/`, { headers }).then((res) => res.json()),
 
+  getSuccessCases: (category?: string) =>
+    fetch(`${apiUrl}/success-cases/${category ? `?category=${category}` : ""}`, { headers }).then((res) => res.json()),
+
   getActivities: (category?: string) =>
     fetch(`${apiUrl}/activities/${category ? `?category=${category}` : ""}`, { headers }).then((res) => res.json()),
 
