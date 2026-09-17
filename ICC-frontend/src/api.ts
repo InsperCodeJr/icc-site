@@ -18,6 +18,9 @@ export const api = {
   getPartner: (id: number) =>
     fetch(`${apiUrl}/partners/${id}/`, { headers }).then((res) => res.json()),
 
+  getDirectorates: () =>
+    fetch(`${apiUrl}/directorates/`, { headers }).then((res) => res.json()),
+
   getCategories: () =>
     fetch(`${apiUrl}/categories/`, { headers }).then((res) => res.json()),
 
