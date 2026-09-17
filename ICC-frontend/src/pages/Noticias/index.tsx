@@ -1,95 +1,73 @@
 import { useEffect, useState } from "react"
 import { api } from "../../api"
 import type { NewsItem } from "../../types"
+import PageHero from "../../components/PageHero"
+import { ExternalIcon } from "../../components/Icons"
+import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  })
+  // new Date(date) leria "AAAA-MM-DD" como meia-noite UTC, que em horário de
+  // Brasília já é o dia anterior; construindo com ano/mês/dia separados, a
+  // data é interpretada no fuso local, sem esse desvio de um dia.
+  const [ano, mes, dia] = date.split("-").map(Number)
+  return new Date(ano, mes - 1, dia).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
 }
 
 export default function Noticias() {
+  usePageTitle("Notícias")
   const [news, setNews] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.getNews().then((data) => {
-      setNews(data)
-      setLoading(false)
-    })
+    api
+      .getNews()
+      .then((data) => setNews(data || []))
+      .catch(() => setNews([]))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
     <div className="news-page">
+      <PageHero
+        title="Notícias"
+        lead="Fique por dentro do que acontece no ICC e no mundo da consultoria"
+      />
 
-      <section className="news-header">
-        <h1 className="news-header__title">Notícias</h1>
-        <p className="news-header__subtitle">
-          Fique por dentro do que acontece no ICC e no mundo da consultoria
-        </p>
-      </section>
-
-      <section className="news-section">
-        {loading ? (
-          <div className="news-loading">
-            <div className="news-loading__spinner" />
-            <span>Carregando...</span>
-          </div>
-        ) : news.length === 0 ? (
-          <div className="news-empty">
-            <p>Nenhuma notícia cadastrada no momento.</p>
-          </div>
-        ) : (
-          <div className="news-grid">
-            {news.map((item) => (
-              <a
-                key={item.id}
-                href={item.link}
-                target="_blank"
-                rel="noreferrer"
-                className="news-card"
-              >
-                <div className="news-card__image">
-                  {item.image_url ? (
-                    <img src={item.image_url} alt={item.title} />
-                  ) : (
-                    <div className="news-card__image-placeholder">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-                        <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    </div>
-                  )}
-                </div>
-
-                <div className="news-card__content">
-                  <div className="news-card__meta">
-                    {item.source && (
-                      <span className="news-card__source">{item.source}</span>
-                    )}
-                    {item.date && (
-                      <span className="news-card__date">{formatDate(item.date)}</span>
-                    )}
+      <section className="section">
+        <div className="container">
+          {loading ? (
+            <p className="loading">Carregando...</p>
+          ) : news.length === 0 ? (
+            <p className="state-message">Nenhuma notícia cadastrada no momento.</p>
+          ) : (
+            <div className="grid grid--3">
+              {news.map((item) => (
+                <a key={item.id} href={item.link} target="_blank" rel="noopener noreferrer" className="news-card">
+                  <div className="news-card__image">
+                    {item.image_url ? <img src={item.image_url} alt="" loading="lazy" /> : <span>{item.source || "ICC"}</span>}
                   </div>
-                  <h3 className="news-card__title">{item.title}</h3>
-                  <p className="news-card__desc">{item.description}</p>
-                  <span className="news-card__cta">
-                    Ler matéria
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
+                  <div className="news-card__body">
+                    {(item.source || item.date) && (
+                      <p className="news-card__meta">
+                        {item.source}
+                        {item.source && item.date && " · "}
+                        {item.date && formatDate(item.date)}
+                      </p>
+                    )}
+                    <h2 className="news-card__title">{item.title}</h2>
+                    {item.description && <p className="news-card__desc">{item.description}</p>}
+                    <span className="link-arrow news-card__cta">
+                      Ler matéria
+                      <ExternalIcon />
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
-
     </div>
   )
 }
