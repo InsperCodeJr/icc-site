@@ -176,6 +176,8 @@ class ContactCreateView(generics.CreateAPIView):
                     <p><strong>Nome:</strong> {contact.name}</p>
                     <p><strong>Email:</strong> {contact.email}</p>
                     <p><strong>Telefone:</strong> {contact.phone}</p>
+                    <p><strong>Mensagem:</strong></p>
+                    <p>{contact.message}</p>
                 """
             )
             sg = sendgrid.SendGridAPIClient(api_key=api_key)

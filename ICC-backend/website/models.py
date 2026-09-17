@@ -363,20 +363,24 @@ class Participant(models.Model):
 class Contact(models.Model):
 
     class ContactType(models.TextChoices):
-        ALUNO = 'aluno', 'Aluno'
-        EMPRESA = 'empresa', 'empresa'
-    
+        ALUNO = 'aluno', 'Aluno do Insper'
+        EMPRESA = 'empresa', 'Empresa / Parceiro'
+        ALUMNI = 'alumni', 'Ex-aluno do ICC'
+        IMPRENSA = 'imprensa', 'Imprensa'
+        OUTRO = 'outro', 'Outro'
+
     name = models.CharField(max_length=200, verbose_name="Nome")
     email = models.EmailField(verbose_name="Email")
     phone = models.CharField(max_length=200, verbose_name="Telefone")
     contact_type = models.CharField(
-        max_length=8,
+        max_length=10,
         choices=ContactType.choices
     )
-    
+    message = models.TextField(verbose_name="Mensagem", default="")
+
     class Meta:
         verbose_name_plural = "Pedidos de contato"
-    
+
     def __str__(self):
         return f"{self.name} | {self.contact_type}"
     
