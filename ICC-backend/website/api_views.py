@@ -1,11 +1,15 @@
 import logging
 from django.conf import settings
+from django.db.models import Min, F
+from django.utils.html import escape
 from rest_framework import generics
+from rest_framework.parsers import JSONParser
+from rest_framework.throttling import ScopedRateThrottle
 from django.shortcuts import get_object_or_404
 from .models import (
     Team_Member, Partner, Statistic, Project, Activity,
     ActivityCategory, CalendarMonth, SelectionProcess,
-    Media, Contact
+    Media, Contact, Directorate, SuccessCase
 )
 from .serializers import (
     TeamMemberListSerializer, TeamMemberDetailSerializer,
@@ -13,6 +17,7 @@ from .serializers import (
     ProjectListSerializer, ProjectDetailSerializer,
     ActivitySerializer, ActivityDetailSerializer,
     ActivityCategorySerializer, CalendarMonthSerializer,
+    DirectorateSerializer, SuccessCaseSerializer,
     SelectionProcessSerializer, MediaSerializer,
     ContactSerializer
 )
@@ -24,8 +29,17 @@ class TeamMemberListView(generics.ListAPIView):
     def get_queryset(self):
         show_all = self.request.query_params.get(
             "all", "false").lower() == "true"
-        qs = Team_Member.objects.select_related(
-            "position").order_by("position__power", "name")
+        # Uma pessoa pode estar em mais de uma diretoria (ex: diretora de
+        # Pedagógico e também mentora), então a ordem é dada pela primeira
+        # (menor order) delas; membros sem nenhuma vão para o fim.
+        qs = Team_Member.objects.select_related("position").prefetch_related(
+            "directorate_memberships__directorate"
+        ).annotate(
+            min_directorate_order=Min("directorate_memberships__directorate__order")
+        ).order_by(
+            F("min_directorate_order").asc(nulls_last=True),
+            "position__power", "name",
+        )
         if not show_all:
             qs = qs.filter(exit_date__isnull=True)
         return qs
@@ -33,15 +47,21 @@ class TeamMemberListView(generics.ListAPIView):
 
 class TeamMemberDetailView(generics.RetrieveAPIView):
     serializer_class = TeamMemberDetailSerializer
-    queryset = Team_Member.objects.select_related(
-        "position").prefetch_related("projects__partners").all()
+    queryset = Team_Member.objects.select_related("position").prefetch_related(
+        "projects__partners", "directorate_memberships__directorate"
+    ).all()
+
+
+class DirectorateListView(generics.ListAPIView):
+    serializer_class = DirectorateSerializer
+    queryset = Directorate.objects.all().order_by("order")
 
 
 class PartnerListView(generics.ListAPIView):
     serializer_class = PartnerSerializer
 
     def get_queryset(self):
-        qs = Partner.objects.select_related("category").order_by("name")
+        qs = Partner.objects.select_related("category").order_by("order", "name")
         category_id = self.request.query_params.get("category")
         if category_id:
             qs = qs.filter(category__id=category_id)
@@ -99,6 +119,19 @@ class ActivityListView(generics.ListAPIView):
         return qs
 
 
+class SuccessCaseListView(generics.ListAPIView):
+    serializer_class = SuccessCaseSerializer
+
+    def get_queryset(self):
+        qs = SuccessCase.objects.select_related("category").prefetch_related(
+            "participants__member"
+        )
+        category = self.request.query_params.get("category")
+        if category:
+            qs = qs.filter(category__slug=category)
+        return qs
+
+
 class ActivityDetailView(generics.RetrieveAPIView):
     serializer_class = ActivityDetailSerializer
     queryset = Activity.objects.prefetch_related(
@@ -139,6 +172,12 @@ class SelectionProcessView(generics.RetrieveAPIView):
 class ContactCreateView(generics.CreateAPIView):
     serializer_class = ContactSerializer
     queryset = Contact.objects.all()
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "contact"
+    # Só aceita JSON: um <form> HTML comum de outro site não consegue montar
+    # esse tipo de corpo sem JavaScript, e JavaScript de outra origem já é
+    # barrado pelo CORS. Fecha a via de um envio automático disfarçado.
+    parser_classes = [JSONParser]
 
     def perform_create(self, serializer):
         contact = serializer.save()
@@ -160,11 +199,15 @@ class ContactCreateView(generics.CreateAPIView):
                 from_email=from_email,
                 to_emails=to_email,
                 subject=f"Novo pedido de contato [{contact.get_contact_type_display()}]",
+                # Campos preenchidos pelo visitante: escapados antes de entrar
+                # no HTML do email, pra não permitir injeção de marcação/links.
                 html_content=f"""
                     <h2>Novo pedido de contato recebido!</h2>
-                    <p><strong>Nome:</strong> {contact.name}</p>
-                    <p><strong>Email:</strong> {contact.email}</p>
-                    <p><strong>Telefone:</strong> {contact.phone}</p>
+                    <p><strong>Nome:</strong> {escape(contact.name)}</p>
+                    <p><strong>Email:</strong> {escape(contact.email)}</p>
+                    <p><strong>Telefone:</strong> {escape(contact.phone)}</p>
+                    <p><strong>Mensagem:</strong></p>
+                    <p>{escape(contact.message)}</p>
                 """
             )
             sg = sendgrid.SendGridAPIClient(api_key=api_key)

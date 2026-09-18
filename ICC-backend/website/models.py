@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Partner_Category(models.Model):
@@ -9,6 +10,26 @@ class Partner_Category(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Directorate(models.Model):
+    name = models.CharField(max_length=200, verbose_name='Nome')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Diretoria'
+        verbose_name_plural = 'Diretorias'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def slug(self):
+        # Identificador das âncoras de /equipe. Derivado do nome, e não um
+        # campo próprio, para que criar uma diretoria pelo admin não dependa
+        # de alguém lembrar de preencher mais um campo.
+        return slugify(self.name)
 
 
 class Member_Position(models.Model):
@@ -43,9 +64,11 @@ class Partner(models.Model):
         null=True,
         verbose_name='Site do parceiro'
     )
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
         verbose_name_plural = 'Parceiros'
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
@@ -82,11 +105,22 @@ IMAGE_ALIGN_CHOICES = [
 class ActivityCategory(models.Model):
     slug = models.SlugField(max_length=50, unique=True, verbose_name='Slug (identificador na URL)')
     label = models.CharField(max_length=200, verbose_name='Nome')
+    subtitle = models.CharField(
+        max_length=200, blank=True, verbose_name='Subtítulo',
+        help_text='Uma linha descrevendo o formato do programa, exibida abaixo do nome.'
+    )
     description = models.TextField(verbose_name='Descrição')
     highlights = models.TextField(verbose_name='Tópicos', blank=True, help_text='Um tópico por linha.')
     icon = models.ImageField(upload_to='categories/', null=True, blank=True, verbose_name='Ícone do card')
-    badge = models.CharField(max_length=50, verbose_name='Frequência (badge)')
+    badge = models.CharField(
+        max_length=50, blank=True, verbose_name='Frequência (badge)',
+        help_text='Opcional. Deixe vazio quando a categoria não tiver uma periodicidade definida.'
+    )
     badge_class = models.CharField(max_length=50, choices=BADGE_CHOICES, verbose_name='Estilo do badge', default='badge--semanal')
+    signup_url = models.URLField(
+        max_length=300, blank=True, verbose_name='Link de inscrição',
+        help_text='Preenchido apenas nos programas que têm formulário próprio de inscrição.'
+    )
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
@@ -103,17 +137,27 @@ class ActivityCategory(models.Model):
 
 class CalendarMonth(models.Model):
     month = models.CharField(max_length=50, verbose_name='Mês')
-    items = models.TextField(verbose_name='Tópicos', help_text='Um tópico por linha.')
+    year = models.IntegerField(
+        null=True, blank=True, verbose_name='Ano',
+        help_text='Necessário para o frontend desenhar a grade de dias da semana. Sem ano, só a lista de tópicos é exibida.',
+    )
+    items = models.TextField(
+        verbose_name='Tópicos',
+        help_text='Um tópico por linha. Para aparecer na grade de dias, use o formato "DD/MM - Título" (é o que import_calendar_ics gera).',
+    )
     semester = models.CharField(max_length=10, choices=SEMESTER_CHOICES, default='both', verbose_name='Semestre')
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
         verbose_name = 'Mês do Calendário'
-        verbose_name_plural = 'Calendário Anual'
-        ordering = ['order']
+        verbose_name_plural = 'Calendário do Semestre'
+        ordering = ['year', 'order']
+        constraints = [
+            models.UniqueConstraint(fields=['month', 'year'], name='unique_month_per_year'),
+        ]
 
     def __str__(self):
-        return self.month
+        return f"{self.month}/{self.year}" if self.year else self.month
 
     def get_items_list(self):
         return [line.strip() for line in self.items.splitlines() if line.strip()]
@@ -199,6 +243,10 @@ class Team_Member(models.Model):
     exit_date = models.DateField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True, verbose_name='Email')
     linkedin = models.URLField(null=True, blank=True, verbose_name='LinkedIn')
+    trajetoria = models.JSONField(
+        default=list, blank=True, verbose_name='Trajetória',
+        help_text='Lista de {"semestre": "2026.1", "cargo": "Trainee"}, mais recente por último.'
+    )
     projects = models.ManyToManyField(Project, blank=True, verbose_name='Projetos participados', related_name='members')
 
     class Meta:
@@ -210,6 +258,31 @@ class Team_Member(models.Model):
     @property
     def number_of_projects(self):
         return self.projects.count()
+
+
+class DirectorateMembership(models.Model):
+    """
+    Vincula um membro a uma diretoria com o cargo específico que ele tem
+    nela. Existe como model à parte (em vez de M2M direto ou FK único em
+    Team_Member) porque uma pessoa pode estar em mais de uma diretoria ao
+    mesmo tempo com cargos diferentes em cada uma (ex: Diretora de
+    Pedagógico e, também, Mentora na Escola de Mentores).
+    """
+    member = models.ForeignKey(Team_Member, on_delete=models.CASCADE, related_name='directorate_memberships')
+    directorate = models.ForeignKey(Directorate, on_delete=models.CASCADE, related_name='memberships')
+    cargo = models.CharField(max_length=200, verbose_name='Cargo nessa diretoria')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Vínculo com Diretoria'
+        verbose_name_plural = 'Vínculos com Diretorias'
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(fields=['member', 'directorate'], name='unique_member_per_directorate'),
+        ]
+
+    def __str__(self):
+        return f"{self.member.name} - {self.cargo} ({self.directorate.name})"
 
 
 class Activity(models.Model):
@@ -309,20 +382,24 @@ class Participant(models.Model):
 class Contact(models.Model):
 
     class ContactType(models.TextChoices):
-        ALUNO = 'aluno', 'Aluno'
-        EMPRESA = 'empresa', 'empresa'
-    
+        ALUNO = 'aluno', 'Aluno do Insper'
+        EMPRESA = 'empresa', 'Empresa / Parceiro'
+        ALUMNI = 'alumni', 'Ex-aluno do ICC'
+        IMPRENSA = 'imprensa', 'Imprensa'
+        OUTRO = 'outro', 'Outro'
+
     name = models.CharField(max_length=200, verbose_name="Nome")
     email = models.EmailField(verbose_name="Email")
     phone = models.CharField(max_length=200, verbose_name="Telefone")
     contact_type = models.CharField(
-        max_length=8,
+        max_length=10,
         choices=ContactType.choices
     )
-    
+    message = models.TextField(verbose_name="Mensagem", default="")
+
     class Meta:
         verbose_name_plural = "Pedidos de contato"
-    
+
     def __str__(self):
         return f"{self.name} | {self.contact_type}"
     
@@ -443,3 +520,84 @@ class PreparationMaterialItem(models.Model):
 
     def __str__(self):
         return self.text
+
+class SuccessCase(models.Model):
+    """
+    Case resolvido por um grupo de membros dentro de um programa.
+    Ex: o case final da Jornada do Consultor de 2025.1.
+    """
+    category = models.ForeignKey(
+        ActivityCategory,
+        on_delete=models.CASCADE,
+        related_name='success_cases',
+        verbose_name='Programa'
+    )
+    semester = models.CharField(max_length=10, verbose_name='Semestre', help_text='No formato AAAA.S, por exemplo 2025.1.')
+    title = models.CharField(
+        max_length=100, blank=True, verbose_name='Título',
+        help_text='Só é necessário quando o semestre tem mais de um case, por exemplo "1º Case".'
+    )
+    area = models.CharField(max_length=200, verbose_name='Área')
+    theme = models.TextField(verbose_name='Tema')
+    panel = models.TextField(
+        blank=True, verbose_name='Banca avaliadora',
+        help_text='Uma firma por linha.'
+    )
+    award = models.CharField(max_length=300, blank=True, verbose_name='Premiação')
+    publication_url = models.URLField(max_length=300, blank=True, verbose_name='Link da publicação')
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Case de Sucesso'
+        verbose_name_plural = 'Cases de Sucesso'
+        ordering = ['-semester', 'order']
+
+    def __str__(self):
+        return f"{self.semester} {self.title}".strip() + f" - {self.area}"
+
+    def get_panel_list(self):
+        return [line.strip() for line in self.panel.splitlines() if line.strip()]
+
+
+class SuccessCaseParticipant(models.Model):
+    """
+    Participação de um membro num case, como integrante do grupo ou mentor.
+    O vínculo é com o membro, e não com o nome escrito à mão, para que o
+    LinkedIn exibido no case seja sempre o mesmo do perfil da pessoa.
+    Quem já saiu do clube continua cadastrado com data de saída, o que o
+    mantém fora da listagem da Equipe sem tirá-lo dos cases antigos.
+    """
+    class Role(models.TextChoices):
+        INTEGRANTE = 'integrante', 'Integrante do grupo'
+        MENTOR = 'mentor', 'Mentor'
+
+    case = models.ForeignKey(
+        SuccessCase,
+        on_delete=models.CASCADE,
+        related_name='participants',
+        verbose_name='Case'
+    )
+    member = models.ForeignKey(
+        Team_Member,
+        on_delete=models.PROTECT,
+        related_name='success_cases',
+        verbose_name='Membro'
+    )
+    role = models.CharField(
+        max_length=12,
+        choices=Role.choices,
+        default=Role.INTEGRANTE,
+        verbose_name='Papel'
+    )
+    order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+
+    class Meta:
+        verbose_name = 'Participante do Case'
+        verbose_name_plural = 'Participantes do Case'
+        ordering = ['role', 'order']
+        constraints = [
+            models.UniqueConstraint(fields=['case', 'member'], name='unique_member_per_case'),
+        ]
+
+    def __str__(self):
+        return f"{self.member.name} ({self.get_role_display()})"
