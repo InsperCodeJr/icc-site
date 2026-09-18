@@ -1,15 +1,46 @@
 from django.contrib import admin
 from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
-    Partner, Team_Member, Media, Member_Position, Statistic, Participant,
+    Partner, Team_Member, Media, Member_Position, Directorate,
+    DirectorateMembership, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
-    ActivityCategory, CalendarMonth, Contact
+    ActivityCategory, CalendarMonth, Contact,
+    SuccessCase, SuccessCaseParticipant
 )
 
 admin.site.register(Partner_Category)
 admin.site.register(Partner)
-admin.site.register(Team_Member)
 admin.site.register(Member_Position)
+
+
+@admin.register(Directorate)
+class DirectorateAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order')
+    list_editable = ('order',)
+    ordering = ('order',)
+
+
+class DirectorateMembershipInline(admin.TabularInline):
+    model = DirectorateMembership
+    extra = 1
+    fields = ('directorate', 'cargo', 'order')
+    ordering = ('order',)
+
+
+@admin.register(Team_Member)
+class TeamMemberAdmin(admin.ModelAdmin):
+    inlines = [DirectorateMembershipInline]
+    list_display = ('name', 'get_directorates', 'position', 'exit_date')
+    list_filter = ('directorate_memberships__directorate', 'position')
+    # Exigido pelo autocomplete de participantes dos cases, e útil por si só
+    # quando a lista acumula alumni além dos membros ativos.
+    search_fields = ('name',)
+
+    def get_directorates(self, obj):
+        return ", ".join(m.directorate.name for m in obj.directorate_memberships.all())
+    get_directorates.short_description = 'Diretorias'
+
+
 admin.site.register(Participant)
 admin.site.register(Contact)
 
@@ -89,3 +120,18 @@ class MediaAdmin(admin.ModelAdmin):
     list_display = ('title', 'source', 'date', 'order')
     list_editable = ('order',)
     ordering = ('-date', 'order')
+
+
+class SuccessCaseParticipantInline(admin.TabularInline):
+    model = SuccessCaseParticipant
+    extra = 1
+    fields = ('member', 'role', 'order')
+    ordering = ('role', 'order')
+    autocomplete_fields = ('member',)
+
+
+@admin.register(SuccessCase)
+class SuccessCaseAdmin(admin.ModelAdmin):
+    inlines = [SuccessCaseParticipantInline]
+    list_display = ('semester', 'area', 'category')
+    list_filter = ('category', 'semester')

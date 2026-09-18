@@ -3,7 +3,9 @@ services:
   db:
     image: postgres:16
     ports:
-      - "5432:5432"
+      # Só acessível desta máquina (127.0.0.1), nunca da rede externa,
+      # mesmo que o firewall do host esteja mal configurado.
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:

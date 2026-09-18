@@ -1,14 +1,33 @@
 from rest_framework import serializers
 from .models import (
     Team_Member, Partner, Statistic, Project, ProjectImage,
+    Directorate,
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
-    ActivityCategory, CalendarMonth,
-    Media, Contact, 
-    SelectionProcess, SelectionProcessRequirement, 
+    ActivityCategory, CalendarMonth, DirectorateMembership,
+    Media, Contact,
+    SelectionProcess, SelectionProcessRequirement,
     SelectionProcessStage, SelectionProcessStep,
-    PreparationMaterial, PreparationMaterialItem
+    PreparationMaterial, PreparationMaterialItem,
+    SuccessCase, SuccessCaseParticipant
 )
+
+
+class DirectorateSerializer(serializers.ModelSerializer):
+    slug = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Directorate
+        fields = ["id", "name", "slug", "order"]
+
+
+class DirectorateMembershipSerializer(serializers.ModelSerializer):
+    directorate = serializers.StringRelatedField()
+    directorate_slug = serializers.CharField(source="directorate.slug", read_only=True)
+
+    class Meta:
+        model = DirectorateMembership
+        fields = ["directorate", "directorate_slug", "cargo", "order"]
 
 
 class ActivityCategorySerializer(serializers.ModelSerializer):
@@ -17,7 +36,8 @@ class ActivityCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityCategory
-        fields = ["id", "slug", "label", "description", "highlights", "icon_url", "badge", "badge_class", "order"]
+        fields = ["id", "slug", "label", "subtitle", "description", "highlights",
+                  "icon_url", "badge", "badge_class", "signup_url", "order"]
 
     def get_highlights(self, obj):
         return obj.get_highlights_list()
@@ -34,7 +54,7 @@ class CalendarMonthSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CalendarMonth
-        fields = ["id", "month", "items", "semester", "order"]
+        fields = ["id", "month", "year", "items", "semester", "order"]
 
     def get_items(self, obj):
         return obj.get_items_list()
@@ -60,7 +80,6 @@ class PartnerSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "category",
-            "contato",
             "site",
             "logo_url",
             "projects_count",
@@ -191,11 +210,17 @@ class ActivityDetailSerializer(serializers.ModelSerializer):
 
 class TeamMemberListSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
+    # A prioridade do cargo já existe no model e é o que ordena esta listagem.
+    # Exposta para que o frontend selecione a liderança por esse número, em vez
+    # de procurar palavras dentro do texto do cargo.
+    position_power = serializers.IntegerField(source="position.power", read_only=True)
+    directorate_memberships = DirectorateMembershipSerializer(many=True)
     photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Team_Member
-        fields = ["id", "name", "position", "photo_url", "course", "year"]
+        fields = ["id", "name", "position", "position_power", "directorate_memberships",
+                  "photo_url", "course", "year", "linkedin"]
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
@@ -206,6 +231,7 @@ class TeamMemberListSerializer(serializers.ModelSerializer):
 
 class TeamMemberDetailSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
+    directorate_memberships = DirectorateMembershipSerializer(many=True)
     photo_url = serializers.SerializerMethodField()
     projects = ProjectListSerializer(many=True)
     number_of_projects = serializers.IntegerField()
@@ -213,9 +239,10 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team_Member
         fields = [
-            "id", "name", "position", "photo_url", "biography",
+            "id", "name", "position", "directorate_memberships", "photo_url", "biography",
             "number_of_projects", "projects", "hours",
-            "entry_date", "exit_date", "course", "year", "email", "linkedin",
+            "entry_date", "exit_date", "course", "year", "linkedin",
+            "trajetoria",
         ]
 
     def get_photo_url(self, obj):
@@ -314,4 +341,31 @@ class SelectionProcessSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['name', 'email', 'phone', 'contact_type']
+        fields = ['name', 'email', 'phone', 'contact_type', 'message']
+
+
+class SuccessCaseParticipantSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="member.name", read_only=True)
+    linkedin = serializers.CharField(source="member.linkedin", read_only=True)
+    member_id = serializers.IntegerField(source="member.id", read_only=True)
+
+    class Meta:
+        model = SuccessCaseParticipant
+        fields = ["member_id", "name", "linkedin", "role", "order"]
+
+
+class SuccessCaseSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(slug_field="slug", read_only=True)
+    participants = SuccessCaseParticipantSerializer(many=True, read_only=True)
+
+    panel = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SuccessCase
+        fields = [
+            "id", "category", "semester", "title", "area", "theme", "panel",
+            "award", "publication_url", "participants", "order",
+        ]
+
+    def get_panel(self, obj):
+        return obj.get_panel_list()
