@@ -2,17 +2,42 @@ export interface ActivityCategory {
   id: number
   slug: string
   label: string
+  subtitle: string
   description: string
   highlights: string[]
   icon_url: string | null
   badge: string
   badge_class: string
+  signup_url: string
+  order: number
+}
+
+export interface SuccessCaseParticipant {
+  member_id: number
+  name: string
+  linkedin: string | null
+  role: "integrante" | "mentor"
+  order: number
+}
+
+export interface SuccessCase {
+  id: number
+  category: string
+  semester: string
+  title: string
+  area: string
+  theme: string
+  panel: string[]
+  award: string
+  publication_url: string
+  participants: SuccessCaseParticipant[]
   order: number
 }
 
 export interface CalendarMonth {
   id: number
   month: string
+  year: number | null
   items: string[]
   semester: '1' | '2' | 'both'
   order: number
@@ -95,11 +120,33 @@ export interface ActivityDetail {
   } | null
 }
 
+export interface DirectorateMembership {
+  directorate: string
+  directorate_slug: string
+  cargo: string
+  order: number
+}
+
+export interface Directorate {
+  id: number
+  name: string
+  slug: string
+  order: number
+}
+
 export interface Member {
   id: number
   name: string
   position: string
+  position_power: number | null
+  directorate_memberships: DirectorateMembership[]
   photo_url: string | null
+  linkedin: string | null
+}
+
+export interface TrajetoriaEtapa {
+  semestre: string
+  cargo: string
 }
 
 export interface MemberDetail extends Member {
@@ -108,22 +155,20 @@ export interface MemberDetail extends Member {
   hours: number
   entry_date: string
   exit_date: string | null
-  email: string | null
   linkedin: string | null
   projects: Project[]
+  trajetoria: TrajetoriaEtapa[]
 }
 
 export interface Partner {
   id: number
   name: string
   logo_url: string | null
-}
-
-export interface PartnerDetail extends Partner {
   description: string
   category: string | null
-  contato: string
 }
+
+export type PartnerDetail = Partner
 
 export interface Statistic {
   id: number
@@ -184,18 +229,17 @@ export interface SelectionProcess {
   requirements: SelectionProcessRequirement[]
   materials: PreparationMaterial[]
 }
- 
+
 
 export interface PreparationMaterialItem {
   id: number
   text: string
   order: number
 }
- 
+
 export interface PreparationMaterial {
   id: number
   title: string
   items: PreparationMaterialItem[]
   order: number
 }
- 

@@ -45,7 +45,7 @@
 
 .content-block__paragraph {
   font-size: 0.9rem;
-  color: #4b5563;
+  color: var(--cinza-700);
   line-height: 1.7;
   margin: 0 0 12px;
 }
@@ -92,7 +92,7 @@
 .content-block--image-only .content-block__image {
   max-height: 480px;
   object-fit: contain;
-  background: #f3f4f6;
+  background: var(--cinza-100);
 }
 
 .content-block__caption {
@@ -100,7 +100,6 @@
   color: var(--icc-gray);
   margin-top: 8px;
   text-align: center;
-  font-style: italic;
 }
 
 /* ── Responsive ──────────────────────────────── */

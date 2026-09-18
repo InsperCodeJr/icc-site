@@ -1,0 +1,162 @@
+.projeto-page .page-hero .eyebrow {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-small);
+}
+
+.projeto-page__cta {
+  margin-top: 32px;
+}
+
+/* ---------- Como funciona ---------- */
+
+.projeto-componente__index {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--vermelho-icc);
+}
+
+.projeto-componente__nome {
+  margin-top: 20px;
+  font-size: var(--fs-h3);
+}
+
+.projeto-componente__descricao {
+  margin-top: 10px;
+  color: var(--cinza-600);
+}
+
+/* ---------- Benefícios ---------- */
+
+.projeto-beneficios {
+  padding: 0;
+  list-style: none;
+}
+
+.projeto-beneficio {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+
+.projeto-beneficio__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--vermelho-suave);
+  color: var(--vermelho-icc);
+}
+
+/* ---------- Cases ---------- */
+
+.case-card {
+  display: flex;
+  flex-direction: column;
+  scroll-margin-top: var(--header-height);
+}
+
+.case-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.case-card__area {
+  font-size: var(--fs-xs);
+  color: var(--cinza-500);
+}
+
+.case-card__tema {
+  margin-top: 18px;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+.case-card__dados {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cinza-200);
+}
+
+.case-card__dados dt {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cinza-500);
+}
+
+.case-card__dados dd {
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  color: var(--cinza-700);
+}
+
+.case-card__pessoa {
+  font-weight: 700;
+  color: var(--preto);
+  transition: color 0.2s var(--ease);
+}
+
+.case-card__pessoa:hover {
+  color: var(--vermelho-icc);
+}
+
+.case-card__premiacao {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--vermelho-icc);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--vermelho-suave);
+  font-size: var(--fs-small);
+  color: var(--cinza-700);
+}
+
+.case-card__premiacao strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vermelho-icc);
+}
+
+.case-card__link {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+/* ---------- Outros programas ---------- */
+
+.projeto-outro {
+  display: flex;
+  flex-direction: column;
+}
+
+.projeto-outro__nome {
+  font-size: var(--fs-h3);
+}
+
+.projeto-outro__tipo {
+  margin: 8px 0 24px;
+  font-size: var(--fs-small);
+  color: var(--cinza-600);
+}
+
+.projeto-outro .link-arrow {
+  margin-top: auto;
+}
+
+.projeto-outro:hover {
+  border-color: var(--vermelho-icc);
+}

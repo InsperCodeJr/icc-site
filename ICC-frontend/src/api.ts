@@ -18,6 +18,9 @@ export const api = {
   getPartner: (id: number) =>
     fetch(`${apiUrl}/partners/${id}/`, { headers }).then((res) => res.json()),
 
+  getDirectorates: () =>
+    fetch(`${apiUrl}/directorates/`, { headers }).then((res) => res.json()),
+
   getCategories: () =>
     fetch(`${apiUrl}/categories/`, { headers }).then((res) => res.json()),
 
@@ -29,6 +32,9 @@ export const api = {
 
   getProject: (id: number) =>
     fetch(`${apiUrl}/projects/${id}/`, { headers }).then((res) => res.json()),
+
+  getSuccessCases: (category?: string) =>
+    fetch(`${apiUrl}/success-cases/${category ? `?category=${category}` : ""}`, { headers }).then((res) => res.json()),
 
   getActivities: (category?: string) =>
     fetch(`${apiUrl}/activities/${category ? `?category=${category}` : ""}`, { headers }).then((res) => res.json()),
@@ -48,7 +54,7 @@ export const api = {
   getSelectionProcess: () =>
     fetch(`${apiUrl}/selection-process/`, { headers }).then((res) => res.json()),
 
-  postContact: (data: {name: string; email: string; phone: string; contact_type: "aluno" | "empresa"}) => 
+  postContact: (data: {name: string; email: string; phone: string; contact_type: "aluno" | "empresa" | "alumni" | "imprensa" | "outro"; message: string}) =>
     fetch(`${apiUrl}/contact/`, {
       method: "POST",
       headers,

@@ -1,0 +1,21 @@
+.politica-content > p {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--cinza-700);
+}
+
+.politica-content > p + p {
+  margin-top: 16px;
+}
+
+.politica-content > h2 {
+  margin: 48px 0 14px;
+  padding-top: 28px;
+  border-top: 1px solid var(--cinza-200);
+  font-size: var(--fs-h3);
+}
+
+.politica-content a {
+  font-weight: 700;
+  color: var(--vermelho-icc);
+}
