@@ -1,34 +1,66 @@
-import FormContato from "../../components/FormContato";
-// import { useEffect } from "react"
-// import { api } from "../../api"
-// import type { ContactInfo } from "../../types"
+import FormContato from "../../components/FormContato"
+import PageHero from "../../components/PageHero"
+import { InstagramIcon, LinkedInIcon, MailIcon } from "../../components/Icons"
+import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
 
-export default function Contato() {
-  // const [contact, setContact] = useState<ContactInfo | null>(null)
-  // const [loading, setLoading] = useState(true)
+// Extraído de site-data/icc.json (sobre.contato).
+const CANAIS = [
+  {
+    label: "E-mail",
+    valor: "insperconsultingclub@gmail.com",
+    href: "mailto:insperconsultingclub@gmail.com",
+    icon: <MailIcon size={20} />,
+  },
+  {
+    label: "Instagram",
+    valor: "@insperconsultingclub",
+    href: "https://www.instagram.com/insperconsultingclub/",
+    icon: <InstagramIcon size={20} />,
+  },
+  {
+    label: "LinkedIn",
+    valor: "Insper Consulting Club",
+    href: "https://br.linkedin.com/company/insperconsultingclub",
+    icon: <LinkedInIcon size={19} />,
+  },
+]
 
-  // useEffect(() => {
-  //   api.getContact()
-  //     .then((data: any) => {
-  //       if (data && data.id) {
-  //         setContact(data)
-  //       }
-  //       setLoading(false)
-  //     })
-  //     .catch(() => setLoading(false))
-  // }, [])
+export default function Contato() {
+  usePageTitle("Contato", "Entre em contato com o Insper Consulting Club")
 
   return (
     <div className="contato-page">
+      <PageHero title="Contato" lead="Entre em contato com o Insper Consulting Club" />
 
-      <div id="main-area">
-        <h1 className="contato-header__title">Contato</h1>
-        <p className="contato-header__subtitle">
-          Entre em contato com o Insper Consulting Club
-        </p>
-        <FormContato />
-      </div>
+      <section className="section">
+        <div className="container contato-grid">
+          <aside className="contato-canais">
+            <h2 className="contato-canais__title">Canais oficiais</h2>
+            <ul>
+              {CANAIS.map((canal) => (
+                <li key={canal.label}>
+                  <a
+                    href={canal.href}
+                    className="contato-canal"
+                    {...(canal.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  >
+                    <span className="contato-canal__icon">{canal.icon}</span>
+                    <span>
+                      <span className="contato-canal__label">{canal.label}</span>
+                      <span className="contato-canal__valor">{canal.valor}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+
+          <div className="contato-form-wrap">
+            <FormContato />
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

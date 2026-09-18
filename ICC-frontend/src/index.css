@@ -1,35 +1,567 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/* ==========================================================================
+   Design system do site da Liga Insper Consulting Club.
+   Cores e tipografia seguem site-data/guia-marca.json à risca: vermelho
+   #b20000, preto #1a1a1a, branco, o gradiente oficial, e só Poppins Regular
+   (400) e Bold (700). Nada de itálico nem sublinhado.
+   ========================================================================== */
 
 :root {
-  /* Cores primarias */
+  /* Marca */
   --vermelho-icc: #b20000;
-  --preto:#000000;
+  --vermelho-escuro: #7b001e;
+  --preto: #1a1a1a;
   --branco: #ffffff;
-  /* Gradiente industrial */
-  --vermelho-1: #cf2d2d;
-  --vermelho-2: var(--vermelho-icc);
-  --vermelho-3: #7b001e;
-  --vermelho-4: #5a0f1b;
-  /* Escalas de cinza */
-  --cinza-destaque: #111111;
-  --cinza-subtitulos: #333333;
-  --cinza-descricoes: #666666;
-  --cinza-bordas: #e5e5e5;
-  --cinza-fundos: #f5f5f5;
+  --gradiente-icc: linear-gradient(135deg, #7b001e 0%, #b20000 60%, #b20000 100%);
+
+  /* Neutros de apoio */
+  --cinza-800: #2b2b2b;
+  --cinza-700: #444444;
+  --cinza-600: #5f5f5f;
+  --cinza-500: #8a8a8a;
+  --cinza-300: #d6d6d6;
+  --cinza-200: #e6e6e6;
+  --cinza-100: #f3f3f3;
+  --cinza-50: #f9f9f9;
+  --vermelho-suave: #fbeeee;
+
+  /* Nomes antigos, mantidos como apelidos */
+  --cinza-destaque: var(--preto);
+  --cinza-subtitulos: var(--cinza-700);
+  --cinza-descricoes: var(--cinza-600);
+  --cinza-bordas: var(--cinza-200);
+  --cinza-fundos: var(--cinza-100);
+
+  /* Tipografia */
+  --font-display: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-display: clamp(2.25rem, 4.6vw, 3.5rem);
+  --fs-h1: clamp(2rem, 3.8vw, 3rem);
+  --fs-h2: clamp(1.625rem, 2.8vw, 2.25rem);
+  --fs-h3: 1.25rem;
+  --fs-lead: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  /* Layout */
+  --container: 1200px;
+  --container-narrow: 760px;
+  --gutter: clamp(20px, 4vw, 40px);
+  --section-y: clamp(64px, 8vw, 112px);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-md: 0 12px 32px rgba(26, 26, 26, 0.12);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Atualizada via ResizeObserver pelo Header (ver components/Header). */
+  --header-height: 76px;
 }
 
-html, body, #root {
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body,
+#root {
   width: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-* {
-  box-sizing: border-box;
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--preto);
+  background: var(--branco);
 }
 
-img {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: inherit;
+}
+
+p,
+ul,
+ol,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+strong,
+b {
+  font-weight: 700;
+}
+
+em,
+i,
+cite,
+address {
+  font-style: normal;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+video {
   max-width: 100%;
   display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--vermelho-icc);
+  color: var(--branco);
+}
+
+:focus-visible {
+  outline: 2px solid var(--vermelho-icc);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* O header é fixo; todo conteúdo de página fica empurrado pra baixo dele,
+   exceto a Home, que deixa o hero passar por trás (ver App.tsx). */
+.page-outlet {
+  padding-top: var(--header-height);
+  min-height: 70vh;
+}
+
+.page-outlet--flush {
+  padding-top: 0;
+}
+
+/* ---------- Layout ---------- */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: calc(var(--container-narrow) + var(--gutter) * 2);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--muted {
+  background: var(--cinza-50);
+  border-block: 1px solid var(--cinza-200);
+}
+
+.section--dark {
+  background: var(--preto);
+  color: var(--branco);
+}
+
+.section:not(.section--muted):not(.section--dark) + .section:not(.section--muted):not(.section--dark) {
+  padding-top: 0;
+}
+
+/* ---------- Tipografia utilitária ---------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 6px 14px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vermelho-icc);
+}
+
+.section--dark .eyebrow {
+  color: var(--branco);
+}
+
+.section-head {
+  max-width: 720px;
+  margin-bottom: clamp(36px, 5vw, 56px);
+}
+
+.section-head--row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: none;
+  flex-wrap: wrap;
+}
+
+.section-title {
+  font-size: var(--fs-h2);
+}
+
+.section-title .destaque,
+.page-hero__title .destaque {
+  color: var(--vermelho-icc);
+}
+
+.lead {
+  margin-top: 16px;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--cinza-600);
+  max-width: 640px;
+}
+
+.section--dark .lead {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.muted {
+  color: var(--cinza-600);
+}
+
+/* ---------- Cabeçalho das páginas internas ---------- */
+
+.page-hero {
+  padding-block: clamp(48px, 7vw, 88px) clamp(40px, 5vw, 64px);
+  border-bottom: 1px solid var(--cinza-200);
+  background: var(--cinza-50);
+}
+
+.page-hero__title {
+  font-size: var(--fs-h1);
+  max-width: 820px;
+}
+
+.page-hero .lead {
+  max-width: 680px;
+}
+
+.back-link {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  font-size: var(--fs-small);
+  color: var(--cinza-600);
+  transition: color 0.2s var(--ease);
+}
+
+.back-link:hover {
+  color: var(--vermelho-icc);
+}
+
+/* ---------- Botões e links ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+
+.btn svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+.btn--primary {
+  background: var(--vermelho-icc);
+  color: var(--branco);
+}
+
+.btn--primary:hover {
+  background: var(--vermelho-escuro);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--preto);
+  border-color: var(--cinza-300);
+}
+
+.btn--secondary:hover {
+  border-color: var(--preto);
+}
+
+.btn--light {
+  background: var(--branco);
+  color: var(--vermelho-icc);
+}
+
+.btn--light:hover {
+  background: var(--cinza-100);
+}
+
+.btn--ghost-light {
+  background: transparent;
+  color: var(--branco);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.btn--ghost-light:hover {
+  border-color: var(--branco);
+}
+
+.btn--sm {
+  min-height: 40px;
+  padding: 10px 18px;
+  font-size: var(--fs-small);
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--vermelho-icc);
+}
+
+.link-arrow svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.link-arrow:hover svg,
+a:hover > .link-arrow svg {
+  transform: translateX(4px);
+}
+
+/* ---------- Cards e grades ---------- */
+
+.card {
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  padding: clamp(24px, 3vw, 32px);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+a.card:hover,
+.card--hover:hover {
+  border-color: var(--cinza-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.grid {
+  display: grid;
+  gap: clamp(16px, 2.2vw, 24px);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grid--2,
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--cinza-100);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--cinza-700);
+}
+
+.tag--accent {
+  background: var(--vermelho-suave);
+  color: var(--vermelho-icc);
+}
+
+/* ---------- Estados ---------- */
+
+.state-message {
+  padding: 48px 24px;
+  border: 1px dashed var(--cinza-300);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--cinza-600);
+}
+
+.state-message strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--preto);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 40vh;
+  color: var(--cinza-600);
+  font-size: var(--fs-small);
+}
+
+.loading::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--cinza-200);
+  border-top-color: var(--vermelho-icc);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Carga inicial da SPA (ver main.tsx): mesmo spinner de .loading, só que
+   ocupando a tela toda, já que nesse momento nem o header existe ainda. */
+.hydrate-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.hydrate-fallback::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--cinza-200);
+  border-top-color: var(--vermelho-icc);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--preto);
+  color: var(--branco);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+.route-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  width: 0;
+  height: 2px;
+  background: var(--vermelho-icc);
+  opacity: 0;
+  transition: width 0.3s var(--ease), opacity 0.15s var(--ease);
+}
+
+.route-progress--active {
+  width: 70%;
+  opacity: 1;
+  transition: width 4s cubic-bezier(0.1, 0.4, 0.1, 1), opacity 0.15s var(--ease);
 }

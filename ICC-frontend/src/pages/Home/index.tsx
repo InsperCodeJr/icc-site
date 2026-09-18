@@ -2,192 +2,246 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { api } from "../../api"
 import type { Member, Statistic, Partner } from "../../types"
+import reuniaoInaugural from "../../images/reuniao-inaugural.jpg"
+import logoBranca from "../../images/logo-icc-branca.png"
+import useProgramas from "../../hooks/useProgramas"
+import MemberCard from "../../components/MemberCard"
+import { ArrowRightIcon, ChevronDownIcon } from "../../components/Icons"
+import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
 
+// Conteúdo institucional estático, extraído de site-data/icc.json
+// (sobre.missaoEProposito). Não há model de backend para isso.
+const MISSAO = {
+  missao:
+    "Conectar alunos do Insper ao mercado de consultoria, desenvolvendo as competências técnicas e comportamentais exigidas pelas principais firmas do setor.",
+  comoPreparamos:
+    "Treinamento para processos seletivos (GMAT, Verbal, Data e Fit Interview) e capacitação prática na resolução de cases reais de negócio.",
+  ondeQueremosChegar:
+    "Consolidar o ICC como referência em consultoria entre os clubes estudantis do Brasil e expandir a atuação para tecnologia e empreendedorismo.",
+}
+
+// Na Home aparece só a liderança. O corte usa a prioridade do cargo, que o
+// model guarda e o admin controla (0 para presidência, 2 para diretoria, daí
+// para cima o restante), e não palavras dentro do texto do cargo: renomear um
+// cargo no admin não muda em silêncio quem aparece aqui.
+const PRIORIDADE_LIDERANCA = 2
+
+function eLideranca(member: Member): boolean {
+  return member.position_power !== null && member.position_power <= PRIORIDADE_LIDERANCA
+}
+
 export default function Home() {
+  usePageTitle()
+  const programas = useProgramas()
   const [members, setMembers] = useState<Member[]>([])
   const [statistics, setStatistics] = useState<Statistic[]>([])
   const [partners, setPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      api.getMembers(),
-      api.getStatistics(),
-      api.getPartners(),
-    ]).then(([membersData, statsData, partnersData]) => {
-      setMembers(membersData.slice(0, 6))
-      setStatistics(statsData)
-      setPartners(partnersData)
-      setLoading(false)
-    })
+    Promise.all([api.getMembers(), api.getStatistics(), api.getPartners()])
+      .then(([membersData, statsData, partnersData]) => {
+        setMembers((membersData as Member[]).filter(eLideranca))
+        setStatistics(statsData)
+        setPartners(partnersData)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
   return (
-    <main className="home">
-      {/* HERO */}
-      <section className="hero-icc">
-        <div className="hero-icc__overlay" />
-        <div className="hero-icc__content">
-          <span className="hero-icc__eyebrow">
-            <span className="hero-icc__eyebrow-line" />
-            CONSULTORIA × CARREIRA
-          </span>
-          <h1 className="hero-icc__title">
-            Prepare-se para os processos <br />
-            <em>que definem sua carreira.</em>
-          </h1>
-          <p className="hero-icc__subtitle">
-            Somos a organização estudantil do Insper que forma alunos para os
-            processos seletivos de consultoria — currículo, GMAT, Business
-            Case, Case Interview e Personal Interview — com um trainee real de
-            consultoria ao longo do semestre.
+    <div className="home">
+      <section className="home-hero">
+        <div className="home-hero__inner">
+          <img
+            src={logoBranca}
+            alt="Liga Insper Consulting Club"
+            className="home-hero__logo"
+            width={733}
+            height={410}
+            fetchPriority="high"
+          />
+          <h1 className="home-hero__title">O futuro consultor começa no ICC</h1>
+        </div>
+        <a href="#inicio-conteudo" className="home-hero__scroll" aria-label="Rolar para o conteúdo">
+          <ChevronDownIcon size={22} />
+        </a>
+      </section>
+      {/* Marca onde o hero termina; o Header observa isso pra saber quando
+          ficar sólido (ver components/Header). */}
+      <div id="hero-sentinel" />
+
+      <section className="home-intro" id="inicio-conteudo">
+        <div className="container home-intro__inner">
+          <p className="home-intro__statement">
+            Preparamos nossos membros para os processos seletivos mais exigentes do mercado.
           </p>
-          <div className="hero-icc__actions">
+          <div className="home-intro__actions">
             <Link to="/processo" className="btn btn--primary">
-              Seja membro →
+              Seja membro
+              <ArrowRightIcon />
             </Link>
-            <Link to="/atividades" className="btn btn--ghost">
+            <Link to="/atividades" className="btn btn--secondary">
               Conheça as atividades
             </Link>
           </div>
         </div>
       </section>
 
-      {/* SOBRE / MANIFESTO */}
-      <section className="section about-icc">
-        <div className="about-icc__text">
-          <span className="eyebrow">A ORGANIZAÇÃO</span>
-          <h2 className="section-title">
-            Formação de consultoria, <br />
-            <em>energia de estudante.</em>
-          </h2>
-          <p>
-            Fundado em 2020, o Insper Consulting Club prepara alunos para os
-            processos seletivos das empresas de consultoria e os expõe ao
-            cotidiano da profissão através de um programa de trainee, no qual
-            os membros resolvem um caso de consultoria real ao longo do
-            semestre.
-          </p>
-          <p>
-            Também promovemos eventos e capacitações em parceria com
-            empresas, garantindo uma formação completa e sempre atualizada.
-          </p>
-        </div>
-        <div className="about-icc__image">
-          <img src="/src/images/background.jpg" alt="Membros do Insper Consulting Club" />
-        </div>
-      </section>
-
-      {/* ESTATÍSTICAS */}
-      <section className="stats-icc">
-        {loading ? (
-          <p className="stats-icc__loading">Carregando estatísticas...</p>
-        ) : (
-          statistics.map((stat) => (
-            <div className="stats-icc__item" key={stat.id}>
-              <span className="stats-icc__value">{stat.value}</span>
-            </div>
-          ))
-        )}
-      </section>
-
-      {/* ATIVIDADES / TREINAMENTOS */}
-      <section className="section training-icc">
-        <span className="eyebrow eyebrow--center">O QUE FAZEMOS</span>
-        <h2 className="section-title section-title--center">
-          Treinamento completo, do currículo à entrevista final.
-        </h2>
-
-        <div className="training-icc__grid">
-          <div className="training-card">
-            <span className="training-card__index">01</span>
-            <h3>Currículo</h3>
-            <p>Elaboração e revisão de currículo com padrão de mercado.</p>
-          </div>
-          <div className="training-card">
-            <span className="training-card__index">02</span>
-            <h3>GMAT</h3>
-            <p>Preparação para o teste exigido pelas principais consultorias.</p>
-          </div>
-          <div className="training-card">
-            <span className="training-card__index">03</span>
-            <h3>Business Case</h3>
-            <p>Treino de raciocínio estruturado para resolução de cases.</p>
-          </div>
-          <div className="training-card">
-            <span className="training-card__index">04</span>
-            <h3>Case Interview</h3>
-            <p>Simulações de entrevista de caso com feedback direto.</p>
-          </div>
-          <div className="training-card">
-            <span className="training-card__index">05</span>
-            <h3>Personal Interview</h3>
-            <p>Preparação de fit e storytelling para a entrevista pessoal.</p>
-          </div>
-          <div className="training-card">
-            <span className="training-card__index">06</span>
-            <h3>Trainee</h3>
-            <p>Resolução de um caso de consultoria real ao longo do semestre.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* EQUIPE */}
-      <section className="section team-icc">
-        <div className="team-icc__header">
+      <section className="section home-about">
+        <div className="container home-about__grid">
           <div>
-            <span className="eyebrow">MEMBROS</span>
-            <h2 className="section-title">Quem constrói o clube</h2>
+            <p className="eyebrow">Quem somos</p>
+            <h2 className="section-title">
+              Mais do que um clube, somos um ambiente de formação{" "}
+              <span className="destaque">para futuros consultores.</span>
+            </h2>
+            <p className="home-about__text">
+              A Liga Insper Consulting Club é uma organização estudantil
+              fundada em 2020, dedicada ao desenvolvimento de futuros
+              consultores. Ao longo do semestre, promovemos capacitações,
+              resolução de cases, visitas corporativas e iniciativas que
+              aproximam nossos membros da realidade das principais empresas
+              do mercado.
+            </p>
           </div>
-          <Link to="/equipe" className="btn btn--ghost">
-            Ver equipe completa →
-          </Link>
-        </div>
-
-        <div className="team-icc__grid">
-          {loading ? (
-            <p>Carregando equipe...</p>
-          ) : (
-            members.map((member) => (
-              <Link to={`/equipe/${member.id}`} className="team-card" key={member.id}>
-                <div className="team-card__photo">
-                  {member.photo_url && <img src={member.photo_url} alt={member.name} />}
-                </div>
-                <h3>{member.name}</h3>
-                <span>{member.role}</span>
-              </Link>
-            ))
-          )}
+          <figure className="home-about__figure">
+            <img src={reuniaoInaugural} alt="Membros da Liga Insper Consulting Club na reunião inaugural" />
+          </figure>
         </div>
       </section>
 
-      {/* PARCEIROS */}
-      {!loading && partners.length > 0 && (
-        <section className="section partners-icc">
-          <span className="eyebrow eyebrow--center">PARCEIROS</span>
-          <h2 className="section-title section-title--center">
-            Empresas que confiam no nosso trabalho
-          </h2>
-          <div className="partners-icc__grid">
-            {partners.map((partner) => (
-              <Link to={`/parceiros/${partner.id}`} className="partner-logo" key={partner.id}>
-                <img src={partner.logo_url} alt={partner.name} />
-              </Link>
+      {statistics.length > 0 && (
+        <section className="home-stats" aria-label="Conquistas">
+          <div className="container home-stats__grid">
+            {statistics.map((stat) => (
+              <div className="home-stats__item" key={stat.id}>
+                <span className="home-stats__value">{stat.value}</span>
+                <span className="home-stats__label">{stat.description}</span>
+              </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* CTA FINAL */}
-      <section className="cta-icc">
-        <h2>
-          Pronto para dar o próximo passo <br /> na sua carreira?
-        </h2>
-        <Link to="/processo" className="btn btn--primary btn--lg">
-          Faça parte do ICC →
-        </Link>
+      <section className="section section--muted">
+        <div className="container home-mission">
+          <div className="home-mission__main">
+            <p className="eyebrow">Missão</p>
+            <p className="home-mission__statement">{MISSAO.missao}</p>
+          </div>
+          <div className="home-mission__details">
+            <div className="home-mission__detail">
+              <h3>Como preparamos</h3>
+              <p>{MISSAO.comoPreparamos}</p>
+            </div>
+            <div className="home-mission__detail">
+              <h3>Onde queremos chegar</h3>
+              <p>{MISSAO.ondeQueremosChegar}</p>
+            </div>
+          </div>
+        </div>
       </section>
-    </main>
+
+      <section className="section">
+        <div className="container">
+          <div className="section-head section-head--row">
+            <div>
+              <p className="eyebrow">Projetos</p>
+              <h2 className="section-title">Nossos programas e cases</h2>
+            </div>
+            <Link to="/projetos" className="link-arrow">
+              Ver todos os projetos
+              <ArrowRightIcon />
+            </Link>
+          </div>
+
+          <div className="grid grid--4">
+            {programas.map((programa, index) => (
+              <Link to={`/projetos/${programa.slug}`} className="card home-program" key={programa.slug}>
+                <span className="home-program__index">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="home-program__name">{programa.label}</h3>
+                <p className="home-program__type">{programa.subtitle}</p>
+                <span className="link-arrow home-program__more">
+                  Saiba mais
+                  <ArrowRightIcon />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--muted">
+        <div className="container">
+          <div className="section-head section-head--row">
+            <div>
+              <p className="eyebrow">Membros</p>
+              <h2 className="section-title">Quem constrói o clube</h2>
+            </div>
+            <Link to="/equipe" className="link-arrow">
+              Ver equipe completa
+              <ArrowRightIcon />
+            </Link>
+          </div>
+
+          {loading ? (
+            <p className="loading">Carregando equipe...</p>
+          ) : (
+            <div className="grid grid--4 home-team">
+              {members.map((member) => (
+                <MemberCard key={member.id} member={member} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {partners.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-head section-head--row">
+              <div>
+                <p className="eyebrow">Parceiros</p>
+                <h2 className="section-title">Empresas que confiam no nosso trabalho</h2>
+              </div>
+              <Link to="/parceiros" className="link-arrow">
+                Ver todos os parceiros
+                <ArrowRightIcon />
+              </Link>
+            </div>
+
+            <ul className="home-partners">
+              {partners.map((partner) => (
+                <li key={partner.id}>
+                  <Link to={`/parceiros/${partner.id}`} className="home-partners__logo" title={partner.name}>
+                    {partner.logo_url ? (
+                      <img src={partner.logo_url} alt={partner.name} loading="lazy" />
+                    ) : (
+                      <span>{partner.name}</span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <section className="home-cta">
+        <div className="container home-cta__inner">
+          <h2 className="home-cta__title">Pronto para dar o próximo passo na sua carreira?</h2>
+          <div className="home-cta__actions">
+            <Link to="/processo" className="btn btn--light">
+              Faça parte do ICC
+              <ArrowRightIcon />
+            </Link>
+            <Link to="/contato" className="btn btn--ghost-light">
+              Fale com a gente
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }

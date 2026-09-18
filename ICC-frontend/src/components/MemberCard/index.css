@@ -1,57 +1,82 @@
 .member-card {
-  display: block;
-  background: #ffffff;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  text-decoration: none;
-  color: inherit;
-  transition: 0.2s;
-}
-
-.member-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-}
-
-.member-image {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-}
-
-.member-content {
-  padding: 18px;
-}
-
-.member-name {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.member-role {
-  color: #c40000;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.member-info {
-  color: #6b7280;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.member-actions {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
 }
 
-.icon-button {
-  width: 42px;
-  height: 42px;
-  padding: 8px;
-  border-radius: 8px;
-  background: #f1f5f9;
-  object-fit: contain;
+.member-card__link {
+  display: block;
+}
+
+.member-card__photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--cinza-100);
+}
+
+.member-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transition: transform 0.5s var(--ease);
+}
+
+.member-card__link:hover .member-card__photo img {
+  transform: scale(1.03);
+}
+
+.member-card__initials {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cinza-500);
+}
+
+.member-card__name {
+  margin-top: 16px;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  transition: color 0.2s var(--ease);
+}
+
+.member-card__link:hover .member-card__name {
+  color: var(--vermelho-icc);
+}
+
+.member-card__footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.member-card__role {
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--cinza-600);
+}
+
+.member-card__linkedin {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin-top: -4px;
+  border: 1px solid var(--cinza-200);
+  border-radius: 50%;
+  color: var(--cinza-600);
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.member-card__linkedin:hover {
+  border-color: var(--vermelho-icc);
+  background: var(--vermelho-icc);
+  color: var(--branco);
 }
