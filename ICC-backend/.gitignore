@@ -211,7 +211,8 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-website/migrations/
+# Gerado pelo collectstatic (servido pelo WhiteNoise em produção)
+website/static/
 
 # Media files (uploaded images)
 images/partners/*.png
