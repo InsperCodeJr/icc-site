@@ -44,8 +44,8 @@ __Depois de baixar o Docker Desktop, os comandos do Docker devem ser realizados 
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/R4f43lVB/ICC-Site.git
-cd ICC-Site
+git clone https://github.com/InsperCodeJr/icc-site.git
+cd icc-site
 ```
 
 ---
@@ -55,6 +55,8 @@ cd ICC-Site
 ```bash
 echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(50))')" > ICC-backend/.env
 ```
+
+As demais variáveis são opcionais no ambiente local. A lista completa, com explicação de cada uma, está em [`ICC-backend/.env.example`](ICC-backend/.env.example).
 
 ---
 
@@ -71,12 +73,15 @@ Isso irá subir três serviços:
 
 ---
 
-### 4. Criar as migrations do backend (primeira vez)
+### 4. Popular o banco com dados de exemplo (opcional)
 
 ```bash
-docker-compose exec backend python manage.py makemigrations website
-docker-compose exec backend python manage.py migrate
+docker-compose exec backend python manage.py seed_mock_data
 ```
+
+Cria membros, projetos, parceiros e notícias **fictícios**, só para desenvolvimento. Pode ser rodado mais de uma vez sem duplicar nada (mas desfaz edições feitas nesses registros de exemplo). Nunca rode em produção.
+
+> As migrations já estão versionadas em `ICC-backend/website/migrations/` e são aplicadas automaticamente ao subir o backend. Só rode `makemigrations` quando alterar `models.py`, e faça commit do arquivo gerado.
 
 ---
 
@@ -133,9 +138,28 @@ docker-compose exec backend python manage.py <comando>
 # Para popular o site local com dados mock completos
 docker compose exec backend python manage.py seed_mock_data
 
-# Para importar apenas o mock legado de membros
-docker compose exec backend python manage.py import_members
-
 ```
+
+> **Comandos legados:** `import_members` e `download_photos` dependem do arquivo `membros_icc.sql` da gestão anterior, que não está no repositório. Não funcionam e não são mais executados ao subir o backend.
+
+---
+
+## Produção
+
+O `Dockerfile` do backend já sobe em modo de produção: aplica as migrations, prepara os arquivos estáticos do `/admin` (servidos pelo WhiteNoise) e inicia o servidor com o gunicorn na porta definida pela variável `PORT`. O `docker-compose.yml` substitui esse comando pelo servidor de desenvolvimento.
+
+Variáveis obrigatórias na hospedagem do backend (detalhes em [`ICC-backend/.env.example`](ICC-backend/.env.example)):
+
+| Variável | Para quê |
+|----------|----------|
+| `SECRET_KEY` | Chave secreta do Django |
+| `DATABASE_URL` | Conexão com o Postgres na nuvem |
+| `ALLOWED_HOSTS` | Domínio do backend |
+| `CORS_ALLOWED_ORIGINS` | Domínio do site (frontend) |
+| `CSRF_TRUSTED_ORIGINS` | Domínio do backend com `https://`, para o login do `/admin` |
+| `BEHIND_PROXY=True` | Quando a hospedagem fornece o HTTPS (Render, Railway...) |
+| `CLOUDINARY_*` | Armazenamento das fotos; sem isso, as imagens se perdem a cada deploy |
+
+O frontend é gerado com `npm run build` (pasta `ICC-frontend/dist`), com a variável `VITE_API_URL` apontando para `https://<domínio-do-backend>/api`.
 
 ---

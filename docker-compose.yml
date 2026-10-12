@@ -23,6 +23,8 @@ services:
     build:
       context: ./ICC-backend
       dockerfile: Dockerfile
+    # Em desenvolvimento usa o servidor do Django, que recarrega ao salvar.
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
