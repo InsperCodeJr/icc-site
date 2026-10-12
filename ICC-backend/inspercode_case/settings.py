@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,6 +56,10 @@ SECURE_HSTS_PRELOAD = not DEBUG
 if os.environ.get('BEHIND_PROXY', 'False') == 'True':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Domínios (com https://) autorizados a enviar formulários ao Django, como o
+# login do /admin. Necessário em produção quando o admin é servido por HTTPS.
+CSRF_TRUSTED_ORIGINS = [h for h in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if h]
+
 
 # Application definition
 
@@ -64,8 +69,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
+    # Depois de staticfiles de propósito: o collectstatic do cloudinary_storage
+    # lê STATICFILES_STORAGE (removido no Django 5.1) e quebraria o deploy.
+    'cloudinary_storage',
     'cloudinary',
     'website.apps.WebsiteConfig',
     'rest_framework',
@@ -74,13 +81,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Serve os arquivos estáticos (CSS/JS do /admin) em produção, sem nginx.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Precisa vir antes do CommonMiddleware para responder às requisições
+    # de CORS antes que ele as redirecione.
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'inspercode_case.urls'
@@ -107,17 +118,25 @@ WSGI_APPLICATION = 'inspercode_case.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'iccsite'),
-        'USER': os.environ.get('DB_USER', 'iccuser'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'iccpassword'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-        'DISABLE_SERVER_SIDE_CURSORS': True,
+# Em produção, os provedores de Postgres (Neon, Supabase, Render...) entregam
+# uma única URL de conexão; basta colocá-la em DATABASE_URL. Sem ela, usa as
+# variáveis DB_* do docker-compose local.
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'], conn_max_age=600),
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'iccsite'),
+            'USER': os.environ.get('DB_USER', 'iccuser'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'iccpassword'),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
+    }
+DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 
 
 # Password validation
@@ -171,10 +190,20 @@ CLOUDINARY_STORAGE = {
 }
 # Sem credenciais Cloudinary (ambiente local sem acesso ao dev compartilhado),
 # cai para armazenamento em disco (MEDIA_ROOT) em vez de quebrar os uploads.
-if CLOUDINARY_STORAGE['CLOUD_NAME']:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-else:
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+# Desde o Django 5.1 isso é configurado em STORAGES; DEFAULT_FILE_STORAGE é
+# ignorado e os uploads iriam para o disco do servidor, perdidos a cada deploy.
+STORAGES = {
+    'default': {
+        'BACKEND': (
+            'cloudinary_storage.storage.MediaCloudinaryStorage'
+            if CLOUDINARY_STORAGE['CLOUD_NAME']
+            else 'django.core.files.storage.FileSystemStorage'
+        ),
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

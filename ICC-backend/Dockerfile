@@ -19,5 +19,7 @@ COPY . .
 # Cria a pasta de arquivos de mídia
 RUN mkdir -p /app/media
 
-# Roda migrations, importa os membros e inicia o servidor
-CMD ["sh", "-c", "python manage.py migrate && python manage.py import_members && python manage.py download_photos && python manage.py runserver 0.0.0.0:8000"]
+# Produção: aplica migrations, prepara os arquivos estáticos e inicia o
+# servidor (gunicorn). PORT é definida pela hospedagem; localmente, 8000.
+# No desenvolvimento local, o docker-compose.yml substitui este comando.
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn inspercode_case.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
