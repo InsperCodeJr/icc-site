@@ -5,10 +5,12 @@ Site oficial da **Liga Insper Consulting Club**, desenvolvido com React (fronten
 O site do Liga ICC foi feito com o objetivo de apresentar o site da Liga ICC de maneira profissional e moderna, além de seus membros, projetos e parceiros para pessoas e empresas interessadas no trabalho do ICC.
 
 As funcionalidades previstas para o projeto são:
- - Página de inicio qu apresenta a Liga ICC e seus ideais, resumo de sua história e empresas parceiras.
- - Área de membros com todos os membros registrados da organização estudantil, incluindo seus cargos e perfis proficionais, além de seu histórico dentro da Liga ICC.
- - Área de projetos com todos os projetos registrados da organização estudantil, incluindo membros participantes e informações adicionis.
- - Área admnistrativa que permite a alteração de perfis de membros e projetos já existentes, adição de novos projetos e perfis, e exclusão visando o uso futuro do site pela Liga ICC.
+ - Página de início que apresenta a Liga ICC e seus ideais, resumo de sua história e empresas parceiras.
+ - Área de membros com todos os membros registrados da organização estudantil, incluindo seus cargos e perfis profissionais, além de seu histórico dentro da Liga ICC.
+ - Área de projetos com todos os projetos registrados da organização estudantil, incluindo membros participantes e informações adicionais.
+ - Área administrativa que permite a alteração de perfis de membros e projetos já existentes, adição de novos projetos e perfis, e exclusão visando o uso futuro do site pela Liga ICC.
+
+> **Status:** a área administrativa funciona hoje pelo Django Admin (`/admin`); o painel próprio no frontend ainda está no backlog. O que já foi entregue, com critérios de aceite, e o que falta estão em [`backlog.md`](backlog.md).
 
 Membros 2026.2:
 
@@ -107,13 +109,22 @@ docker-compose exec backend python manage.py createsuperuser
 
 | Método | URL | Descrição |
 |--------|-----|-----------|
-| GET | `/api/members/` | Lista membros ativos |
+| GET | `/api/members/` | Lista membros ativos (`?all=true` inclui quem já saiu) |
 | GET | `/api/members/<id>/` | Detalhe de um membro |
+| GET | `/api/directorates/` | Lista diretorias |
 | GET | `/api/partners/` | Lista parceiros |
 | GET | `/api/partners/<id>/` | Detalhe de um parceiro |
 | GET | `/api/projects/` | Lista projetos |
 | GET | `/api/projects/<id>/` | Detalhe de um projeto |
+| GET | `/api/categories/` | Lista categorias de atividades |
+| GET | `/api/activities/` | Lista atividades |
+| GET | `/api/activities/<id>/` | Detalhe de uma atividade |
+| GET | `/api/calendar/` | Calendário do semestre |
+| GET | `/api/success-cases/` | Lista cases de sucesso |
+| GET | `/api/news/` | Lista notícias |
 | GET | `/api/statistics/` | Estatísticas da home |
+| GET | `/api/selection-process/` | Processo seletivo ativo (etapas, requisitos e materiais) |
+| POST | `/api/contact/` | Envia o formulário de contato (JSON, com limite de requisições) |
 
 ---
 
@@ -131,6 +142,9 @@ docker-compose down
 
 # Ver logs do backend
 docker-compose logs backend
+
+# Importar eventos de um .ics (Google Calendar) para o calendário do semestre
+docker-compose exec backend python manage.py import_calendar_ics --help
 
 # Rodar qualquer comando Django
 docker-compose exec backend python manage.py <comando>
