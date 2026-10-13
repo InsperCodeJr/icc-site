@@ -1,2 +1,8 @@
 .env
+# Qualquer variação (.env-2, .env.production...) costuma guardar segredos;
+# só o modelo sem valores vai para o repositório.
+.env-*
+.env.*
+!.env.example
 docker-compose.override.yml
+/site-data
