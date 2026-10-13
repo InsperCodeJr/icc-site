@@ -30,6 +30,8 @@ services:
     volumes:
       - ./ICC-backend:/app
       - media_files:/app/media
+      # Dados reais do ICC (não versionados), lidos pelo import_icc_data.
+      - ./site-data:/site-data:ro
     env_file:
       - ./ICC-backend/.env
     environment:
