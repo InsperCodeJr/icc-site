@@ -61,7 +61,7 @@ class PartnerListView(generics.ListAPIView):
     serializer_class = PartnerSerializer
 
     def get_queryset(self):
-        qs = Partner.objects.select_related("category").order_by("order", "name")
+        qs = Partner.objects.select_related("category").filter(is_active=True).order_by("order", "name")
         category_id = self.request.query_params.get("category")
         if category_id:
             qs = qs.filter(category__id=category_id)
@@ -70,12 +70,14 @@ class PartnerListView(generics.ListAPIView):
 
 class PartnerDetailView(generics.RetrieveAPIView):
     serializer_class = PartnerSerializer
-    queryset = Partner.objects.select_related("category").all()
+    queryset = Partner.objects.select_related("category").filter(is_active=True)
+
 
 
 class ActivityCategoryListView(generics.ListAPIView):
     serializer_class = ActivityCategorySerializer
-    queryset = ActivityCategory.objects.all().order_by("order")
+    queryset = ActivityCategory.objects.filter(is_active=True).order_by("order")
+
 
 
 class CalendarMonthListView(generics.ListAPIView):
@@ -112,7 +114,7 @@ class ActivityListView(generics.ListAPIView):
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        qs = Activity.objects.select_related("category")
+        qs = Activity.objects.select_related("category").exclude(category__is_active=False)
         category = self.request.query_params.get("category")
         if category:
             qs = qs.filter(category__slug=category)
@@ -123,7 +125,9 @@ class SuccessCaseListView(generics.ListAPIView):
     serializer_class = SuccessCaseSerializer
 
     def get_queryset(self):
-        qs = SuccessCase.objects.select_related("category").prefetch_related(
+        qs = SuccessCase.objects.filter(
+            is_active=True, category__is_active=True
+        ).select_related("category").prefetch_related(
             "participants__member"
         )
         category = self.request.query_params.get("category")
