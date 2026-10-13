@@ -132,6 +132,29 @@ docker-compose exec backend python manage.py createsuperuser
 
 Com os containers rodando, acesse `http://localhost:8000/admin` e faça login com o superusuário criado. Por lá é possível cadastrar membros, parceiros, projetos e estatísticas.
 
+### Importar os dados reais do ICC
+
+Os dados reais (membros, diretorias, programas, cases e parceiros) ficam em `site-data/`, na raiz do repositório. A pasta **não é versionada**, porque tem dados pessoais dos membros: peça-a a alguém do time. Estrutura esperada:
+
+```
+site-data/
+├── icc.json      # dados institucionais
+├── members/      # fotos, com o id da pessoa no icc.json (ex.: ana-luisa-farinha.jpg)
+└── partners/     # logos (ex.: bain.png casa com "Bain & Company")
+```
+
+```bash
+# Banco local
+docker compose exec backend python manage.py import_icc_data
+
+# Banco de produção: passe também as variáveis do Cloudinary, senão o comando se recusa a rodar
+docker compose run --rm -e DATABASE_URL='...' -e CLOUDINARY_CLOUD_NAME='...' -e CLOUDINARY_API_KEY='...' -e CLOUDINARY_API_SECRET='...' backend python manage.py import_icc_data
+```
+
+O comando pode ser rodado mais de uma vez: atualiza os registros em vez de duplicar (membros são identificados pelo LinkedIn). Quem sai de todas as diretorias no `icc.json` recebe data de saída e some da Equipe, sem ser apagado. Fotos já cadastradas só são substituídas com `--atualizar-fotos`.
+
+> Nunca coloque a `DATABASE_URL` de produção no `ICC-backend/.env`: com ela lá, o ambiente local inteiro passa a ler e gravar no banco do site no ar.
+
 ---
 
 ## Comandos úteis
