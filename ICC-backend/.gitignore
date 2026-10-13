@@ -225,3 +225,4 @@ images/team/*.jpg
 images/team/*.jpeg
 images/team/*.gif
 images/team/*.webp
+.env-2
