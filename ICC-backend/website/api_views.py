@@ -27,8 +27,6 @@ class TeamMemberListView(generics.ListAPIView):
     serializer_class = TeamMemberListSerializer
 
     def get_queryset(self):
-        show_all = self.request.query_params.get(
-            "all", "false").lower() == "true"
         # Uma pessoa pode estar em mais de uma diretoria (ex: diretora de
         # Pedagógico e também mentora), então a ordem é dada pela primeira
         # (menor order) delas; membros sem nenhuma vão para o fim.
@@ -40,13 +38,15 @@ class TeamMemberListView(generics.ListAPIView):
             F("min_directorate_order").asc(nulls_last=True),
             "position__power", "name",
         )
-        if not show_all:
-            qs = qs.filter(exit_date__isnull=True)
-        return qs
+        # Membros arquivados (com data de saída) nunca aparecem na API pública.
+        return qs.filter(exit_date__isnull=True)
 
 
 class TeamMemberDetailView(generics.RetrieveAPIView):
     serializer_class = TeamMemberDetailSerializer
+    # Sem filtro de propósito: membros arquivados (com data de saída) não entram
+    # na listagem da equipe, mas o perfil deles continua acessível por link
+    # (ex.: a partir da equipe de um projeto).
     queryset = Team_Member.objects.select_related("position").prefetch_related(
         "projects__partners", "directorate_memberships__directorate"
     ).all()
