@@ -81,8 +81,8 @@ export default function Home() {
               Seja membro
               <ArrowRightIcon />
             </Link>
-            <Link to="/atividades" className="btn btn--secondary">
-              Conheça as atividades
+            <Link to="/projetos" className="btn btn--secondary">
+              Conheça os projetos
             </Link>
           </div>
         </div>
