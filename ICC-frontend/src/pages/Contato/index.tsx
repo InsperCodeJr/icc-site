@@ -1,4 +1,3 @@
-import FormContato from "../../components/FormContato"
 import PageHero from "../../components/PageHero"
 import { InstagramIcon, LinkedInIcon, MailIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
@@ -55,10 +54,6 @@ export default function Contato() {
               ))}
             </ul>
           </aside>
-
-          <div className="contato-form-wrap">
-            <FormContato />
-          </div>
         </div>
       </section>
     </div>
