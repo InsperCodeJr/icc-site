@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
 import { api } from "../../api"
 import type { SelectionProcess } from "../../types"
 import PageHero from "../../components/PageHero"
 import { ArrowRightIcon, CheckIcon, ClockIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
+
+// Google Forms para quem quer receber avisos do processo seletivo.
+// Trocar pelo link real enviado pelo ICC.
+const FORMS_ATUALIZACOES = "https://forms.gle/PLACEHOLDER"
 
 export default function Processo() {
   usePageTitle("Processo Seletivo", "Participe do processo seletivo e faça parte da Liga Insper Consulting Club")
@@ -23,10 +26,10 @@ export default function Processo() {
   const cta = (
     <div className="processo-cta">
       <h2 className="processo-cta__title">Cadastre-se para receber atualizações</h2>
-      <Link to="/contato" className="btn btn--light">
+      <a href={FORMS_ATUALIZACOES} target="_blank" rel="noopener noreferrer" className="btn btn--light">
         Cadastre-se
         <ArrowRightIcon />
-      </Link>
+      </a>
     </div>
   )
 
