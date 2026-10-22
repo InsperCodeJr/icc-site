@@ -1,8 +1,5 @@
 .contato-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-  gap: clamp(40px, 6vw, 88px);
-  align-items: start;
+  max-width: 560px;
 }
 
 .contato-canais__title {
@@ -58,23 +55,5 @@
 @media (max-width: 420px) {
   .contato-canal__valor {
     font-size: 0.8125rem;
-  }
-}
-
-.contato-form-wrap {
-  padding: clamp(24px, 4vw, 44px);
-  border: 1px solid var(--cinza-200);
-  border-radius: var(--radius);
-  background: var(--branco);
-  box-shadow: var(--shadow-sm);
-}
-
-@media (max-width: 900px) {
-  .contato-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .contato-form-wrap {
-    order: -1;
   }
 }
