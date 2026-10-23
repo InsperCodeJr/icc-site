@@ -33,36 +33,44 @@ class Directorate(models.Model):
 
 
 class Member_Position(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, verbose_name='Cargo')
     power = models.IntegerField(
         verbose_name='Prioridade para exibição',
-        help_text='Digite 1 para maior prioridade ou 2 para menor.'
+        help_text='0 = Presidência, 1 = Vice, 2 = Diretoria, 3 = Coordenação, '
+                  '4 = Membro/Mentor, 5 = Trainee. Até 2 aparece na Home como liderança.'
     )
 
     class Meta:
-        verbose_name_plural = 'Posição de Membros'
+        verbose_name = 'Cargo'
+        verbose_name_plural = 'Cargos'
 
     def __str__(self):
         return self.title
 
 
 class Partner(models.Model):
-    logo_url = models.ImageField(upload_to='partners/')
-    name = models.CharField(max_length=200)
-    description = models.TextField()
+    logo_url = models.ImageField(upload_to='partners/', verbose_name='Logo')
+    name = models.CharField(max_length=200, verbose_name='Nome')
+    description = models.TextField(verbose_name='Descrição')
     category = models.ForeignKey(
         Partner_Category,
         on_delete=models.PROTECT,
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Categoria'
     )
-    contato = models.CharField(max_length=20)
+    contato = models.CharField(max_length=20, blank=True)
+
 
     site = models.URLField(
         max_length=300,
         blank=True,
         null=True,
         verbose_name='Site do parceiro'
+    )
+    is_active = models.BooleanField(
+        default=True, verbose_name='Exibir no site',
+        help_text='Desmarque para esconder do site sem apagar.'
     )
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
@@ -120,6 +128,10 @@ class ActivityCategory(models.Model):
     signup_url = models.URLField(
         max_length=300, blank=True, verbose_name='Link de inscrição',
         help_text='Preenchido apenas nos programas que têm formulário próprio de inscrição.'
+    )
+    is_active = models.BooleanField(
+        default=True, verbose_name='Exibir no site',
+        help_text='Desmarque para esconder do site sem apagar.'
     )
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
@@ -232,15 +244,19 @@ class ProjectContentBlock(models.Model):
 
 
 class Team_Member(models.Model):
-    name = models.CharField(max_length=200)
-    photo = models.ImageField(upload_to='team/', null=True, blank=True)
-    biography = models.TextField(max_length=200)
-    position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True)
-    course = models.CharField(max_length=200, null=True, blank=True)
-    year = models.CharField(max_length=50, null=True, blank=True)
-    hours = models.IntegerField(null=True)
-    entry_date = models.DateField()
-    exit_date = models.DateField(null=True, blank=True)
+    name = models.CharField(max_length=200, verbose_name='Nome')
+    photo = models.ImageField(upload_to='team/', null=True, blank=True, verbose_name='Foto')
+    biography = models.TextField(max_length=200, blank=True, verbose_name='Biografia')
+    position = models.ForeignKey(Member_Position, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Cargo principal')
+    course = models.CharField(max_length=200, null=True, blank=True, verbose_name='Curso')
+    year = models.CharField(max_length=50, null=True, blank=True, verbose_name='Período')
+    hours = models.IntegerField(null=True, blank=True, verbose_name='Horas dedicadas')
+    entry_date = models.DateField(verbose_name='Data de entrada')
+    exit_date = models.DateField(
+        null=True, blank=True, verbose_name='Data de saída',
+        help_text='Preencha quando a pessoa sair do clube: ela some da página Equipe, '
+                  'mas o histórico (cases, trajetória) continua guardado.'
+    )
     email = models.EmailField(null=True, blank=True, verbose_name='Email')
     linkedin = models.URLField(null=True, blank=True, verbose_name='LinkedIn')
     trajetoria = models.JSONField(
@@ -250,7 +266,8 @@ class Team_Member(models.Model):
     projects = models.ManyToManyField(Project, blank=True, verbose_name='Projetos participados', related_name='members')
 
     class Meta:
-        verbose_name_plural = 'Membros do Time'
+        verbose_name = 'Membro'
+        verbose_name_plural = 'Membros'
 
     def __str__(self):
         return self.name
@@ -545,6 +562,10 @@ class SuccessCase(models.Model):
     )
     award = models.CharField(max_length=300, blank=True, verbose_name='Premiação')
     publication_url = models.URLField(max_length=300, blank=True, verbose_name='Link da publicação')
+    is_active = models.BooleanField(
+        default=True, verbose_name='Exibir no site',
+        help_text='Desmarque para esconder do site sem apagar.'
+    )
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:

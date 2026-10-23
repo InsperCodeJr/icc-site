@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.html import format_html
 
 from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
@@ -15,9 +15,19 @@ from .models import (
 )
 
 # Títulos do topo e da página inicial do /admin
-admin.site.site_header = 'ICC — Administração do site'
-admin.site.site_title = 'ICC Admin'
-admin.site.index_title = 'Gerenciar conteúdo do site'
+admin.site.site_header = 'Administração · Insper Consulting Club'
+admin.site.site_title = 'Admin ICC'
+admin.site.index_title = 'Conteúdo do site'
+
+
+def miniatura(imagem, altura=40):
+    """Mostra a imagem pequena nas listas e no formulário do admin."""
+    if not imagem:
+        return '—'
+    return format_html(
+        '<img src="{}" style="height:{}px;border-radius:4px;object-fit:cover">',
+        imagem.url, altura,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -32,12 +42,23 @@ class PartnerCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'contato', 'site', 'order')
-    list_editable = ('order',)
-    list_filter = ('category',)
-    # Exigido pelo autocomplete de "parceiro responsável" em Atividades.
-    search_fields = ('name', 'description', 'contato')
+    list_display = ('logo', 'name', 'category', 'is_active', 'order')
+    list_display_links = ('logo', 'name')
+    list_editable = ('is_active', 'order')
+    list_filter = ('is_active', 'category')
+    # search_fields também é exigido pelo autocomplete de "parceiro responsável" em Atividades.
+    search_fields = ('name', 'description')
     ordering = ('order', 'name')
+    readonly_fields = ('logo_atual',)
+    fields = ('name', 'logo_url', 'logo_atual', 'category', 'site', 'description', 'is_active', 'order')
+
+    @admin.display(description='Logo')
+    def logo(self, obj):
+        return miniatura(obj.logo_url)
+
+    @admin.display(description='Logo atual')
+    def logo_atual(self, obj):
+        return miniatura(obj.logo_url, 80)
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +70,7 @@ class MemberPositionAdmin(admin.ModelAdmin):
     list_display = ('title', 'power')
     list_editable = ('power',)
     search_fields = ('title',)
-    ordering = ('-power',)
+    ordering = ('power', 'title')
 
 
 @admin.register(Directorate)
@@ -75,16 +96,16 @@ class DirectorateMembershipInline(admin.TabularInline):
     ordering = ('order',)
 
 
-class MemberStatusFilter(admin.SimpleListFilter):
-    """Separa membros ativos de ex-membros (quem tem data de saída)."""
-    title = _('situação')
+class SituacaoFilter(admin.SimpleListFilter):
+    """Separa membros atuais de ex-membros (quem tem data de saída)."""
+    title = 'situação'
     parameter_name = 'situacao'
 
     def lookups(self, request, model_admin):
-        return (('ativo', _('Ativos')), ('ex', _('Ex-membros')))
+        return [('atual', 'Membros atuais'), ('ex', 'Ex-membros')]
 
     def queryset(self, request, queryset):
-        if self.value() == 'ativo':
+        if self.value() == 'atual':
             return queryset.filter(exit_date__isnull=True)
         if self.value() == 'ex':
             return queryset.filter(exit_date__isnull=False)
@@ -107,7 +128,7 @@ class TeamMemberForm(forms.ModelForm):
             'exit_date': 'Data de saída (preencha para arquivar o membro)',
         }
         help_texts = {
-            'exit_date': 'Quem tem data de saída deixa de aparecer no site, '
+            'exit_date': 'Quem tem data de saída deixa de aparecer na página Equipe, '
                          'mas o histórico continua guardado. Apague a data para reativar.',
         }
 
@@ -115,18 +136,24 @@ class TeamMemberForm(forms.ModelForm):
 @admin.register(Team_Member)
 class TeamMemberAdmin(admin.ModelAdmin):
     form = TeamMemberForm
-    actions = ['arquivar_membros', 'reativar_membros']
     inlines = [DirectorateMembershipInline]
-    list_display = ('name', 'get_directorates', 'position', 'course', 'year',
-                    'entry_date', 'exit_date', 'is_active')
-    list_filter = (MemberStatusFilter, 'directorate_memberships__directorate',
-                   'position', 'year')
-    # Exigido pelo autocomplete de participantes dos cases.
-    search_fields = ('name', 'email', 'course')
+    list_display = ('foto', 'name', 'get_directorates', 'position', 'course', 'year', 'atual')
+    list_display_links = ('foto', 'name')
+    list_filter = (SituacaoFilter, 'directorate_memberships__directorate', 'position', 'year')
+    # Exigido pelo autocomplete de participantes dos cases, e útil por si só
+    # quando a lista acumula alumni além dos membros ativos.
+    search_fields = ('name', 'email', 'course', 'linkedin')
     list_select_related = ('position',)
     filter_horizontal = ('projects',)
     date_hierarchy = 'entry_date'
     list_per_page = 50
+    actions = ['arquivar', 'reativar']
+    readonly_fields = ('foto_atual',)
+    fieldsets = (
+        (None, {'fields': ('name', 'photo', 'foto_atual', 'position', 'linkedin', 'email')}),
+        ('Formação', {'fields': ('course', 'year')}),
+        ('No ICC', {'fields': ('entry_date', 'exit_date', 'biography', 'trajetoria', 'hours', 'projects')}),
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -136,22 +163,30 @@ class TeamMemberAdmin(admin.ModelAdmin):
     def get_directorates(self, obj):
         return ', '.join(m.directorate.name for m in obj.directorate_memberships.all())
 
-    @admin.display(description='Ativo', boolean=True)
-    def is_active(self, obj):
+    @admin.display(description='Foto')
+    def foto(self, obj):
+        return miniatura(obj.photo)
+
+    @admin.display(description='Foto atual')
+    def foto_atual(self, obj):
+        return miniatura(obj.photo, 120)
+
+    @admin.display(description='Atual', boolean=True)
+    def atual(self, obj):
         return obj.exit_date is None
 
     # Soft delete: membros não são apagados, só arquivados (data de saída).
     def has_delete_permission(self, request, obj=None):
         return False
 
-    @admin.action(description='Arquivar membros selecionados (saída = hoje)')
-    def arquivar_membros(self, request, queryset):
+    @admin.action(description='Arquivar selecionados (sai da página Equipe)')
+    def arquivar(self, request, queryset):
         n = queryset.filter(exit_date__isnull=True).update(exit_date=timezone.localdate())
-        self.message_user(request, f'{n} membro(s) arquivado(s).', messages.SUCCESS)
+        self.message_user(request, f'{n} membro(s) arquivado(s). O histórico continua guardado.', messages.SUCCESS)
 
-    @admin.action(description='Reativar membros selecionados')
-    def reativar_membros(self, request, queryset):
-        n = queryset.filter(exit_date__isnull=False).update(exit_date=None)
+    @admin.action(description='Reativar selecionados (volta para a página Equipe)')
+    def reativar(self, request, queryset):
+        n = queryset.exclude(exit_date__isnull=True).update(exit_date=None)
         self.message_user(request, f'{n} membro(s) reativado(s).', messages.SUCCESS)
 
 
@@ -240,8 +275,9 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(ActivityCategory)
 class ActivityCategoryAdmin(admin.ModelAdmin):
-    list_display = ('label', 'slug', 'badge', 'order')
-    list_editable = ('order',)
+    list_display = ('label', 'slug', 'badge', 'is_active', 'order')
+    list_editable = ('is_active', 'order')
+    list_filter = ('is_active',)
     search_fields = ('label', 'slug', 'description')
     ordering = ('order',)
     prepopulated_fields = {'slug': ('label',)}
@@ -293,8 +329,9 @@ class SuccessCaseParticipantInline(admin.TabularInline):
 @admin.register(SuccessCase)
 class SuccessCaseAdmin(admin.ModelAdmin):
     inlines = [SuccessCaseParticipantInline]
-    list_display = ('semester', 'area', 'title', 'category', 'award')
-    list_filter = ('category', 'semester')
+    list_display = ('semester', 'title', 'area', 'category', 'is_active')
+    list_editable = ('is_active',)
+    list_filter = ('is_active', 'category', 'semester')
     search_fields = ('title', 'area', 'theme', 'award')
     list_select_related = ('category',)
 
