@@ -21,10 +21,9 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "Nossa Equipe", to: "/equipe" },
-  { label: "Projetos", to: "/projetos" },
-  { label: "Atividades", to: "/atividades" },
   { label: "Parceiros", to: "/parceiros" },
-  { label: "Notícias", to: "/news" },
+  { label: "Projetos", to: "/projetos" },
+  { label: "Artigos", to: "/news" },
   { label: "Contato", to: "/contato" },
 ];
 
