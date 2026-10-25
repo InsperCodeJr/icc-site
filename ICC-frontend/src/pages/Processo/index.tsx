@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
 import { api } from "../../api"
 import type { SelectionProcess } from "../../types"
 import PageHero from "../../components/PageHero"
@@ -20,15 +19,29 @@ export default function Processo() {
       .finally(() => setLoading(false))
   }, [])
 
-  const cta = (
+    // Só existe link quando há um processo com as inscrições abertas no admin;
+  // em qualquer outro caso, a página mostra "inscrições encerradas".
+  const linkInscricao = process?.registrations_open ? process.registration_url : ""
+
+  const cta = linkInscricao ? (
     <div className="processo-cta">
-      <h2 className="processo-cta__title">Cadastre-se para receber atualizações</h2>
-      <Link to="/contato" className="btn btn--light">
-        Cadastre-se
+      <h2 className="processo-cta__title">Inscrições abertas!</h2>
+      <a href={linkInscricao} target="_blank" rel="noopener noreferrer" className="btn btn--light">
+        Inscreva-se
         <ArrowRightIcon />
-      </Link>
+      </a>
+    </div>
+  ) : (
+    <div className="processo-cta">
+      <h2 className="processo-cta__title">Inscrições encerradas. Acompanhe nosso Instagram para saber quando abrirmos o próximo processo.</h2>
+      <a href="https://www.instagram.com/insperconsultingclub/" target="_blank" rel="noopener noreferrer" className="btn btn--light">
+        Seguir no Instagram
+        <ArrowRightIcon />
+      </a>
     </div>
   )
+
+
 
   return (
     <div className="processo-page">
@@ -46,7 +59,7 @@ export default function Processo() {
             <>
               <p className="state-message">
                 <strong>Nenhum processo seletivo ativo no momento.</strong>
-                Cadastre-se para receber atualizações quando abrirmos novas vagas.
+                Assim que abrirmos novas vagas, as inscrições aparecem aqui.
               </p>
               {cta}
             </>
