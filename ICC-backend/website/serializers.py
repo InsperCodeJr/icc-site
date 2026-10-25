@@ -338,7 +338,7 @@ class SelectionProcessSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = SelectionProcess
-        fields = ['id', 'title', 'stages', 'steps', 'requirements', 'materials']
+        fields = ['id', 'title', 'registrations_open', 'registration_url', 'stages', 'steps', 'requirements', 'materials']
     
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:

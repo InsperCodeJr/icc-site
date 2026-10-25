@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 
@@ -426,7 +427,20 @@ class SelectionProcess(models.Model):
         default="Próximo Processo Seletivo",
         verbose_name="Título"
     )
-    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+    is_active = models.BooleanField(
+        default=True, verbose_name='Ativo',
+        help_text='Só um processo aparece no site por vez. Ativar este desativa os outros.'
+    )
+
+
+    registrations_open = models.BooleanField(
+        default=False, verbose_name='Inscrições abertas',
+        help_text='Marque quando o PS abrir. Desmarcado, o site mostra "inscrições encerradas" e não leva a nenhum formulário.'
+    )
+    registration_url = models.URLField(
+        max_length=300, blank=True, verbose_name='Link de inscrição',
+        help_text='Formulário de inscrição (Google Forms). Só aparece no site com as inscrições abertas.'
+    )
     
     class Meta:
         verbose_name = "Processo Seletivo"
@@ -434,6 +448,18 @@ class SelectionProcess(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def clean(self):
+        if self.registrations_open and not self.registration_url:
+            raise ValidationError({'registration_url': 'Informe o link para abrir as inscrições.'})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Só um processo aparece no site; ativar este desativa os demais.
+        if self.is_active:
+            SelectionProcess.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
+
+
     
 
 class SelectionProcessStage(models.Model):
