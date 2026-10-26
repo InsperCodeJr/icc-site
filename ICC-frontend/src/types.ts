@@ -228,6 +228,8 @@ export interface SelectionProcess {
   steps: SelectionProcessStep[]
   requirements: SelectionProcessRequirement[]
   materials: PreparationMaterial[]
+  registrations_open: boolean
+  registration_url: string
 }
 
 

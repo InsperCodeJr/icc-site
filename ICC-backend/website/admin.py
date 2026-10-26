@@ -120,10 +120,10 @@ class TeamMemberForm(forms.ModelForm):
             'name': 'Nome',
             'photo': 'Foto',
             'biography': 'Biografia',
-            'position': 'Posição',
+            'position': 'Cargo principal',
             'course': 'Curso',
-            'year': 'Ano',
-            'hours': 'Horas',
+            'year': 'Período',
+            'hours': 'Horas dedicadas',
             'entry_date': 'Data de entrada',
             'exit_date': 'Data de saída (preencha para arquivar o membro)',
         }
@@ -174,10 +174,6 @@ class TeamMemberAdmin(admin.ModelAdmin):
     @admin.display(description='Atual', boolean=True)
     def atual(self, obj):
         return obj.exit_date is None
-
-    # Soft delete: membros não são apagados, só arquivados (data de saída).
-    def has_delete_permission(self, request, obj=None):
-        return False
 
     @admin.action(description='Arquivar selecionados (sai da página Equipe)')
     def arquivar(self, request, queryset):
@@ -363,8 +359,8 @@ class SelectionProcessRequirementInline(admin.TabularInline):
 
 @admin.register(SelectionProcess)
 class SelectionProcessAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_active')
-    list_editable = ('is_active',)
+    list_display = ('title', 'is_active', 'registrations_open')
+    list_editable = ('is_active', 'registrations_open')
     list_filter = ('is_active',)
     search_fields = ('title',)
     inlines = [SelectionProcessStageInline, SelectionProcessStepInline,
