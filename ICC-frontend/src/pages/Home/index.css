@@ -325,24 +325,6 @@
   text-align: center;
 }
 
-@media (max-width: 960px) {
-  .home-partners {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  .home-partners {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .home-partners__logo {
-    height: 96px;
-    padding: 18px;
-  }
-}
-
-/* ---------- CTA final ---------- */
 .home-partners-carousel {
   overflow: hidden;
   /* Esmaece as pontas para os logos "entrarem" e "saírem" suavemente */
@@ -396,6 +378,21 @@
   .home-partners-carousel__track li[aria-hidden] {
     display: none;
   }
+}
+
+/* ---------- CTA final ---------- */
+
+.home-cta {
+  background: var(--gradiente-icc);
+  color: var(--branco);
+}
+
+.home-cta__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding-block: clamp(56px, 7vw, 88px);
 }
 
 .home-cta__title {
