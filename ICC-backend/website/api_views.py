@@ -2,10 +2,10 @@ import logging
 from django.conf import settings
 from django.db.models import Min, F
 from django.utils.html import escape
+from django.http import Http404
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from rest_framework.throttling import ScopedRateThrottle
-from django.shortcuts import get_object_or_404
 from .models import (
     Team_Member, Partner, Statistic, Project, Activity,
     ActivityCategory, CalendarMonth, SelectionProcess,
@@ -164,13 +164,14 @@ class SelectionProcessView(generics.RetrieveAPIView):
     serializer_class = SelectionProcessSerializer
 
     def get_object(self):
-        return get_object_or_404(
-            SelectionProcess.objects.prefetch_related(
-                'stages', 'steps', 'requirements',
-                'materials', 'materials__items'
-            ),
-            is_active=True
-        )
+        # Se por engano houver mais de um processo ativo, vale o mais recente.
+        processo = SelectionProcess.objects.prefetch_related(
+            'stages', 'steps', 'requirements',
+            'materials', 'materials__items'
+        ).filter(is_active=True).order_by('-id').first()
+        if processo is None:
+            raise Http404
+        return processo
 
 
 class ContactCreateView(generics.CreateAPIView):
