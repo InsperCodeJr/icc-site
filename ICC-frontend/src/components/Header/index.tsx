@@ -4,14 +4,10 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import logoBranca from "../../images/logo-icc-branca.png";
 import useProgramas from "../../hooks/useProgramas";
 import useDiretorias from "../../hooks/useDiretorias";
-import { ChevronDownIcon, CloseIcon, InstagramIcon, LinkedInIcon, MenuIcon } from "../Icons";
+import { ChevronDownIcon, CloseIcon, GitHubIcon, InstagramIcon, LinkedInIcon, MenuIcon } from "../Icons";
+import { REDES } from "../../redes";
 
 const COMPACT_THRESHOLD = 40;
-
-const CONTATO = {
-  instagram: "https://www.instagram.com/insperconsultingclub/",
-  linkedin: "https://br.linkedin.com/company/insperconsultingclub",
-};
 
 type NavItem = {
   label: string;
@@ -148,11 +144,14 @@ export default function Header() {
         </nav>
 
         <div className="header__actions">
-          <a href={CONTATO.instagram} target="_blank" rel="noopener noreferrer" className="header__social" aria-label="Instagram do ICC">
+          <a href={REDES.instagram} target="_blank" rel="noopener noreferrer" className="header__social" aria-label="Instagram do ICC">
             <InstagramIcon size={18} />
           </a>
-          <a href={CONTATO.linkedin} target="_blank" rel="noopener noreferrer" className="header__social" aria-label="LinkedIn do ICC">
+          <a href={REDES.linkedin} target="_blank" rel="noopener noreferrer" className="header__social" aria-label="LinkedIn do ICC">
             <LinkedInIcon size={17} />
+          </a>
+          <a href={REDES.github} target="_blank" rel="noopener noreferrer" className="header__social" aria-label="GitHub do ICC">
+            <GitHubIcon size={17} />
           </a>
           <Link to="/processo" className="header__cta">
             Seja membro
@@ -194,11 +193,14 @@ export default function Header() {
             Seja membro
           </Link>
           <div className="header__mobile-social">
-            <a href={CONTATO.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram do ICC">
+            <a href={REDES.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram do ICC">
               <InstagramIcon size={20} />
             </a>
-            <a href={CONTATO.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn do ICC">
+            <a href={REDES.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn do ICC">
               <LinkedInIcon size={19} />
+            </a>
+            <a href={REDES.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub do ICC">
+              <GitHubIcon size={19} />
             </a>
           </div>
         </div>

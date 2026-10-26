@@ -4,6 +4,7 @@ import type { SelectionProcess } from "../../types"
 import PageHero from "../../components/PageHero"
 import { ArrowRightIcon, CheckIcon, ClockIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
+import { REDES } from "../../redes"
 import "./index.css"
 
 export default function Processo() {
@@ -34,7 +35,7 @@ export default function Processo() {
   ) : (
     <div className="processo-cta">
       <h2 className="processo-cta__title">Inscrições encerradas. Acompanhe nosso Instagram para saber quando abrirmos o próximo processo.</h2>
-      <a href="https://www.instagram.com/insperconsultingclub/" target="_blank" rel="noopener noreferrer" className="btn btn--light">
+      <a href={REDES.instagram} target="_blank" rel="noopener noreferrer" className="btn btn--light">
         Seguir no Instagram
         <ArrowRightIcon />
       </a>

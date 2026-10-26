@@ -1,27 +1,33 @@
 import PageHero from "../../components/PageHero"
-import { InstagramIcon, LinkedInIcon, MailIcon } from "../../components/Icons"
+import { GitHubIcon, InstagramIcon, LinkedInIcon, MailIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
+import { REDES } from "../../redes"
 import "./index.css"
 
-// Extraído de site-data/icc.json (sobre.contato).
 const CANAIS = [
   {
     label: "E-mail",
-    valor: "insperconsultingclub@gmail.com",
-    href: "mailto:insperconsultingclub@gmail.com",
+    valor: REDES.email,
+    href: `mailto:${REDES.email}`,
     icon: <MailIcon size={20} />,
   },
   {
     label: "Instagram",
     valor: "@insperconsultingclub",
-    href: "https://www.instagram.com/insperconsultingclub/",
+    href: REDES.instagram,
     icon: <InstagramIcon size={20} />,
   },
   {
     label: "LinkedIn",
     valor: "Insper Consulting Club",
-    href: "https://br.linkedin.com/company/insperconsultingclub",
+    href: REDES.linkedin,
     icon: <LinkedInIcon size={19} />,
+  },
+  {
+    label: "GitHub",
+    valor: "insper-consulting-club",
+    href: REDES.github,
+    icon: <GitHubIcon size={19} />,
   },
 ]
 

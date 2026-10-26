@@ -2,13 +2,8 @@ import { Link } from "react-router-dom";
 import "./index.css";
 import logoBranca from "../../images/logo-icc-branca.png";
 import useProgramas from "../../hooks/useProgramas";
-import { InstagramIcon, LinkedInIcon, MailIcon } from "../Icons";
-
-const CONTATO = {
-  email: "insperconsultingclub@gmail.com",
-  instagram: "https://www.instagram.com/insperconsultingclub/",
-  linkedin: "https://br.linkedin.com/company/insperconsultingclub",
-};
+import { GitHubIcon, InstagramIcon, LinkedInIcon, MailIcon } from "../Icons";
+import { REDES } from "../../redes";
 
 const NAVEGACAO = [
   { label: "Nossa Equipe", to: "/equipe" },
@@ -61,21 +56,27 @@ export default function Footer() {
           <h2 className="footer__title">Contato</h2>
           <ul className="footer__list">
             <li>
-              <a href={`mailto:${CONTATO.email}`} className="footer__contact">
+              <a href={`mailto:${REDES.email}`} className="footer__contact">
                 <MailIcon size={16} />
-                {CONTATO.email}
+                {REDES.email}
               </a>
             </li>
             <li>
-              <a href={CONTATO.instagram} target="_blank" rel="noopener noreferrer" className="footer__contact">
+              <a href={REDES.instagram} target="_blank" rel="noopener noreferrer" className="footer__contact">
                 <InstagramIcon size={16} />
                 Instagram
               </a>
             </li>
             <li>
-              <a href={CONTATO.linkedin} target="_blank" rel="noopener noreferrer" className="footer__contact">
+              <a href={REDES.linkedin} target="_blank" rel="noopener noreferrer" className="footer__contact">
                 <LinkedInIcon size={15} />
                 LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href={REDES.github} target="_blank" rel="noopener noreferrer" className="footer__contact">
+                <GitHubIcon size={15} />
+                GitHub
               </a>
             </li>
           </ul>
