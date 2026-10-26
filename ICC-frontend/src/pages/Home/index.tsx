@@ -211,8 +211,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <ul className="home-partners">
-              <div className="home-partners-carousel">
+            <div className="home-partners-carousel">
               <ul className="home-partners-carousel__track">
                 {/* Lista duplicada para o loop não ter emenda; a cópia fica fora do leitor de tela e do Tab */}
                 {[...partners, ...partners].map((partner, i) => {
@@ -236,8 +235,6 @@ export default function Home() {
                 })}
               </ul>
             </div>
-
-            </ul>
           </div>
         </section>
       )}
