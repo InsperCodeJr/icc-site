@@ -212,17 +212,31 @@ export default function Home() {
             </div>
 
             <ul className="home-partners">
-              {partners.map((partner) => (
-                <li key={partner.id}>
-                  <Link to={`/parceiros/${partner.id}`} className="home-partners__logo" title={partner.name}>
-                    {partner.logo_url ? (
-                      <img src={partner.logo_url} alt={partner.name} loading="lazy" />
-                    ) : (
-                      <span>{partner.name}</span>
-                    )}
-                  </Link>
-                </li>
-              ))}
+              <div className="home-partners-carousel">
+              <ul className="home-partners-carousel__track">
+                {/* Lista duplicada para o loop não ter emenda; a cópia fica fora do leitor de tela e do Tab */}
+                {[...partners, ...partners].map((partner, i) => {
+                  const copia = i >= partners.length
+                  return (
+                    <li key={`${partner.id}-${i}`} aria-hidden={copia || undefined}>
+                      <Link
+                        to={`/parceiros/${partner.id}`}
+                        className="home-partners__logo"
+                        title={partner.name}
+                        tabIndex={copia ? -1 : undefined}
+                      >
+                        {partner.logo_url ? (
+                          <img src={partner.logo_url} alt={partner.name} loading="lazy" />
+                        ) : (
+                          <span>{partner.name}</span>
+                        )}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+
             </ul>
           </div>
         </section>
