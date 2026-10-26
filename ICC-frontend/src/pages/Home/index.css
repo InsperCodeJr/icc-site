@@ -297,30 +297,15 @@
 
 /* ---------- Parceiros ---------- */
 
-/* Linhas divisórias desenhadas por item (box-shadow embutido), não pelo
-   fundo do container atrás de um gap: assim, quando a quantidade de
-   parceiros não é múltipla do número de colunas, a última linha incompleta
-   fica em branco em vez de sobrar uma célula cinza vazia. */
-.home-partners {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  border-top: 1px solid var(--cinza-200);
-  border-left: 1px solid var(--cinza-200);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
 .home-partners__logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 120px;
-  padding: 22px 28px;
+  width: 180px;
+  height: 100px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
   background: var(--branco);
-  box-shadow: inset -1px 0 var(--cinza-200), inset 0 -1px var(--cinza-200);
   transition: background-color 0.2s var(--ease);
 }
 
@@ -358,18 +343,59 @@
 }
 
 /* ---------- CTA final ---------- */
-
-.home-cta {
-  background: var(--gradiente-icc);
-  color: var(--branco);
+.home-partners-carousel {
+  overflow: hidden;
+  /* Esmaece as pontas para os logos "entrarem" e "saírem" suavemente */
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
 
-.home-cta__inner {
+.home-partners-carousel__track {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 32px;
-  padding-block: clamp(56px, 7vw, 88px);
+  width: max-content;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  animation: home-partners-scroll 45s linear infinite;
+}
+
+/* Para quando o mouse está em cima ou quando um logo recebe foco pelo Tab */
+.home-partners-carousel:hover .home-partners-carousel__track,
+.home-partners-carousel:focus-within .home-partners-carousel__track {
+  animation-play-state: paused;
+}
+
+/* Anda exatamente uma cópia da lista: metade da faixa + metade do gap */
+@keyframes home-partners-scroll {
+  to {
+    transform: translateX(calc(-50% - 16px));
+  }
+}
+
+@media (max-width: 560px) {
+  .home-partners__logo {
+    width: 140px;
+    height: 80px;
+    padding: 12px 14px;
+  }
+}
+
+/* Quem pediu menos movimento no sistema vê os logos parados, numa grade */
+@media (prefers-reduced-motion: reduce) {
+  .home-partners-carousel {
+    mask-image: none;
+  }
+
+  .home-partners-carousel__track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+  }
+
+  .home-partners-carousel__track li[aria-hidden] {
+    display: none;
+  }
 }
 
 .home-cta__title {
