@@ -2,7 +2,7 @@ import logging
 from django.conf import settings
 from django.db.models import Min, F
 from django.utils.html import escape
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from rest_framework.throttling import ScopedRateThrottle
@@ -153,6 +153,11 @@ class MediaListView(generics.ListAPIView):
     queryset = Media.objects.all()
 
 
+class MediaDetailView(generics.RetrieveAPIView):
+    serializer_class = MediaSerializer
+    queryset = Media.objects.all()
+
+
 # class ContactInfoView(generics.RetrieveAPIView):
 #     serializer_class = ContactInfoSerializer
 
@@ -219,3 +224,8 @@ class ContactCreateView(generics.CreateAPIView):
             sg.send(message)
         except Exception:
             logging.getLogger(__name__).exception("Falha no envio do email")
+
+
+def health(request):
+    # Usado pelo monitor de uptime para manter o backend acordado; não consulta o banco.
+    return JsonResponse({"status": "ok"})
