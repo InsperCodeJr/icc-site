@@ -232,13 +232,29 @@ class ProjectContentBlockInline(admin.StackedInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'start_date', 'end_date')
-    list_filter = ('category', 'start_date')
+    list_display = ('title', 'category', 'start_date', 'end_date', 'is_active')
+    list_editable = ('is_active',)
+    list_filter = ('is_active', 'category', 'start_date')
     search_fields = ('title', 'description')
     filter_horizontal = ('partners',)
     date_hierarchy = 'start_date'
     list_select_related = ('category',)
+    actions = ['arquivar', 'reativar']
     inlines = [ProjectImageInline, ProjectTimelineEventInline, ProjectContentBlockInline]
+
+    # Soft delete: projetos não são apagados, só arquivados (is_active = False).
+    #def has_delete_permission(self, request, obj=None):
+    #    return False
+
+    @admin.action(description='Arquivar selecionados (somem do site)')
+    def arquivar(self, request, queryset):
+        n = queryset.filter(is_active=True).update(is_active=False)
+        self.message_user(request, f'{n} projeto(s) arquivado(s). O histórico continua guardado.', messages.SUCCESS)
+
+    @admin.action(description='Reativar selecionados (voltam para o site)')
+    def reativar(self, request, queryset):
+        n = queryset.filter(is_active=False).update(is_active=True)
+        self.message_user(request, f'{n} projeto(s) reativado(s).', messages.SUCCESS)
 
 
 # ---------------------------------------------------------------------------
