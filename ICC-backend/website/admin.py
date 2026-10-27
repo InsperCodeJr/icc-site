@@ -302,10 +302,10 @@ class StatisticAdmin(admin.ModelAdmin):
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('title', 'source', 'date', 'order')
+    list_display = ('title', 'authors', 'source', 'date', 'order')
+    search_fields = ('title', 'authors', 'topics', 'description', 'content', 'source')
     list_editable = ('order',)
     list_filter = ('source', 'date')
-    search_fields = ('title', 'description', 'source')
     date_hierarchy = 'date'
     ordering = ('-date', 'order')
 

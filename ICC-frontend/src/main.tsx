@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 import Home from './pages/Home/index.tsx'
@@ -26,7 +26,9 @@ const router = createBrowserRouter([
       { path: "projetos/:slug", lazy: () => import('./pages/ProjetoDetalhe/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "parceiros/:id", lazy: () => import('./pages/PerfilParceiro/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "processo", lazy: () => import('./pages/Processo/index.tsx').then((m) => ({ Component: m.default })) },
-      { path: "news", lazy: () => import('./pages/Noticias/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "artigos", lazy: () => import('./pages/Noticias/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "artigos/:id", lazy: () => import('./pages/Artigo/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "news", element: <Navigate to="/artigos" replace /> },
       { path: "contato", lazy: () => import('./pages/Contato/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "politica-de-privacidade", lazy: () => import('./pages/PoliticaPrivacidade/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "*", lazy: () => import('./pages/NaoEncontrada/index.tsx').then((m) => ({ Component: m.default })) },

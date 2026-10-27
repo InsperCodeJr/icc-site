@@ -354,17 +354,36 @@ class ActivityContentBlock(models.Model):
 
 class Media(models.Model):
     title = models.CharField(max_length=200, verbose_name='Título')
-    description = models.TextField(verbose_name='Descrição')
-    link = models.URLField(verbose_name='Link da notícia')
+    authors = models.CharField(
+        max_length=300, blank=True, verbose_name='Autores',
+        help_text='Separados por vírgula. Ex.: Ana Silva, João Souza.'
+    )
+    topics = models.CharField(
+        max_length=200, blank=True, verbose_name='Temas',
+        help_text='Separados por vírgula. Ex.: Estratégia, Varejo.'
+    )
+    description = models.TextField(verbose_name='Resumo', help_text='Aparece no card da lista e no topo da página do artigo.')
+    content = models.TextField(
+        blank=True, verbose_name='Texto do artigo',
+        help_text='Texto completo, exibido na página do artigo. Separe os parágrafos com uma linha em branco.'
+    )
+    link = models.URLField(
+        blank=True, verbose_name='Link externo (opcional)',
+        help_text='PDF, LinkedIn ou revista onde o artigo também foi publicado.'
+    )
     image = models.ImageField(upload_to='news/', null=True, blank=True, verbose_name='Imagem de capa')
-    source = models.CharField(max_length=200, blank=True, verbose_name='Fonte')
+    source = models.CharField(
+        max_length=200, blank=True, verbose_name='Publicação',
+        help_text='Opcional: revista ou evento, se o artigo também saiu fora do site.'
+    )
     date = models.DateField(null=True, blank=True, verbose_name='Data de publicação')
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
 
     class Meta:
-        verbose_name = 'Notícia'
-        verbose_name_plural = 'Notícias'
+        verbose_name = 'Artigo'
+        verbose_name_plural = 'Artigos'
         ordering = ['-date', 'order']
+
 
     def __str__(self):
         return self.title
