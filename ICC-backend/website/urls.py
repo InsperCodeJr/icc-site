@@ -16,6 +16,8 @@ urlpatterns = [
     path('api/success-cases/', api_views.SuccessCaseListView.as_view(), name='api-success-cases-list'),
     path('api/statistics/', api_views.StatisticListView.as_view(), name='api-statistics-list'),
     path('api/news/', api_views.MediaListView.as_view(), name='api-news-list'),
+    path('api/news/<int:pk>/', api_views.MediaDetailView.as_view(), name='api-news-detail'),
     path('api/contact/', api_views.ContactCreateView.as_view(), name='api-contact'),
     path('api/selection-process/', api_views.SelectionProcessView.as_view(), name='api-selection-process'),
+    path('api/health/', api_views.health, name='api-health'),
 ]

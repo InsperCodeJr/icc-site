@@ -48,6 +48,9 @@ export const api = {
   getNews: () =>
     fetch(`${apiUrl}/news/`, { headers }).then((res) => res.json()),
 
+  getNewsItem: (id: number) =>
+    fetch(`${apiUrl}/news/${id}/`, { headers }).then((res) => res.json()),
+
   getContact: () =>
     fetch(`${apiUrl}/contact/`, { headers }).then((res) => res.json()),
 

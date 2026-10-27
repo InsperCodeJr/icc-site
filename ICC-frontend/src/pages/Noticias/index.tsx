@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { api } from "../../api"
 import type { NewsItem } from "../../types"
 import PageHero from "../../components/PageHero"
-import { ExternalIcon } from "../../components/Icons"
+import { ArrowRightIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
 import "./index.css"
 
@@ -15,7 +16,7 @@ function formatDate(date: string) {
 }
 
 export default function Noticias() {
-  usePageTitle("Notícias")
+  usePageTitle("Artigos")
   const [news, setNews] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -30,8 +31,8 @@ export default function Noticias() {
   return (
     <div className="news-page">
       <PageHero
-        title="Notícias"
-        lead="Fique por dentro do que acontece no ICC e no mundo da consultoria"
+        title="Artigos"
+        lead="Artigos e publicações produzidos por membros do ICC"
       />
 
       <section className="section">
@@ -39,11 +40,11 @@ export default function Noticias() {
           {loading ? (
             <p className="loading">Carregando...</p>
           ) : news.length === 0 ? (
-            <p className="state-message">Nenhuma notícia cadastrada no momento.</p>
+            <p className="state-message">Nenhum artigo cadastrado no momento.</p>
           ) : (
             <div className="grid grid--3">
               {news.map((item) => (
-                <a key={item.id} href={item.link} target="_blank" rel="noopener noreferrer" className="news-card">
+                <Link key={item.id} to={`/artigos/${item.id}`} className="news-card">
                   <div className="news-card__image">
                     {item.image_url ? <img src={item.image_url} alt="" loading="lazy" /> : <span>{item.source || "ICC"}</span>}
                   </div>
@@ -56,13 +57,14 @@ export default function Noticias() {
                       </p>
                     )}
                     <h2 className="news-card__title">{item.title}</h2>
+                    {item.authors && <p className="news-card__authors">{item.authors}</p>}
                     {item.description && <p className="news-card__desc">{item.description}</p>}
                     <span className="link-arrow news-card__cta">
-                      Ler matéria
-                      <ExternalIcon />
+                      Ler artigo
+                      <ArrowRightIcon />
                     </span>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           )}
