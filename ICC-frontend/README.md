@@ -45,7 +45,15 @@ src/
 └── pages/            # Uma pasta por página, com index.tsx e index.css
 ```
 
-Cada página fica em `pages/<Nome>/` com o seu próprio CSS. Os estilos que valem para o site todo (botões, seções, grades, títulos) ficam em `index.css`.
+Cada página fica em `pages/<Nome>/` com o seu próprio CSS. Os nomes das pastas nem sempre batem com a rota: a lista de artigos está em `pages/Noticias` (nome da versão anterior) e a página de um artigo em `pages/Artigo`.
+
+### Adicionar uma página
+
+1. Crie `pages/<Nome>/index.tsx` (com `export default`) e `index.css`.
+2. Registre a rota em `main.tsx`, no mesmo formato `lazy` das outras.
+3. Se ela precisar de dados novos, acrescente a chamada em `api.ts` e o tipo em `types.ts`.
+4. Se for para o menu, acrescente o item em `NAV` (`components/Header`) e em `NAVEGACAO` (`components/Footer`).
+5. Use `usePageTitle` para o título da aba e `PageHero` para o cabeçalho. Os estilos que valem para o site todo (botões, seções, grades, títulos) ficam em `index.css`.
 
 ### Rotas
 
@@ -55,7 +63,7 @@ Cada página fica em `pages/<Nome>/` com o seu próprio CSS. Os estilos que vale
 | `/equipe`, `/equipe/:id` | Equipe por diretoria e perfil do membro |
 | `/parceiros`, `/parceiros/:id` | Parceiros e perfil do parceiro |
 | `/projetos`, `/projetos/:slug` | Programas e detalhe com os cases |
-| `/artigos` | Artigos (`/news` redireciona para cá) |
+| `/artigos`, `/artigos/:id` | Lista de artigos e página do artigo (resumo, temas, texto, "Como citar", compartilhar). `/news` redireciona para a lista |
 | `/processo` | Processo seletivo ("Inscreva-se" ou "Inscrições encerradas", conforme o admin) |
 | `/contato` | Canais oficiais |
 | `/politica-de-privacidade` | Política de privacidade |
@@ -78,7 +86,7 @@ Definidos em `:root`, no início de `src/index.css`, a partir do guia de marca d
 
 | Componente | Uso |
 |---|---|
-| `PageHero` | Cabeçalho das páginas internas (título, subtítulo e eyebrow) |
+| `PageHero` | Cabeçalho das páginas internas (título, subtítulo, eyebrow e link de voltar) |
 | `MemberCard` | Card de membro (Home e Equipe) |
 | `ContentBlock` | Bloco de texto e imagem (hoje só nas páginas de atividade, que estão sem rota) |
 | `Icons` | Ícones SVG (setas, redes sociais, menu), herdando a cor do texto |

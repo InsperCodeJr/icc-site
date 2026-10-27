@@ -1,7 +1,7 @@
 
 # Backlog de tarefas do time
 
-> Atualizado em 26/10/2026 — entrega final (29/10/2026).
+> Atualizado em 27/10/2026 — entrega final (29/10/2026).
 > Legenda: ✅ concluído · 🟡 em andamento · ⬜ não iniciado · ➖ fora do escopo desta entrega
 > O registro de feedback do cliente e das alterações feitas a partir dele é mantido fora do repositório. O resumo das mudanças está em [`docs/DECISOES.md`](docs/DECISOES.md).
 
@@ -28,6 +28,7 @@
 | 9 | Limpeza do repositório | Infra | ⬜ |
 | 10 | Transferir contas e automatizar o deploy | Infra | ⬜ |
 | 11 | Domínio próprio | Infra | ⬜ |
+| 12 | Backend sempre acordado (health check e monitor de uptime) | Back e Infra | ✅ |
 
 ---
 
@@ -45,7 +46,7 @@
 
 ### B. ✅ [Back] API pública de leitura
 
-**Escopo:** endpoints públicos documentados no README (membros, diretorias, parceiros, projetos, programas, atividades, calendário, cases de sucesso, artigos, estatísticas e processo seletivo).
+**Escopo:** endpoints públicos documentados no README (membros, diretorias, parceiros, projetos, programas, atividades, calendário, cases de sucesso, artigos com detalhe, estatísticas, processo seletivo e health check).
 
 **Critérios de aceite:**
 - [x] Cada endpoint de listagem retorna JSON; os de detalhe retornam um registro por `id`.
@@ -96,7 +97,7 @@ O calendário era exibido na página de Atividades, que saiu do site a pedido do
 
 ### H. ✅ [Back e Front] Ajustes do feedback do cliente
 
-**Escopo:** remoção da página de Atividades; menu reordenado (Parceiros ao lado de Equipe); formulário de contato removido; controle manual de inscrições do PS; carrossel de parceiros na Home; Notícias transformada em Artigos (com autores); link do GitHub do ICC nos canais oficiais. Detalhes em [`docs/DECISOES.md`](docs/DECISOES.md#6-mudanças-a-partir-do-feedback-do-cliente).
+**Escopo:** remoção da página de Atividades; menu reordenado (Parceiros ao lado de Equipe); formulário de contato removido; controle manual de inscrições do PS; carrossel de parceiros na Home (com logos recortados); Notícias transformada em Artigos de autoria dos membros, com página própria (autores, temas, resumo, texto, "Como citar" e compartilhar); link do GitHub do ICC nos canais oficiais. Detalhes em [`docs/DECISOES.md`](docs/DECISOES.md#6-mudanças-a-partir-do-feedback-do-cliente).
 
 ---
 
@@ -115,7 +116,7 @@ O calendário era exibido na página de Atividades, que saiu do site a pedido do
 
 ### 6. ✅ [Docs] Documentação
 
-- README com setup local, API, dados, produção (serviços, deploy e domínio).
+- README com setup local, API, dados, produção (serviços, deploy, monitor e domínio), passagem de gestão e manutenção (rotina, backup, dependências e problemas comuns).
 - [`docs/GUIA_ADMIN.md`](docs/GUIA_ADMIN.md): guia de conteúdo para o ICC.
 - [`docs/DECISOES.md`](docs/DECISOES.md): decisões técnicas e justificativas.
 - [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md): dependências, licenças e serviços externos.
@@ -128,6 +129,12 @@ O calendário era exibido na página de Atividades, que saiu do site a pedido do
 - [x] `/admin` acessível e login funcionando em produção.
 - [x] Imagens enviadas persistem após um novo deploy (Cloudinary).
 - [x] Banco persistente na nuvem (Neon), sem expirar por inatividade.
+
+### 12. ✅ [Back e Infra] Backend sempre acordado
+
+- `GET /api/health/` responde sem consultar o banco.
+- Monitor no UptimeRobot a cada 5 minutos, abaixo dos 15 minutos que o Render espera para desligar o backend.
+- Pendente na tarefa 10: o monitor está numa conta pessoal e precisa ser recriado numa conta da entidade.
 
 ---
 
@@ -162,7 +169,10 @@ O case pede uma área administrativa autenticada com CRUD, e o Django Admin aten
 
 ### 10. ⬜ [Infra] Transferir contas e automatizar o deploy
 
-- [ ] Mover Render, Neon e Cloudinary para contas da Code Jr ou do ICC e entregar as credenciais à entidade.
+- [ ] Mover Render, Neon e Cloudinary para contas da Code Jr ou do ICC e entregar as credenciais à entidade (passo a passo em "Se você herdou o site", no README).
+- [ ] Manter o backend num workspace do Render sem outros web services gratuitos (limite de 750 horas por mês).
+- [ ] Recriar o monitor de uptime numa conta do ICC e apagar o da conta pessoal.
+- [ ] Trocar senhas e chaves conhecidas pela gestão anterior.
 - [ ] Liberar o app do Render na organização `InsperCodeJr` e reconectar os serviços pelo GitHub, para o deploy voltar a ser automático.
 
 ### 11. ⬜ [Infra] Domínio próprio
