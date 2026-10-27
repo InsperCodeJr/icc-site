@@ -283,30 +283,51 @@ ACTIVITIES = [
 
 NEWS = [
     {
-        "title": "ICC abre novo ciclo de capacitacao em consultoria",
-        "description": "Conteudo mock para destacar treinamentos, trilhas internas e preparacao para processos seletivos.",
-        "link": "https://www.instagram.com/insperconsultingclub/",
-        "source": "ICC",
+        "title": "[Exemplo] Precificacao dinamica no varejo brasileiro: um estudo de caso",
+        "authors": "Autor Exemplo, Autora Exemplo",
+        "topics": "Varejo, Precificacao",
+        "description": "Resumo mock: analise de estrategias de precificacao em redes varejistas e impacto na margem.",
+        "content": (
+            "Paragrafo mock 1: contexto do varejo brasileiro e por que a precificacao dinamica ganhou espaco.\n\n"
+            "Paragrafo mock 2: metodologia, com entrevistas e dados publicos de tres redes varejistas.\n\n"
+            "Paragrafo mock 3: resultados e recomendacoes para empresas que querem adotar o modelo."
+        ),
+        "link": "https://example.com/artigo-exemplo-1",
+        "source": "Revista Exemplo de Administracao",
         "date": date(2026, 3, 12),
         "order": 1,
     },
     {
-        "title": "Membros participam de simulado de case com parceiros",
-        "description": "Conteudo mock sobre pratica, feedback e preparacao para entrevistas de consultoria.",
-        "link": "https://www.instagram.com/insperconsultingclub/",
-        "source": "ICC",
+        "title": "[Exemplo] Transformacao digital em PMEs: barreiras e alavancas",
+        "authors": "Autora Exemplo",
+        "topics": "Tecnologia, PMEs",
+        "description": "Resumo mock: levantamento com pequenas e medias empresas sobre adocao de tecnologia.",
+        "content": (
+            "Paragrafo mock 1: o que trava a adocao de tecnologia em pequenas e medias empresas.\n\n"
+            "Paragrafo mock 2: alavancas que funcionaram nos casos analisados."
+        ),
+        "link": "",
+        "source": "",
         "date": date(2026, 4, 8),
         "order": 2,
     },
     {
-        "title": "Clube organiza painel sobre estrategia e carreira",
-        "description": "Conteudo mock para divulgar eventos abertos e conexao com o mercado.",
-        "link": "https://www.instagram.com/insperconsultingclub/",
-        "source": "ICC",
+        "title": "[Exemplo] Modelos de priorizacao de portfolio em consultoria",
+        "authors": "Autor Exemplo, Autor Exemplo 2",
+        "topics": "Estrategia",
+        "description": "Resumo mock: comparacao de matrizes de priorizacao usadas em projetos de estrategia.",
+        "content": (
+            "Paragrafo mock 1: as matrizes de priorizacao mais usadas em projetos de estrategia.\n\n"
+            "Paragrafo mock 2: quando cada uma funciona melhor.\n\n"
+            "Paragrafo mock 3: um exemplo aplicado a um portfolio ficticio."
+        ),
+        "link": "",
+        "source": "",
         "date": date(2026, 5, 20),
         "order": 3,
     },
 ]
+
 
 
 class Command(BaseCommand):
@@ -495,6 +516,9 @@ class Command(BaseCommand):
                     "source": item["source"],
                     "date": item["date"],
                     "order": item["order"],
+                    "authors": item["authors"],
+                    "topics": item["topics"],
+                    "content": item["content"],
                 },
             )
 

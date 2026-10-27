@@ -9,7 +9,7 @@ const NAVEGACAO = [
   { label: "Nossa Equipe", to: "/equipe" },
   { label: "Parceiros", to: "/parceiros" },
   { label: "Projetos", to: "/projetos" },
-  { label: "Artigos", to: "/news" },
+  { label: "Artigos", to: "/artigos" },
   { label: "Seja membro", to: "/processo" },
   { label: "Contato", to: "/contato" },
 ];
