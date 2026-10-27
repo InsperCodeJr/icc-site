@@ -186,6 +186,9 @@ export interface NewsItem {
   source: string
   date: string | null
   order: number
+  authors: string
+  topics: string
+  content: string
 }
 
 export interface ContactInfo {
