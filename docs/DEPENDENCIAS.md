@@ -61,6 +61,7 @@ As dependências marcadas com "(dev)" só são usadas para desenvolver e gerar o
 | Render | Hospedagem do backend e do frontend | Gratuito |
 | Neon | Banco PostgreSQL | Gratuito |
 | Cloudinary | Armazenamento de imagens | Gratuito |
+| UptimeRobot | Monitor de uptime (mantém o backend acordado e avisa se cair) | Gratuito |
 | GitHub | Código-fonte | Gratuito |
 
 Detalhes de acesso e de deploy estão na seção "Produção" do [README](../README.md#produção).

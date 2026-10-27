@@ -4,9 +4,11 @@ Este guia é para quem cuida do conteúdo do site no ICC. Nada aqui exige mexer 
 
 **Endereço:** https://icc-backend-4b38.onrender.com/admin/
 
-Entre com o usuário e a senha que o time de desenvolvimento entregou ao ICC. Se a página demorar uns 30 segundos para abrir, é normal: o servidor gratuito "dorme" quando ninguém acessa por um tempo e acorda no primeiro acesso.
+Entre com o seu usuário e a sua senha. Um monitor mantém o servidor acordado, então o admin deve abrir rápido. Se um dia demorar uns 30 segundos, o site continua funcionando: avise o responsável técnico, porque provavelmente o monitor parou.
 
 Tudo o que você salva aparece no site na hora. Basta recarregar a página do site.
+
+**Atalho:** a [rotina de cada semestre](#rotina-de-cada-semestre), no fim deste guia, resume o que precisa ser atualizado a cada troca de semestre.
 
 ---
 
@@ -20,6 +22,18 @@ Na página inicial do admin, tudo fica no quadro **"Website"**. Cada linha é um
 
 ### Esconder × apagar
 Parceiros, programas e cases têm o campo **"Exibir no site"**. Desmarcado, o item some do site, mas continua guardado e pode voltar quando quiser. **Prefira esconder a apagar**: apagar é definitivo.
+
+### Logins para outras pessoas do ICC
+Cada pessoa que mexe no site deve ter o próprio login. Não compartilhe senha.
+
+**Para dar acesso:** no quadro **Autenticação e Autorização**, abra **Usuários → Adicionar usuário**.
+1. Crie o nome de usuário e a senha.
+2. Na tela seguinte, marque **"Membro da equipe"**. Sem isso, a pessoa não consegue entrar no admin.
+3. Escolha o nível de acesso:
+   - marque **"Status de superusuário"** para acesso total, incluindo criar outros logins. Deixe isso para 1 ou 2 pessoas;
+   - ou deixe desmarcado e, em **Permissões do usuário**, escolha só o que a pessoa pode mexer (por exemplo, todas as de "website", que é o conteúdo do site).
+
+**Quando alguém sai da gestão:** abra o usuário dela e desmarque **"Ativo"**. Ela perde o acesso na hora.
 
 ---
 
@@ -72,16 +86,27 @@ Para tirar um parceiro do site sem apagar, desmarque **"Exibir no site"**. Dá p
 2. Embaixo, em **Participantes do Case**, adicione os membros e o papel de cada um. Comece a digitar o nome para buscar.
 3. Salvar.
 
+A página **Projetos** do site mostra os programas e os cases de cada um.
+
+**Projetos** (a linha "Projetos" do admin) são trabalhos feitos com um parceiro. Um projeto com **Data de conclusão** preenchida e um parceiro em **Parceiros envolvidos** aparece na página desse parceiro, em "Casos de sucesso".
+
 ---
 
 ## Artigos
 
+Os artigos são escritos pelos membros do ICC e ficam **dentro do site**: cada um tem a própria página, com resumo, temas, o texto completo, "Como citar" e um botão para compartilhar no LinkedIn.
+
 **Artigos → Adicionar artigo**
-1. **Título**, **Autores** (separados por vírgula) e **Resumo**.
-2. **Link do artigo:** onde o texto completo está. Pode ser a página da revista ou do congresso, um repositório, ou um PDF no Google Drive do ICC (nesse caso, deixe o arquivo com acesso "Qualquer pessoa com o link").
-3. **Publicação:** revista, congresso ou repositório onde o artigo saiu.
-4. **Data de publicação** e, se quiser, **Imagem de capa**.
-5. Salvar. No site, os mais recentes aparecem primeiro.
+1. **Título** e **Autores** (separados por vírgula).
+2. **Temas** (opcional, separados por vírgula, ex.: `Estratégia, Varejo`). Aparecem como etiquetas no topo do artigo.
+3. **Resumo:** duas ou três frases. Aparece no card da lista e em destaque no topo do artigo.
+4. **Texto do artigo:** o texto completo. **Deixe uma linha em branco entre os parágrafos**: é isso que separa os parágrafos no site. O campo aceita só texto, sem negrito, títulos ou imagens no meio. Para colar do Word ou do Google Docs, cole e confira as linhas em branco.
+5. **Link externo** (opcional): se o artigo também saiu em outro lugar (revista, LinkedIn, um PDF no Drive do ICC com acesso "Qualquer pessoa com o link"). Aparece como o botão "Ver publicação original".
+6. **Publicação** (opcional): o nome da revista ou do evento, se houver.
+7. **Data de publicação** e, se quiser, **Imagem de capa** (horizontal). Sem imagem, o card mostra "ICC".
+8. Salvar. No site, os mais recentes aparecem primeiro.
+
+Os artigos que começam com **"[Exemplo]"** são só demonstração. Apague-os quando os artigos reais forem cadastrados.
 
 ---
 
@@ -118,3 +143,22 @@ Os **materiais de preparação** (opcional) ficam em **Materiais de Preparação
 Alguns itens fixos são alterados no código pelo time de desenvolvimento:
 - textos institucionais da Home (missão, "Quem somos");
 - links do Instagram, LinkedIn, GitHub e o e-mail de contato, que ficam no arquivo `ICC-frontend/src/redes.ts`.
+
+Algumas linhas do admin **não aparecem mais no site** e podem ser ignoradas: **Atividades**, **Calendário do Semestre** e **Pedidos de contato**. Elas eram de páginas e do formulário que saíram do site a pedido do ICC.
+
+---
+
+## Rotina de cada semestre
+
+| Quando | O quê | Onde |
+|---|---|---|
+| Antes do PS | Cadastrar o novo processo seletivo (datas, etapas, requisitos) e deixar **Ativo** | Processos Seletivos |
+| Abertura do PS | Marcar **Inscrições abertas** e colar o link do formulário | Processos Seletivos |
+| Fim das inscrições | Desmarcar **Inscrições abertas** (o processo continua ativo, com as datas visíveis) | Processos Seletivos |
+| Entrada dos aprovados | Cadastrar os novos membros, com foto e diretoria | Membros |
+| Troca de gestão | Arquivar quem saiu; atualizar cargos e diretorias | Membros, Cargos, Diretorias |
+| Fim do semestre | Cadastrar os cases do semestre e atualizar os números da Home | Cases de Sucesso, Estatísticas |
+| Sempre que houver | Novos artigos e parceiros | Artigos, Parceiros |
+| Troca de gestão | Dar login a quem entrou e desativar o de quem saiu | Usuários |
+
+Em caso de dúvida técnica (site fora do ar, erro ao salvar, algo que não aparece), procure o responsável técnico do site na Code Jr. As instruções para quem cuida da parte técnica estão no `README.md` do repositório.

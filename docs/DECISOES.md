@@ -35,6 +35,9 @@ Membros que saem do clube são **arquivados** (data de saída): somem do site, m
 | **Render** (backend e frontend) | Roda o backend direto do `Dockerfile` do repositório e publica o frontend como site estático, com HTTPS, no plano gratuito. |
 | **Neon** (PostgreSQL) | Banco gerenciado e gratuito que não expira por inatividade (o case exige que o banco não caia com a falta de uso). O Postgres gratuito do próprio Render tem prazo de validade. |
 | **Cloudinary** (imagens) | O disco dos serviços do Render é apagado a cada deploy; sem um armazenamento externo, as fotos enviadas pelo admin se perderiam. |
+| **UptimeRobot** (monitor) | O backend gratuito do Render "dorme" depois de 15 minutos sem acesso, e o primeiro visitante esperava cerca de 30 segundos. Um ping a cada 5 minutos no `/api/health/` o mantém acordado, sem custo. As 750 horas mensais grátis do Render cobrem um serviço ligado o mês inteiro (no máximo 744 horas), desde que seja o único web service gratuito do workspace. O endpoint não consulta o banco, para o Neon continuar suspendendo quando ocioso. |
+
+Alternativas consideradas: trocar a hospedagem do backend (Vercel roda Django como função serverless, mas exigiria adaptar o projeto; Cloudflare não roda Django) ou um plano pago do Render. O monitor resolveu o problema sem mudar a arquitetura perto da entrega; trocar de hospedagem fica como opção futura.
 
 Limitações conhecidas e próximos passos (deploy manual, contas a transferir para a entidade, domínio próprio) estão na seção "Produção" do [README](../README.md#produção).
 
@@ -53,6 +56,11 @@ Limitações conhecidas e próximos passos (deploy manual, contas a transferir p
 | O contato já tem e-mail; o formulário não tinha uso | Formulário removido; o Contato mostra só os canais oficiais |
 | Não pedir "cadastre-se para receber atualizações" (não há mailing) | Controle manual de inscrições no admin: aberto, "Inscreva-se" com o link do formulário; fechado, "Inscrições encerradas" |
 | Manter as datas do último processo seletivo | Só um processo ativo por vez; o último fica visível, com as inscrições fechadas, até o próximo |
-| Carrossel de patrocinadores na Home | Carrossel contínuo dos logos dos parceiros, que pausa no hover e respeita "reduzir movimento" |
-| Seção de notícias usada para artigos científicos | Seção virou "Artigos", com autores, resumo, publicação e link |
+| Carrossel de patrocinadores na Home | Carrossel contínuo dos logos dos parceiros, que pausa no hover e respeita "reduzir movimento"; logos recortados e caixas maiores para a marca ficar legível |
+| Seção de notícias usada para artigos de autoria dos membros | Seção virou "Artigos": cada artigo tem página própria (`/artigos/<id>`) com autores, temas, resumo, texto completo, "Como citar" e compartilhamento no LinkedIn. Formato inspirado em páginas de working papers (ex.: NBER) e na aba de artigos de outro consulting club |
 | GitHub do ICC junto com Instagram e LinkedIn | Link no header, no rodapé e no Contato |
+| Site lento no primeiro acesso (backend dormindo) | Endpoint `/api/health/` e monitor de uptime (seção 4) |
+
+## 7. Artigos com texto simples, sem editor
+
+O texto do artigo é um campo de texto comum, e o site separa os parágrafos pelas linhas em branco. Um editor com formatação (negrito, títulos, imagens) exigiria guardar HTML e limpá-lo contra código malicioso, ou adicionar uma biblioteca de Markdown. Como o React exibe o texto puro escapado, o formato atual não tem esse risco. Se o ICC precisar de formatação, o caminho mais simples é Markdown com uma biblioteca que gere HTML seguro.

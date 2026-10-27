@@ -12,12 +12,14 @@ O site apresenta o ICC de maneira profissional e moderna para alunos e empresas:
 
 O que está pronto e o que ficou para depois está em [`backlog.md`](backlog.md).
 
+> **Herdou o site?** Comece por [Se você herdou o site](#se-você-herdou-o-site) e pela [Manutenção](#manutenção), no fim deste arquivo.
+
 **Documentação**
 
 | Documento | Para quem | Conteúdo |
 |---|---|---|
-| [Guia da área administrativa](docs/GUIA_ADMIN.md) | ICC | Como cadastrar membros, parceiros, cases, artigos e o processo seletivo |
-| Este README | Devs | Rodar localmente, API, dados e produção |
+| [Guia da área administrativa](docs/GUIA_ADMIN.md) | ICC | Como cadastrar membros, parceiros, cases, artigos e o processo seletivo, e a rotina de cada semestre |
+| Este README | Devs | Rodar localmente, API, dados, produção, passagem de gestão e manutenção |
 | [Decisões técnicas](docs/DECISOES.md) | Devs e avaliação | Por que refatorar, por que o Django Admin, por que esses serviços |
 | [Dependências e licenças](docs/DEPENDENCIAS.md) | Devs | Bibliotecas usadas e licença de cada uma |
 | [`ICC-frontend/README.md`](ICC-frontend/README.md) | Devs | Estrutura do frontend, design tokens e componentes |
@@ -137,10 +139,14 @@ Todos são públicos e somente leitura, exceto o `POST /api/contact/`. Itens mar
 | GET | `/api/activities/<id>/` | Detalhe de uma atividade |
 | GET | `/api/calendar/` | Calendário do semestre |
 | GET | `/api/success-cases/` | Lista cases de sucesso visíveis |
-| GET | `/api/news/` | Lista artigos (título, autores, resumo, publicação, data e link) |
+| GET | `/api/news/` | Lista artigos (título, autores, temas, resumo, texto, link externo, data), do mais recente para o mais antigo |
+| GET | `/api/news/<id>/` | Detalhe de um artigo (usado pela página `/artigos/<id>`) |
 | GET | `/api/statistics/` | Estatísticas da home |
 | GET | `/api/selection-process/` | Processo seletivo ativo (etapas, requisitos, materiais e se as inscrições estão abertas); 404 se não houver |
+| GET | `/api/health/` | Responde `{"status": "ok"}` sem consultar o banco. Usado pelo [monitor de uptime](#monitor-de-uptime) |
 | POST | `/api/contact/` | Grava um contato (JSON, com limite de requisições). O site não usa mais; ver [`backlog.md`](backlog.md) |
+
+> As URLs usam `news` por compatibilidade com a versão anterior; no site e no admin, o nome é **Artigos**.
 
 ---
 
@@ -214,13 +220,18 @@ docker compose exec backend python manage.py seed_mock_data
 | [Render](https://render.com) — serviço `icc-site` | Frontend (site estático gerado pelo Vite) | Gratuito |
 | [Neon](https://neon.tech) | Banco PostgreSQL | Gratuito |
 | [Cloudinary](https://cloudinary.com) | Fotos dos membros, logos dos parceiros e demais imagens enviadas pelo admin | Gratuito |
+| [UptimeRobot](https://uptimerobot.com) | Chama `/api/health/` a cada 5 minutos para o backend não "dormir" e avisa por e-mail se o site cair | Gratuito |
 | GitHub — organização `InsperCodeJr` | Código-fonte | Gratuito |
 
-> **Donos das contas:** hoje Render, Neon e Cloudinary estão na conta pessoal de um membro do time de desenvolvimento. Antes de encerrar o projeto, essas contas precisam ir para uma conta da Code Jr ou do ICC, e as credenciais precisam ser entregues à entidade (o case exige contas transferíveis). As credenciais **não** ficam neste repositório.
+> **Donos das contas:** hoje Render, Neon, Cloudinary e UptimeRobot estão em contas pessoais de membros do time de desenvolvimento. Essas contas precisam ir para uma conta da Code Jr ou do ICC, e as credenciais precisam ser entregues à entidade (o case exige contas transferíveis). O passo a passo está em [Se você herdou o site](#se-você-herdou-o-site).
+>
+> **Nenhuma credencial fica neste repositório:** senhas, chaves e a `DATABASE_URL` ficam só no painel de cada serviço (no Render, em *Environment* do serviço) e com os responsáveis pela entidade. Se encontrar alguma no código ou num commit, troque-a no serviço imediatamente; apagar o arquivo não basta, porque o histórico do Git guarda tudo.
 
 Limitações do plano gratuito, que não afetam os dados:
-- O backend "dorme" depois de um tempo sem acesso. O primeiro acesso depois disso leva cerca de 30 segundos; os seguintes são rápidos. Antes de uma apresentação, abra o site e o admin uns minutos antes.
-- O Neon também suspende o banco quando ele fica ocioso e o acorda sozinho no primeiro acesso. Os dados não se perdem.
+- **Horas do Render:** cada *workspace* tem 750 horas grátis de web service por mês, somando todos os serviços dele. Um backend sempre ligado gasta até 744 horas, então ele precisa ficar num workspace **sem outro web service gratuito**. O frontend é um site estático e não gasta essas horas.
+- **Backend dormindo:** sem acessos por 15 minutos, o Render desliga o backend, e o próximo acesso leva cerca de 30 segundos. O [monitor de uptime](#monitor-de-uptime) evita isso. Se o monitor parar, o site continua funcionando, só fica lento no primeiro acesso.
+- **Banco:** o Neon suspende o banco quando ele fica ocioso e o acorda sozinho no primeiro acesso, em menos de um segundo. Os dados não se perdem. O `/api/health/` não consulta o banco justamente para não mantê-lo acordado à toa.
+- **Imagens:** o plano gratuito do Cloudinary tem limite mensal de uso, mais do que suficiente para fotos de membros e logos. O consumo aparece no painel do Cloudinary.
 
 ### Como publicar uma mudança (deploy)
 
@@ -256,6 +267,14 @@ Para criar um superusuário em produção, use o **Shell** do serviço no Render
 
 O frontend é gerado com `npm run build` (pasta `ICC-frontend/dist`), com a variável `VITE_API_URL` apontando para `https://icc-backend-4b38.onrender.com/api`. Como é um site de página única (SPA), o serviço estático precisa de uma regra de rewrite de `/*` para `/index.html`; sem ela, recarregar uma página como `/equipe` dá 404.
 
+### Monitor de uptime
+
+Um monitor HTTP(s) no UptimeRobot chama `https://icc-backend-4b38.onrender.com/api/health/` a cada 5 minutos. Como o Render só desliga o backend depois de 15 minutos sem acesso, ele nunca chega a dormir. O monitor também manda um e-mail se o backend parar de responder.
+
+Para recriar o monitor (por exemplo, numa conta nova do ICC): **+ New Monitor → HTTP(s)**, a URL acima, intervalo de 5 minutos e o e-mail do ICC como contato de alerta. Qualquer serviço que faça uma requisição periódica serve (o cron-job.org é uma alternativa). Não use o agendamento do GitHub Actions: ele atrasa e é desligado depois de 60 dias sem commits.
+
+Para conferir se está funcionando: o monitor aparece verde no UptimeRobot, e os Logs do backend no Render mostram `GET /api/health/` se repetindo.
+
 ### Domínio próprio (próximo passo)
 
 O site usa os endereços gratuitos do Render (`*.onrender.com`). O Render aceita domínio próprio nos planos gratuitos, com HTTPS automático. O que costuma ter custo é o domínio em si. Caminhos sugeridos, sempre com o domínio em nome do ICC:
@@ -266,5 +285,106 @@ Para configurar:
 1. No Render, no serviço do frontend: **Settings → Custom Domains → Add**. O Render mostra o registro DNS a criar.
 2. No painel do domínio, criar esse registro (`CNAME` para subdomínio, `A`/`ALIAS` para domínio raiz).
 3. Atualizar as variáveis do backend (`CORS_ALLOWED_ORIGINS` com o domínio novo do site; se a API também ganhar domínio, `ALLOWED_HOSTS` e `CSRF_TRUSTED_ORIGINS`) e, nesse caso, o `VITE_API_URL` do frontend, seguido de novo deploy.
+
+---
+
+## Se você herdou o site
+
+Esta seção é para quem assume o site numa nova gestão, do ICC ou da Code Jr.
+
+### 1. Receba os acessos
+
+Peça à gestão anterior acesso a cada item abaixo. Se ela não estiver mais disponível, procure a diretoria do ICC ou da Code Jr, que deve ter recebido as credenciais na entrega.
+
+| Acesso | Para quê | Como passar para a nova gestão |
+|---|---|---|
+| GitHub (repositório `InsperCodeJr/icc-site`) | Mudar o código | Um admin da organização adiciona a pessoa |
+| Render (`icc-backend` e `icc-site`) | Publicar mudanças, ver logs e variáveis | Convidar para o workspace (*Workspace Settings → Members*) ou transferir o workspace |
+| Neon | Banco de dados | Convidar para o projeto ou transferir o projeto para outra conta |
+| Cloudinary | Imagens | Convidar como usuário da conta (*Settings → Users*) |
+| UptimeRobot | Monitor de uptime | Mais simples recriar o monitor numa conta da entidade (ver [Monitor de uptime](#monitor-de-uptime)) e apagar o antigo |
+| Superusuário do `/admin` | Criar logins para o ICC | Ver abaixo |
+
+Guarde todas as credenciais num lugar da entidade (um gerenciador de senhas ou um documento restrito da diretoria). **Nunca** no repositório, no Trello ou em grupos de mensagem.
+
+### 2. Troque o que a gestão anterior conhecia
+
+Quando quem saiu tinha acesso a senhas e chaves, troque-as:
+1. **Logins do admin:** no `/admin`, em *Usuários*, desative ou apague os usuários de quem saiu e crie os novos. Cada pessoa deve ter o seu login; não compartilhe senha.
+2. **Banco (Neon):** gere uma nova senha para o usuário do banco no painel do Neon e atualize a `DATABASE_URL` no serviço `icc-backend` do Render.
+3. **Cloudinary:** gere uma nova API secret e atualize `CLOUDINARY_API_SECRET` no Render.
+4. **`SECRET_KEY` do Django:** gere uma nova (comando no `.env.example`) e atualize no Render. Isso desloga todo mundo do admin, o que é esperado.
+5. **Remova as pessoas que saíram** do workspace do Render, do projeto no Neon, da conta do Cloudinary e da organização no GitHub.
+
+Toda variável alterada no Render só vale depois de um novo deploy do serviço (o Render costuma oferecer isso ao salvar).
+
+### 3. Confira que tudo funciona
+
+- [ ] O site abre e mostra membros, parceiros, artigos e o processo seletivo.
+- [ ] O login no `/admin` funciona; uma edição de teste aparece no site depois de recarregar.
+- [ ] Uma foto enviada pelo admin continua aparecendo depois de um novo deploy do backend (prova de que o Cloudinary está configurado).
+- [ ] O monitor de uptime está verde.
+- [ ] Você consegue rodar o projeto localmente seguindo [Como rodar o projeto](#como-rodar-o-projeto).
+
+---
+
+## Manutenção
+
+### Como fazer uma mudança no código
+
+1. Crie uma branch a partir da `main` atualizada (`git checkout main`, `git pull`, `git checkout -b feat/nome-da-mudanca`). Uma branch por assunto.
+2. Teste localmente. Antes do PR, rode:
+   ```bash
+   docker-compose exec backend python manage.py check
+   cd ICC-frontend && npm run lint && npm run build
+   ```
+3. Se mudou `models.py`, rode `makemigrations` e inclua a migration no commit.
+4. Abra o PR, peça revisão e faça o merge.
+5. Publique: **Manual Deploy** do backend e/ou do frontend no Render (ver [Como publicar uma mudança](#como-publicar-uma-mudança-deploy)). Se o PR mudou os dois e tem migration, publique o **backend primeiro**.
+6. Confira no site.
+
+### Rotina
+
+| Quando | O quê | Quem |
+|---|---|---|
+| A cada semestre | Cadastrar o processo seletivo, arquivar quem saiu, cadastrar os novos membros, atualizar estatísticas e cases (ver o [guia do admin](docs/GUIA_ADMIN.md#rotina-de-cada-semestre)) | ICC |
+| Todo mês | Olhar o UptimeRobot (algum alerta?) e o uso dos planos gratuitos no Render, no Neon e no Cloudinary | Dev |
+| A cada semestre | Fazer um backup do banco (abaixo) | Dev |
+| A cada semestre | Atualizar dependências com correções de segurança (abaixo) | Dev |
+| Na troca de gestão | [Se você herdou o site](#se-você-herdou-o-site) | Dev |
+
+### Backup do banco
+
+O Neon guarda um histórico curto para restauração no plano gratuito, mas isso não substitui um backup. Para exportar o banco inteiro para um arquivo, com o Docker aberto:
+
+```bash
+docker run --rm postgres:17 pg_dump "COLE_AQUI_A_DATABASE_URL" > backup-icc-AAAA-MM-DD.sql
+```
+
+- A `DATABASE_URL` está em *Environment* do serviço `icc-backend` no Render, ou no painel do Neon (*Connection string*). O `pg_dump` precisa ser da mesma versão do Postgres do Neon ou mais nova (a versão aparece no painel do Neon; troque o `postgres:17` se for preciso).
+- O arquivo tem os dados pessoais dos membros: guarde-o num lugar restrito da entidade e **nunca** faça commit dele.
+- As imagens não entram nesse backup; elas ficam no Cloudinary, que tem a própria exportação.
+
+### Atualizar dependências
+
+- **Backend:** `docker-compose exec backend pip list --outdated`. Atualize as versões em `ICC-backend/requirements.txt`, rode `docker-compose up --build` e teste o site e o admin. Priorize as versões de correção do Django (ex.: `6.0.x`), que trazem correções de segurança.
+- **Frontend:** `cd ICC-frontend && npm outdated`, depois `npm update` (dentro da mesma versão principal) e `npm run lint && npm run build`.
+- Faça isso numa branch própria e, se adicionar ou trocar um pacote, atualize o [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md).
+
+### Problemas comuns
+
+| Sintoma | Causa provável | O que fazer |
+|---|---|---|
+| Mudança com merge não aparece no site | O Render não publica sozinho | **Manual Deploy → Deploy latest commit** no serviço que mudou |
+| Site ou admin demoram ~30 s para abrir | O backend dormiu (monitor parado) | Conferir o UptimeRobot e as horas do workspace no Render |
+| Site abre, mas sem membros, parceiros etc. | Backend fora do ar ou bloqueado por CORS | Abrir `/api/health/`; se responder, conferir `CORS_ALLOWED_ORIGINS` no Render. Ver os Logs do backend |
+| `column ... does not exist` (local) | Migration nova não aplicada | `docker-compose exec backend python manage.py migrate` |
+| Erro 403/CSRF ao entrar no `/admin` | Domínio do backend fora de `CSRF_TRUSTED_ORIGINS` | Corrigir a variável no Render e fazer novo deploy |
+| Recarregar `/equipe` (ou outra página) dá 404 | Falta a regra de rewrite no serviço do frontend | No Render, em *Redirects/Rewrites* do `icc-site`: `/*` → `/index.html` (Rewrite) |
+| Imagens somem depois de um deploy | Variáveis `CLOUDINARY_*` ausentes ou erradas | Conferir no Render e reenviar as imagens |
+| Logo pequeno no carrossel | Imagem com muita margem em volta | Reenviar o PNG recortado rente ao logo (ver o [guia do admin](docs/GUIA_ADMIN.md#parceiros)) |
+| Backend parou no fim do mês | Acabaram as 750 horas do workspace | Tirar outros web services gratuitos do workspace ou mudar de plano |
+
+Para investigar qualquer erro em produção, o primeiro lugar é **Logs** do serviço `icc-backend` no Render.
 
 ---
