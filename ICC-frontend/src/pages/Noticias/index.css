@@ -69,3 +69,9 @@
   margin-top: auto;
   padding-top: 20px;
 }
+
+.news-card__authors {
+  margin-top: -4px;
+  font-size: var(--fs-small);
+  color: var(--cinza-500);
+}
