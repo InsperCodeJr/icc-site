@@ -301,9 +301,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 180px;
-  height: 100px;
-  padding: 16px 20px;
+  width: 220px;
+  height: 120px;
+  padding: 12px 16px;
   border-radius: var(--radius);
   background: var(--branco);
   transition: background-color 0.2s var(--ease);
@@ -356,9 +356,9 @@
 
 @media (max-width: 560px) {
   .home-partners__logo {
-    width: 140px;
-    height: 80px;
-    padding: 12px 14px;
+    width: 160px;
+    height: 90px;
+    padding: 10px 12px;
   }
 }
 
