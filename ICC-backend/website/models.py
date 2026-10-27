@@ -84,11 +84,11 @@ class Partner(models.Model):
 
     @property
     def projects_count(self):
-        return self.projects.count()
+        return self.projects.filter(is_active=True).count()
 
     @property
     def success_cases_count(self):
-        return self.projects.filter(end_date__isnull=False).count()
+        return self.projects.filter(is_active=True, end_date__isnull=False).count()
 
 
 BADGE_CHOICES = [
@@ -186,6 +186,10 @@ class Project(models.Model):
     partners = models.ManyToManyField(Partner, blank=True, verbose_name='Parceiros envolvidos', related_name='projects')
     start_date = models.DateField(verbose_name='Data de início')
     end_date = models.DateField(null=True, blank=True, verbose_name='Data de conclusão')
+    is_active = models.BooleanField(
+        default=True, verbose_name='Ativo',
+        help_text='Desmarque para arquivar o projeto: ele some do site, mas continua guardado.'
+    )
 
     class Meta:
         verbose_name_plural = 'Projetos'
@@ -275,7 +279,7 @@ class Team_Member(models.Model):
 
     @property
     def number_of_projects(self):
-        return self.projects.count()
+        return self.projects.filter(is_active=True).count()
 
 
 class DirectorateMembership(models.Model):

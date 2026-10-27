@@ -90,13 +90,13 @@ class PartnerSerializer(serializers.ModelSerializer):
         ]
 
     def get_projects_count(self, obj):
-        return obj.projects.count()
+        return obj.projects.filter(is_active=True).count()
 
     def get_success_cases_count(self, obj):
-        return obj.projects.filter(end_date__isnull=False).count()
+        return obj.projects.filter(is_active=True, end_date__isnull=False).count()
 
     def get_projects(self, obj):
-        qs = obj.projects.filter(end_date__isnull=False).order_by("-end_date")
+        qs = obj.projects.filter(is_active=True, end_date__isnull=False).order_by("-end_date")
         return PartnerProjectSerializer(qs, many=True, context=self.context).data
 
     def get_logo_url(self, obj):
@@ -235,7 +235,7 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
     position = serializers.StringRelatedField()
     directorate_memberships = DirectorateMembershipSerializer(many=True)
     photo_url = serializers.SerializerMethodField()
-    projects = ProjectListSerializer(many=True)
+    projects = serializers.SerializerMethodField()
     number_of_projects = serializers.IntegerField()
 
     class Meta:
@@ -246,6 +246,11 @@ class TeamMemberDetailSerializer(serializers.ModelSerializer):
             "entry_date", "exit_date", "course", "year", "linkedin",
             "trajetoria",
         ]
+
+    def get_projects(self, obj):
+        # Projetos arquivados não aparecem no perfil do membro.
+        qs = obj.projects.filter(is_active=True).select_related("category").prefetch_related("partners")
+        return ProjectListSerializer(qs, many=True, context=self.context).data
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
