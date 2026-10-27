@@ -95,7 +95,8 @@ class ProjectListView(generics.ListAPIView):
     serializer_class = ProjectListSerializer
 
     def get_queryset(self):
-        qs = Project.objects.prefetch_related(
+        # Projetos arquivados (is_active=False) não aparecem na API pública.
+        qs = Project.objects.filter(is_active=True).prefetch_related(
             "partners").select_related("category")
         category = self.request.query_params.get("category")
         if category:
@@ -105,9 +106,10 @@ class ProjectListView(generics.ListAPIView):
 
 class ProjectDetailView(generics.RetrieveAPIView):
     serializer_class = ProjectDetailSerializer
-    queryset = Project.objects.prefetch_related(
+    # Projeto arquivado responde 404, como se não existisse.
+    queryset = Project.objects.filter(is_active=True).prefetch_related(
         "partners", "members", "images", "timeline_events", "content_blocks"
-    ).select_related("category").all()
+    ).select_related("category")
 
 
 class ActivityListView(generics.ListAPIView):
