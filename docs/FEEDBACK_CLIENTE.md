@@ -23,7 +23,7 @@ Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal ofici
 
 | | |
 |---|---|
-| **Data** | ⚠️ DD/MM/2026, entre 13/10 e 21/10 (conversa com o ICC); repassado ao time em 21/10/2026 |
+| **Data** | 16/10/2026, segundo o coordenador (conversa com o ICC); repassado ao time em 21/10/2026 |
 | **Formato** | Conversa do coordenador do projeto com o Diretor Tech do ICC; os pedidos foram repassados ao time numa reunião interna da Code Jr |
 | **Participantes do ICC** | Gabriel Ávila (Gabs), Diretor Tech |
 | **Participantes da Code Jr** | Matteo Rosso (coordenador); Cynthia Yasutake, Sophia Kalil, Luan Ferreira (desenvolvedores) |
@@ -90,10 +90,10 @@ Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal ofici
 
 | | |
 |---|---|
-| **Data** | ⚠️ DD/MM/2026 |
-| **Formato** | ⚠️ |
-| **Participantes do ICC** | ⚠️ |
-| **Participantes da Code Jr** | ⚠️ |
+| **Data** | 29/10/2026 (⚠️ a confirmar) |
+| **Formato** | Encontro do coordenador do projeto com o Diretor Tech do ICC (⚠️ presencial ou chamada) |
+| **Participantes do ICC** | Gabriel Ávila (Gabs), Diretor Tech |
+| **Participantes da Code Jr** | Matteo Rosso (coordenador) (⚠️ e quem mais for) |
 | **O que foi apresentado** | O site em produção (https://icc-site.onrender.com) e a área administrativa (link "Área administrativa" no rodapé): cadastrar e arquivar um membro, cadastrar um projeto, abrir e fechar as inscrições do PS, publicar um artigo |
 
 **Perguntas a levar** (vêm da lista "Dúvidas ao cliente" do Trello)
