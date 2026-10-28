@@ -2,7 +2,7 @@
 
 Este guia é para quem cuida do conteúdo do site no ICC. Nada aqui exige mexer em código.
 
-**Endereço:** https://icc-backend-4b38.onrender.com/admin/
+**Endereço:** https://icc-backend-4b38.onrender.com/admin/ (ou clique em **"Área administrativa"**, no rodapé de qualquer página do site)
 
 Entre com o seu usuário e a sua senha. Um monitor mantém o servidor acordado, então o admin deve abrir rápido. Se um dia demorar uns 30 segundos, o site continua funcionando: avise o responsável técnico, porque provavelmente o monitor parou.
 
@@ -21,7 +21,7 @@ Na página inicial do admin, tudo fica no quadro **"Website"**. Cada linha é um
 - Na lista, a caixa de busca e os filtros da direita ajudam a achar o que procura.
 
 ### Esconder × apagar
-Parceiros, programas e cases têm o campo **"Exibir no site"**. Desmarcado, o item some do site, mas continua guardado e pode voltar quando quiser. **Prefira esconder a apagar**: apagar é definitivo.
+Parceiros, programas e cases têm o campo **"Exibir no site"**, e projetos têm o campo **"Ativo"**. Desmarcado, o item some do site, mas continua guardado e pode voltar quando quiser. Membros que saem são arquivados com a data de saída (ver [Membros](#membros)). **Prefira esconder ou arquivar a apagar**: apagar é definitivo.
 
 ### Logins para outras pessoas do ICC
 Cada pessoa que mexe no site deve ter o próprio login. Não compartilhe senha.
@@ -88,7 +88,25 @@ Para tirar um parceiro do site sem apagar, desmarque **"Exibir no site"**. Dá p
 
 A página **Projetos** do site mostra os programas e os cases de cada um.
 
-**Projetos** (a linha "Projetos" do admin) são trabalhos feitos com um parceiro. Um projeto com **Data de conclusão** preenchida e um parceiro em **Parceiros envolvidos** aparece na página desse parceiro, em "Casos de sucesso".
+### Projetos
+**Projetos** (a linha "Projetos" do admin) são trabalhos feitos com um parceiro.
+
+**Projetos → Adicionar projeto**
+1. **Título**, **Descrição**, **Categoria** (o programa) e **Data de início**.
+2. **Data de conclusão**, quando o projeto terminar.
+3. **Parceiros envolvidos**: escolha na caixa da esquerda e passe para a direita.
+4. Embaixo, se quiser: imagens, eventos da linha do tempo e blocos de conteúdo.
+5. Salvar.
+
+Os membros que participaram são ligados pelo cadastro de cada membro: abra o membro e, em **No ICC → Projetos participados**, passe o projeto para a caixa da direita.
+
+Um projeto com **Data de conclusão** preenchida e um parceiro em **Parceiros envolvidos** aparece na página desse parceiro, em "Casos de sucesso", e conta nos números do parceiro.
+
+**Arquivar um projeto** (em vez de apagar):
+- na lista de Projetos, marque os projetos, escolha a ação **"Arquivar selecionados (somem do site)"** e clique em **Ir**; ou
+- desmarque **"Ativo"** direto na lista, ou dentro do projeto, e salve.
+
+O projeto arquivado some do site (da página do parceiro e do perfil dos membros), mas continua guardado. Para trazê-lo de volta, use **"Reativar selecionados"** ou marque **"Ativo"** de novo. O filtro **Ativo**, à direita da lista, separa os ativos dos arquivados.
 
 ---
 
@@ -157,7 +175,7 @@ Algumas linhas do admin **não aparecem mais no site** e podem ser ignoradas: **
 | Fim das inscrições | Desmarcar **Inscrições abertas** (o processo continua ativo, com as datas visíveis) | Processos Seletivos |
 | Entrada dos aprovados | Cadastrar os novos membros, com foto e diretoria | Membros |
 | Troca de gestão | Arquivar quem saiu; atualizar cargos e diretorias | Membros, Cargos, Diretorias |
-| Fim do semestre | Cadastrar os cases do semestre e atualizar os números da Home | Cases de Sucesso, Estatísticas |
+| Fim do semestre | Cadastrar os cases e projetos do semestre e atualizar os números da Home | Cases de Sucesso, Projetos, Estatísticas |
 | Sempre que houver | Novos artigos e parceiros | Artigos, Parceiros |
 | Troca de gestão | Dar login a quem entrou e desativar o de quem saiu | Usuários |
 
