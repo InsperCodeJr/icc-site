@@ -31,7 +31,7 @@
 | 12 | Backend sempre acordado (health check e monitor de uptime) | Back e Infra | ✅ |
 | 13 | Arquivar projetos (soft delete) | Back | ✅ |
 | 14 | Link para a área administrativa no site | Front | ✅ |
-| 15 | Remover dados pessoais do histórico do Git | Infra | ⬜ |
+| 15 | Remover dados pessoais do histórico do Git | Infra | 🟡 histórico reescrito; falta o pedido ao GitHub Support |
 
 ---
 
@@ -230,14 +230,14 @@ O case pede uma área administrativa autenticada com CRUD, e o Django Admin aten
 
 - [ ] Subdomínio do Insper ou `.com.br` em nome do ICC, configurado no Render (passo a passo no README).
 
-### 15. ⬜ [Infra] Remover dados pessoais do histórico do Git
+### 15. 🟡 [Infra] Remover dados pessoais do histórico do Git
 
-Um arquivo `.sql` com dados de membros (nomes, datas de entrada, fotos, cargos e descrições) foi versionado em 22/05/2026 e apagado em 29/05/2026, mas continua no histórico do repositório.
+Um arquivo `.sql` com dados de membros (nomes, datas de entrada, fotos, cargos e descrições) foi versionado em 22/05/2026 e apagado em 29/05/2026, mas continuava no histórico do repositório, que é público.
 
-**Responsável:** ⚠️ um admin da organização `InsperCodeJr`, combinado com o coordenador (Matteo Rosso). **Prazo:** ⚠️ DD/MM/2026, depois do último merge da entrega, para não atrapalhar branches abertas.
+**Responsável:** Cynthia Yasutake (execução); pedido ao GitHub Support pelo diretor de Tech da Code Jr, admin da organização `InsperCodeJr`. **Feito em:** 28/10/2026.
 
-- [ ] Avisar o time e pedir que todos façam push do que estiver pendente.
-- [ ] Reescrever o histórico removendo o arquivo (`git filter-repo --invert-paths --path "ICC-backend/membros_icc .sql"`) num clone espelho, e fazer `git push --force --mirror`.
-- [ ] Pedir ao GitHub Support a remoção das referências em cache dos PRs antigos.
-- [ ] Todos apagam o clone local e clonam de novo.
-- [ ] Conferir com `git log --all -- "ICC-backend/membros_icc .sql"` que não sobrou nada.
+- [x] Reescrever o histórico removendo o arquivo (`git filter-repo --invert-paths --path "ICC-backend/membros_icc .sql"`) num clone espelho, e enviar todas as branches com force push (19 branches).
+- [x] Conferir com `git log --all -- "ICC-backend/membros_icc .sql"` que não sobrou nada (nenhum commit encontrado).
+- [x] Conferir que o deploy disparado pelo force push terminou e o site continua no ar.
+- [ ] Avisar o time para apagar o clone local e clonar de novo, sem fazer push de branches antigas.
+- [ ] Pedir ao GitHub Support a remoção das cópias guardadas nos PRs antigos: até isso, o commit antigo (`35d2b12`) ainda abre pelo link direto.
