@@ -234,7 +234,7 @@ O case pede uma área administrativa autenticada com CRUD, e o Django Admin aten
 
 Um arquivo `.sql` com dados de membros (nomes, datas de entrada, fotos, cargos e descrições) foi versionado em 22/05/2026 e apagado em 29/05/2026, mas continuava no histórico do repositório, que é público.
 
-**Responsável:** Cynthia Yasutake (execução); pedido ao GitHub Support por um admin da organização `InsperCodeJr`. **Feito em:** 28/10/2026.
+**Responsável:** Cynthia Yasutake (execução); pedido ao GitHub Support pelo diretor de Tech da Code Jr, admin da organização `InsperCodeJr`. **Feito em:** 28/10/2026.
 
 - [x] Reescrever o histórico removendo o arquivo (`git filter-repo --invert-paths --path "ICC-backend/membros_icc .sql"`) num clone espelho, e enviar todas as branches com force push (19 branches).
 - [x] Conferir com `git log --all -- "ICC-backend/membros_icc .sql"` que não sobrou nada (nenhum commit encontrado).
