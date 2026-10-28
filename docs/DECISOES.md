@@ -26,7 +26,7 @@ O painel próprio no frontend ficou registrado como possibilidade futura no [`ba
 
 ## 3. Arquivar × excluir
 
-Membros que saem do clube são **arquivados** (data de saída): somem do site, mas o histórico de cases e a trajetória continuam guardados. A **exclusão** continua disponível para cadastros feitos por engano, como pede o CRUD do case. Parceiros, programas e cases têm "Exibir no site" com o mesmo objetivo.
+Membros que saem do clube são **arquivados** (data de saída): somem do site, mas o histórico de cases e a trajetória continuam guardados. Projetos seguem a mesma ideia com o campo **"Ativo"** e as ações de arquivar e reativar: um projeto arquivado some da API pública (a página dele responde 404) e deixa de contar nos números dos parceiros. A **exclusão** continua disponível para cadastros feitos por engano, como pede o CRUD do case. Parceiros, programas e cases têm "Exibir no site" com o mesmo objetivo.
 
 ## 4. Hospedagem: Render, Neon e Cloudinary
 
@@ -39,7 +39,7 @@ Membros que saem do clube são **arquivados** (data de saída): somem do site, m
 
 Alternativas consideradas: trocar a hospedagem do backend (Vercel roda Django como função serverless, mas exigiria adaptar o projeto; Cloudflare não roda Django) ou um plano pago do Render. O monitor resolveu o problema sem mudar a arquitetura perto da entrega; trocar de hospedagem fica como opção futura.
 
-Limitações conhecidas e próximos passos (deploy manual, contas a transferir para a entidade, domínio próprio) estão na seção "Produção" do [README](../README.md#produção).
+O deploy é automático a cada merge na `main`. Limitações conhecidas e próximos passos (contas a transferir para a entidade, domínio próprio) estão na seção "Produção" do [README](../README.md#produção).
 
 ## 5. Segurança e configuração
 
@@ -48,6 +48,8 @@ Limitações conhecidas e próximos passos (deploy manual, contas a transferir p
 - O formulário de contato, que gravava dados de visitantes, saiu do site a pedido do cliente. Com isso, o site não coleta mais dados pessoais de visitantes.
 
 ## 6. Mudanças a partir do feedback do cliente
+
+Quando e com quem cada pedido foi conversado está em [`FEEDBACK_CLIENTE.md`](FEEDBACK_CLIENTE.md).
 
 | Pedido do ICC | O que foi feito |
 |---|---|
