@@ -7,10 +7,46 @@ O site apresenta o ICC de maneira profissional e moderna para alunos e empresas:
 | | Endereço |
 |---|---|
 | Site | https://icc-site.onrender.com |
-| Área administrativa | https://icc-backend-4b38.onrender.com/admin/ |
+| Área administrativa | https://icc-backend-4b38.onrender.com/admin/ (também pelo link "Área administrativa" no rodapé do site) |
 | API | https://icc-backend-4b38.onrender.com/api/ |
 
-O que está pronto e o que ficou para depois está em [`backlog.md`](backlog.md).
+## O problema
+
+O ICC não tinha um site que pudesse usar. A versão feita no semestre anterior foi abandonada porque o banco de dados ficava num arquivo SQL na máquina de um desenvolvedor: a entidade não tinha acesso aos dados, não conseguia atualizar nada sozinha e o site nunca foi ao ar.
+
+Este projeto resolve isso com:
+- um site público e responsivo, com a identidade visual do ICC;
+- uma área administrativa com login, em que o próprio ICC cadastra e edita membros, cargos, projetos, parceiros, artigos e o processo seletivo;
+- banco de dados e imagens na nuvem, em contas que podem ser transferidas para a entidade;
+- documentação para quem usa o admin e para quem assumir a manutenção.
+
+## Stack
+
+| Parte | Tecnologias |
+|---|---|
+| Frontend | React 19, TypeScript, Vite 8, React Router 7, CSS próprio com design tokens |
+| Backend | Python, Django 6, Django REST Framework, Django Admin, gunicorn, WhiteNoise |
+| Banco | PostgreSQL (Neon em produção; container do Docker localmente) |
+| Imagens | Cloudinary |
+| Hospedagem | Render: web service com Docker (backend) e site estático (frontend), deploy automático a cada merge na `main` |
+| Monitoramento | UptimeRobot chamando `/api/health/` |
+| Ambiente local | Docker Compose (Postgres, backend e frontend) |
+
+As versões exatas estão em [`ICC-backend/requirements.txt`](ICC-backend/requirements.txt) e [`ICC-frontend/package.json`](ICC-frontend/package.json); as licenças, em [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md).
+
+## Status (28/10/2026)
+
+**No ar e em uso.** Pronto para a entrega final do case 2026.2.
+
+| | Situação |
+|---|---|
+| Site público | ✅ No ar, com os dados reais do ICC (16 membros, 15 parceiros, 4 programas, 4 cases) |
+| Área administrativa | ✅ No ar, com login; CRUD de membros, cargos, projetos e demais conteúdos |
+| Banco e imagens na nuvem | ✅ Neon e Cloudinary |
+| Deploy | ✅ Automático a cada merge na `main` |
+| Pendente | Transferir as contas para a entidade, limpar dados pessoais do histórico do Git, testes automatizados, domínio próprio |
+
+O que está pronto, com critérios de aceite e evidências, e o que ficou para depois está em [`backlog.md`](backlog.md). As conversas com o ICC e o que mudou a partir delas estão em [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md).
 
 > **Herdou o site?** Comece por [Se você herdou o site](#se-você-herdou-o-site) e pela [Manutenção](#manutenção), no fim deste arquivo.
 
@@ -21,6 +57,7 @@ O que está pronto e o que ficou para depois está em [`backlog.md`](backlog.md)
 | [Guia da área administrativa](docs/GUIA_ADMIN.md) | ICC | Como cadastrar membros, parceiros, cases, artigos e o processo seletivo, e a rotina de cada semestre |
 | Este README | Devs | Rodar localmente, API, dados, produção, passagem de gestão e manutenção |
 | [Decisões técnicas](docs/DECISOES.md) | Devs e avaliação | Por que refatorar, por que o Django Admin, por que esses serviços |
+| [Feedback do cliente](docs/FEEDBACK_CLIENTE.md) | Time e avaliação | Reuniões com o ICC: o que foi apresentado, aprovado e pedido, e o que mudou |
 | [Dependências e licenças](docs/DEPENDENCIAS.md) | Devs | Bibliotecas usadas e licença de cada uma |
 | [`ICC-frontend/README.md`](ICC-frontend/README.md) | Devs | Estrutura do frontend, design tokens e componentes |
 | [`ICC-backend/.env.example`](ICC-backend/.env.example) | Devs | Todas as variáveis de ambiente, explicadas |
@@ -132,8 +169,8 @@ Todos são públicos e somente leitura, exceto o `POST /api/contact/`. Itens mar
 | GET | `/api/directorates/` | Lista diretorias |
 | GET | `/api/partners/` | Lista parceiros visíveis |
 | GET | `/api/partners/<id>/` | Detalhe de um parceiro |
-| GET | `/api/projects/` | Lista projetos |
-| GET | `/api/projects/<id>/` | Detalhe de um projeto |
+| GET | `/api/projects/` | Lista projetos ativos (arquivados não aparecem) |
+| GET | `/api/projects/<id>/` | Detalhe de um projeto ativo; 404 se estiver arquivado |
 | GET | `/api/categories/` | Lista programas (categorias) visíveis |
 | GET | `/api/activities/` | Lista atividades |
 | GET | `/api/activities/<id>/` | Detalhe de uma atividade |
@@ -235,15 +272,25 @@ Limitações do plano gratuito, que não afetam os dados:
 
 ### Como publicar uma mudança (deploy)
 
-Os dois serviços do Render foram conectados ao repositório como **"Public Git Repository"**, porque quem fez o deploy não é dono do repositório. Nesse modo, **o Render não publica sozinho a cada merge**. Depois de cada merge na `main`:
+O deploy é **automático**: os dois serviços do Render estão conectados ao repositório pelo GitHub, com o Auto-Deploy "On Commit" ligado. Cada merge na `main` publica o backend e o frontend sozinho, em poucos minutos.
 
-1. Entre no Render, abra o serviço que mudou (`icc-backend`, `icc-site` ou os dois).
-2. Clique em **Manual Deploy → Deploy latest commit**.
-3. Espere o status ficar **Live** e confira o site.
+Para acompanhar, abra o serviço no Render e veja a aba **Events**: o deploy aparece com o commit do merge e termina como **Live**. Se falhar, os **Logs** do deploy mostram o erro, e o site continua na versão anterior até um deploy dar certo.
 
 O backend aplica as migrations sozinho a cada deploy (está no `CMD` do Dockerfile), então não é preciso rodar nada à mão em produção.
 
-Para o deploy voltar a ser automático, alguém com acesso de admin à organização `InsperCodeJr` precisa liberar o app do Render no repositório `icc-site` e reconectar os serviços pela conta do GitHub (não pela URL pública). Com isso, o Auto-Deploy "On Commit" passa a funcionar.
+Para publicar de novo sem um commit novo (por exemplo, depois de mudar uma variável de ambiente), use **Manual Deploy → Deploy latest commit** no serviço.
+
+Configuração do serviço do frontend (`icc-site`), caso precise ser recriado:
+
+| Campo | Valor |
+|---|---|
+| Root Directory | `ICC-frontend` |
+| Build Command | `npm run build` |
+| Publish Directory | `dist` (relativo ao Root Directory) |
+| Variável | `VITE_API_URL=https://icc-backend-4b38.onrender.com/api` |
+| Redirects/Rewrites | `/*` → `/index.html` (Rewrite) |
+
+Se a conexão com o GitHub se perder (por exemplo, ao transferir o repositório ou a conta), o Render para de publicar sozinho. Para reconectar: em **Settings → Build & Deploy → Repository**, escolha o repositório pela conta do GitHub com acesso à organização `InsperCodeJr` e confira se o Auto-Deploy está em "On Commit".
 
 ### Backend
 
@@ -266,6 +313,8 @@ Para criar um superusuário em produção, use o **Shell** do serviço no Render
 ### Frontend
 
 O frontend é gerado com `npm run build` (pasta `ICC-frontend/dist`), com a variável `VITE_API_URL` apontando para `https://icc-backend-4b38.onrender.com/api`. Como é um site de página única (SPA), o serviço estático precisa de uma regra de rewrite de `/*` para `/index.html`; sem ela, recarregar uma página como `/equipe` dá 404.
+
+O `VITE_API_URL` entra no código no momento do build. Se ele mudar, o frontend precisa de um novo deploy. O link "Área administrativa" do rodapé é montado a partir dele (troca o `/api` do fim por `/admin/`), então também acompanha a mudança.
 
 ### Monitor de uptime
 
@@ -340,7 +389,7 @@ Toda variável alterada no Render só vale depois de um novo deploy do serviço 
    ```
 3. Se mudou `models.py`, rode `makemigrations` e inclua a migration no commit.
 4. Abra o PR, peça revisão e faça o merge.
-5. Publique: **Manual Deploy** do backend e/ou do frontend no Render (ver [Como publicar uma mudança](#como-publicar-uma-mudança-deploy)). Se o PR mudou os dois e tem migration, publique o **backend primeiro**.
+5. O Render publica sozinho (ver [Como publicar uma mudança](#como-publicar-uma-mudança-deploy)). Acompanhe em **Events** até os serviços ficarem **Live**.
 6. Confira no site.
 
 ### Rotina
@@ -375,7 +424,8 @@ docker run --rm postgres:17 pg_dump "COLE_AQUI_A_DATABASE_URL" > backup-icc-AAAA
 
 | Sintoma | Causa provável | O que fazer |
 |---|---|---|
-| Mudança com merge não aparece no site | O Render não publica sozinho | **Manual Deploy → Deploy latest commit** no serviço que mudou |
+| Mudança com merge não aparece no site | O deploy falhou ou o Render perdeu a conexão com o GitHub | Ver **Events** e os Logs do deploy no Render; se nenhum deploy começou, reconectar o repositório (ver [Como publicar uma mudança](#como-publicar-uma-mudança-deploy)) |
+| Deploy do frontend falha com "Publish directory … does not exist" | Build Command vazio ou Publish Directory errado | Build Command `npm run build` e Publish Directory `dist` (o Root Directory já é `ICC-frontend`) |
 | Site ou admin demoram ~30 s para abrir | O backend dormiu (monitor parado) | Conferir o UptimeRobot e as horas do workspace no Render |
 | Site abre, mas sem membros, parceiros etc. | Backend fora do ar ou bloqueado por CORS | Abrir `/api/health/`; se responder, conferir `CORS_ALLOWED_ORIGINS` no Render. Ver os Logs do backend |
 | `column ... does not exist` (local) | Migration nova não aplicada | `docker-compose exec backend python manage.py migrate` |
