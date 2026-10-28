@@ -186,7 +186,7 @@ O case pede uma área administrativa autenticada com CRUD, e o Django Admin aten
 
 | Data | O quê | Responsável |
 |---|---|---|
-| 28/10 | Slides da apresentação | ⚠️ |
+| 28/10 | Slides da apresentação | Matteo Rosso |
 | 28/10 | Apresentar o MVP no ar ao ICC e registrar em `FEEDBACK_CLIENTE.md` | ⚠️ |
 | 28/10 | Cadastrar estatísticas e pelo menos um projeto em produção; testar o CRUD de membros e projetos no admin de produção | ⚠️ |
 | 28/10 | Trocar os 3 artigos "[Exemplo]" por um artigo real ou apagá-los; conferir os links do LinkedIn | ⚠️ |
