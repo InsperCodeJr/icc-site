@@ -1,23 +1,36 @@
 # Feedback do cliente
 
-Registro das conversas com o **Insper Consulting Club (ICC)** sobre o site: o que foi apresentado, o que aprovaram, o que pediram e o que mudou a partir disso. O feedback das avaliações da Insper Code fica fora deste arquivo; o resumo técnico das mudanças está em [`DECISOES.md`](DECISOES.md#6-mudanças-a-partir-do-feedback-do-cliente).
+Registro das conversas com o **Insper Consulting Club (ICC)** sobre o site: o que foi apresentado, o que aprovaram, o que pediram e o que mudou a partir disso. O feedback das avaliações da Insper Code aparece só como contexto; o resumo técnico das mudanças está em [`DECISOES.md`](DECISOES.md#6-mudanças-a-partir-do-feedback-do-cliente).
 
 > **Campos marcados com ⚠️ ainda precisam ser preenchidos pelo time** (data exata e participantes). Não deixe este arquivo com ⚠️ na entrega final.
 
 ---
 
+## Contexto
+
+A Coordenadora Tech do ICC, Ana Beatriz da Cunha, participou da reunião da entrega intermediária 1 (07/10/2026). Depois dela, o coordenador do projeto levou o site ao Diretor Tech do ICC, Gabriel Ávila, e o time passou a orientar as mudanças pelos pedidos do cliente, registrados abaixo.
+
+**Contatos com o ICC**
+
+| Pessoa | Cargo no ICC | Canal |
+|---|---|---|
+| Diretoria do ICC, incluindo Gabriel Ávila (Gabs) | Diretor Tech | Canal oficial: Matteo Rosso, coordenador do projeto, fala direto com a diretoria |
+| Ana Beatriz da Cunha | Coordenadora Tech | Canal informal: colega de sala de Cynthia Yasutake (desenvolvedora). Tira dúvidas rápidas e leva assuntos ao Gabriel Ávila |
+
+Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal oficial; o canal informal agiliza dúvidas do dia a dia.
+
 ## 1. Feedback sobre a versão do site em desenvolvimento
 
 | | |
 |---|---|
-| **Data** | ⚠️ DD/MM/2026 (antes de 21/10/2026, quando os primeiros ajustes entraram na `main`) |
-| **Formato** | ⚠️ reunião presencial / chamada / mensagens no grupo |
-| **Participantes do ICC** | ⚠️ nomes e cargos |
-| **Participantes da Code Jr** | ⚠️ nomes |
-| **O que foi apresentado** | O site rodando com os dados reais do ICC: Home, Equipe, Parceiros, Projetos, Atividades, Notícias, Contato e Processo Seletivo |
+| **Data** | ⚠️ DD/MM/2026, entre 13/10 e 21/10 (conversa com o ICC); repassado ao time em 21/10/2026 |
+| **Formato** | Conversa do coordenador do projeto com o Diretor Tech do ICC; os pedidos foram repassados ao time numa reunião interna da Code Jr |
+| **Participantes do ICC** | Gabriel Ávila (Gabs), Diretor Tech |
+| **Participantes da Code Jr** | Matteo Rosso (coordenador); Cynthia Yasutake, Sophia Kalil, Luan Ferreira (desenvolvedores) |
+| **O que foi apresentado** | O site em produção, com os dados reais do ICC: Home, Equipe, Parceiros, Projetos, Atividades, Notícias, Contato e Processo Seletivo. Os links do site e da API em produção foram enviados ao coordenador em 13/10/2026 (⚠️ confirmar com o Matteo se foi isso que ele mostrou) |
 
 **O que aprovaram**
-- ⚠️ ex.: identidade visual, página da Equipe com as diretorias, perfis de parceiros
+- O carrossel com os logos dos patrocinadores na página inicial.
 
 **O que pediram e o que mudou**
 
@@ -26,7 +39,8 @@ Registro das conversas com o **Insper Consulting Club (ICC)** sobre o site: o qu
 | A página de Atividades repetia o que já está em Projetos | Página removida do site e do menu | #10 (21/10) |
 | Parceiros mais perto de Equipe no menu | Menu reordenado: Equipe → Parceiros → Projetos → Artigos → Contato | #10 (21/10) |
 | O contato já tem e-mail; o formulário não tinha uso | Formulário removido; o Contato mostra só os canais oficiais | #11 (22/10) |
-| Não pedir "cadastre-se para receber atualizações", porque não há mailing | Controle manual das inscrições no admin: aberto, botão "Inscreva-se" com o link do formulário; fechado, "Inscrições encerradas" | #12 (25/10) |
+| A seção de notícias seria usada para artigos científicos | Ver a seção 2 | #16 (27/10) |
+| Não pedir "cadastre-se para receber atualizações", porque não há mailing; mandar para um Google Forms | Controle manual das inscrições no admin: aberto, botão "Inscreva-se" com o link do formulário; fechado, "Inscrições encerradas" | #12 (25/10) |
 | Manter as datas do último processo seletivo no site | Só um processo ativo por vez; o último fica visível, com as inscrições fechadas, até o próximo | #12 (25/10) |
 | GitHub do ICC junto com Instagram e LinkedIn | Link no header, no rodapé e no Contato | #13 (26/10) |
 | Carrossel de patrocinadores na Home | Carrossel contínuo dos logos dos parceiros; logos recortados e caixas maiores depois de revisão | #14, #15 (26/10) e #17 (27/10) |
@@ -38,9 +52,9 @@ Registro das conversas com o **Insper Consulting Club (ICC)** sobre o site: o qu
 | | |
 |---|---|
 | **Data** | ⚠️ DD/MM/2026 |
-| **Formato** | ⚠️ mensagens (o exemplo foi enviado ao coordenador do projeto) |
-| **Participantes do ICC** | ⚠️ nomes (inclui quem enviou o exemplo e a integrante do ICC que comentou a seção) |
-| **Participantes da Code Jr** | ⚠️ Matteo Rosso (coordenador), Cynthia Naoko |
+| **Formato** | Mensagens: o Diretor Tech do ICC enviou o exemplo ao coordenador do projeto, e a Coordenadora Tech comentou a seção com a desenvolvedora |
+| **Participantes do ICC** | Gabriel Ávila (Gabs), Diretor Tech; Ana Beatriz da Cunha, Coordenadora Tech |
+| **Participantes da Code Jr** | Matteo Rosso (coordenador), Cynthia Yasutake |
 
 **O que pediram**
 - A seção "Notícias" deve ser usada para **artigos de autoria dos membros do ICC**, não para notícias externas.
@@ -52,7 +66,27 @@ Registro das conversas com o **Insper Consulting Club (ICC)** sobre o site: o qu
 
 ---
 
-## 3. Apresentação do MVP no ar
+## 3. Site no ar e área administrativa enviados ao ICC (13/10 e 26/10)
+
+| | |
+|---|---|
+| **Datas** | 13/10/2026: link do site em produção (https://icc-site.onrender.com). 26/10/2026: link da área administrativa (https://icc-backend-4b38.onrender.com/admin/) com as credenciais de acesso |
+| **Formato** | Mensagens |
+| **Participantes do ICC** | Ana Beatriz da Cunha, Coordenadora Tech |
+| **Participantes da Code Jr** | Cynthia Yasutake |
+
+**Retorno do ICC**
+
+| Data | Pedido ou sugestão do ICC | O que foi feito | PR |
+|---|---|---|---|
+| 26/10/2026 | O backend no plano gratuito do Render "dorme" depois de 15 minutos sem acesso, e o primeiro acesso fica lento. Sugestão: fazer requisições periódicas (a cada 14 minutos) para mantê-lo acordado, já que as 750 horas mensais grátis cobrem um único serviço ligado o mês inteiro | Endpoint `/api/health/`, que responde sem consultar o banco, e monitor no UptimeRobot chamando-o a cada 5 minutos; também avisa por e-mail se o site cair | #16 (27/10) |
+| ⚠️ | ⚠️ outros retornos (o que aprovou, o que pediu), ou "sem outros retornos até DD/MM" | | |
+
+**Acesso ao admin:** em 28/10/2026, o login enviado em 26/10 passou a ser de uso exclusivo do ICC, e a equipe de desenvolvimento passou a usar logins próprios. A troca de senha foi recomendada à Coordenadora Tech, para que só o ICC a conheça. Novos acessos do ICC são criados por ela, um por pessoa, como explica o [guia do admin](GUIA_ADMIN.md#logins-para-outras-pessoas-do-icc).
+
+---
+
+## 4. Apresentação do MVP no ar
 
 | | |
 |---|---|
