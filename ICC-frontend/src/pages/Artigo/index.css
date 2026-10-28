@@ -12,6 +12,8 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 1.5rem;
+  list-style: none;
+  padding: 0;
 }
 
 .artigo__temas li {
