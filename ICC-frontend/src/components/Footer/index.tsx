@@ -5,6 +5,9 @@ import useProgramas from "../../hooks/useProgramas";
 import { GitHubIcon, InstagramIcon, LinkedInIcon, MailIcon } from "../Icons";
 import { REDES } from "../../redes";
 
+// O admin fica no backend, no mesmo endereço da API sem o "/api"
+// (local: localhost:8000/admin/; produção: icc-backend…onrender.com/admin/).
+const ADMIN_URL = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "/admin/")
 const NAVEGACAO = [
   { label: "Nossa Equipe", to: "/equipe" },
   { label: "Parceiros", to: "/parceiros" },
@@ -85,7 +88,10 @@ export default function Footer() {
 
       <div className="container footer__bottom">
         <span>© {new Date().getFullYear()} Liga Insper Consulting Club</span>
-        <Link to="/politica-de-privacidade">Política de Privacidade</Link>
+        <div className="footer__bottom-links">
+          <Link to="/politica-de-privacidade">Política de Privacidade</Link>
+          <a href={ADMIN_URL}>Área administrativa</a>
+        </div>
       </div>
     </footer>
   );
