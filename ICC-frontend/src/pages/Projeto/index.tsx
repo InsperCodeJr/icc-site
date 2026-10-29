@@ -57,9 +57,13 @@ export default function Projeto() {
   const voltar = projeto.category
     ? { to: `/projetos/${projeto.category.slug}`, label: projeto.category.label }
     : { to: "/projetos", label: "Todos os projetos" }
-  const periodo = projeto.end_date
-    ? `${formatDate(projeto.start_date)} a ${formatDate(projeto.end_date)}`
-    : `Desde ${formatDate(projeto.start_date)}`
+  // Evento de um dia só (visita, competição): mostra a data uma vez.
+  const umDia = projeto.end_date === projeto.start_date
+  const periodo = umDia
+    ? formatDate(projeto.start_date)
+    : projeto.end_date
+      ? `${formatDate(projeto.start_date)} a ${formatDate(projeto.end_date)}`
+      : `Desde ${formatDate(projeto.start_date)}`
 
   return (
     <div className="projeto-detalhe">
@@ -69,7 +73,7 @@ export default function Projeto() {
         <div className="container projeto-detalhe__corpo">
           <dl className="projeto-detalhe__dados">
             <div>
-              <dt>Período</dt>
+              <dt>{umDia ? "Data" : "Período"}</dt>
               <dd>{periodo}</dd>
             </div>
             <div>
