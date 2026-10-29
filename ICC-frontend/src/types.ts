@@ -189,6 +189,14 @@ export interface NewsItem {
   authors: string
   topics: string
   content: string
+  images: ArticleImage[]
+}
+
+// Imagem chamada no texto do artigo como ![](imagem-<number>).
+export interface ArticleImage {
+  number: number
+  image_url: string | null
+  caption: string
 }
 
 export interface ContactInfo {

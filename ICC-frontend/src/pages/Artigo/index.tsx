@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
+import Markdown, { type Components } from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { api } from "../../api"
-import type { NewsItem } from "../../types"
+import type { ArticleImage, NewsItem } from "../../types"
 import PageHero from "../../components/PageHero"
 import { ArrowLeftIcon, ExternalIcon, LinkedInIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
@@ -11,6 +13,36 @@ function formatDate(date: string) {
   // Mesmo cuidado da lista: ano/mês/dia separados evitam o desvio de um dia do UTC.
   const [ano, mes, dia] = date.split("-").map(Number)
   return new Date(ano, mes - 1, dia).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
+}
+
+// Links externos abrem em outra aba. Imagens viram figura com legenda; a
+// figura é feita de <span> porque o Markdown coloca a imagem dentro de um <p>.
+// No admin, a imagem é chamada pelo número, como ![](imagem-1): o endereço e
+// a legenda vêm de "Imagens do artigo". A legenda escrita entre os colchetes,
+// se houver, vale mais que a do cadastro.
+function componentesMarkdown(imagens: ArticleImage[]): Components {
+  return {
+    a: ({ href, children }) =>
+      href?.startsWith("http") ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+      ) : (
+        <a href={href}>{children}</a>
+      ),
+    img: ({ src, alt }) => {
+      const numero = typeof src === "string" ? src.match(/^imagem-(\d+)$/)?.[1] : undefined
+      const cadastrada = numero ? imagens.find((img) => img.number === Number(numero)) : undefined
+      const endereco = numero ? cadastrada?.image_url : src
+      const legenda = alt || cadastrada?.caption || ""
+      // Número sem imagem cadastrada: não mostra nada em vez de imagem quebrada.
+      if (typeof endereco !== "string" || !endereco) return null
+      return (
+        <span className="artigo__figura">
+          <img src={endereco} alt={legenda} loading="lazy" />
+          {legenda && <span className="artigo__legenda">{legenda}</span>}
+        </span>
+      )
+    },
+  }
 }
 
 export default function Artigo() {
@@ -49,9 +81,6 @@ export default function Artigo() {
     )
   }
 
-  // No admin, os parágrafos são separados por uma linha em branco. O React
-  // escapa o texto, então nada digitado lá vira HTML na página.
-  const paragrafos = artigo.content.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
   const temas = artigo.topics.split(",").map((t) => t.trim()).filter(Boolean)
   const url = window.location.href
   const ano = artigo.date?.slice(0, 4)
@@ -89,9 +118,15 @@ export default function Artigo() {
               <p>{artigo.description}</p>
             </div>
           )}
-          {paragrafos.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
+          {/* O texto vem em Markdown. HTML digitado no admin não é
+              executado: o react-markdown o mostra como texto. */}
+          {artigo.content && (
+            <div className="artigo__texto">
+              <Markdown remarkPlugins={[remarkGfm]} components={componentesMarkdown(artigo.images ?? [])}>
+                {artigo.content}
+              </Markdown>
+            </div>
+          )}
 
           <div className="artigo__rodape">
             <h2>Como citar</h2>
