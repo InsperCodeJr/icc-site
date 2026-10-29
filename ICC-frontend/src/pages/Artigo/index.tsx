@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import Markdown, { type Components } from "react-markdown"
+import Markdown, { type Components, type Options } from "react-markdown"
 import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
+import "katex/dist/katex.min.css"
 import { api } from "../../api"
 import type { ArticleImage, NewsItem } from "../../types"
 import PageHero from "../../components/PageHero"
@@ -20,6 +23,12 @@ function formatDate(date: string) {
 // No admin, a imagem é chamada pelo número, como ![](imagem-1): o endereço e
 // a legenda vêm de "Imagens do artigo". A legenda escrita entre os colchetes,
 // se houver, vale mais que a do cadastro.
+// Fórmulas em LaTeX, desenhadas pelo KaTeX, sempre entre $$ (em linha ou num
+// bloco próprio). O $ sozinho fica desligado: "R$ 10 mi e R$ 20 mi" viraria
+// fórmula. Fórmula com erro aparece em vermelho, sem derrubar a página.
+const pluginsRemark: Options["remarkPlugins"] = [remarkGfm, [remarkMath, { singleDollarTextMath: false }]]
+const pluginsRehype: Options["rehypePlugins"] = [[rehypeKatex, { throwOnError: false }]]
+
 function componentesMarkdown(imagens: ArticleImage[]): Components {
   return {
     a: ({ href, children }) =>
@@ -122,7 +131,11 @@ export default function Artigo() {
               executado: o react-markdown o mostra como texto. */}
           {artigo.content && (
             <div className="artigo__texto">
-              <Markdown remarkPlugins={[remarkGfm]} components={componentesMarkdown(artigo.images ?? [])}>
+              <Markdown
+                remarkPlugins={pluginsRemark}
+                rehypePlugins={pluginsRehype}
+                components={componentesMarkdown(artigo.images ?? [])}
+              >
                 {artigo.content}
               </Markdown>
             </div>
