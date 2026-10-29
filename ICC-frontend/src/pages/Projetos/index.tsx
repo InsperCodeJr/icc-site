@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { api } from "../../api"
-import type { SuccessCase } from "../../types"
+import type { Project, SuccessCase } from "../../types"
 import PageHero from "../../components/PageHero"
+import ProjetoCard from "../../components/ProjetoCard"
 import { ArrowRightIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
 import useProgramas from "../../hooks/useProgramas"
@@ -12,9 +13,16 @@ export default function Projetos() {
   usePageTitle("Projetos", "Como formamos consultores, do primeiro semestre na entidade aos cases reais resolvidos ao longo da Jornada do Consultor.")
   const programas = useProgramas()
   const [cases, setCases] = useState<SuccessCase[]>([])
+  const [outrosProjetos, setOutrosProjetos] = useState<Project[]>([])
 
   useEffect(() => {
     api.getSuccessCases().then(setCases).catch(() => setCases([]))
+    // Os projetos de um programa aparecem na página dele; aqui ficam os que
+    // não pertencem a nenhum, como visitas e capacitações com parceiros.
+    api
+      .getProjects()
+      .then((data: Project[]) => setOutrosProjetos(data.filter((p) => !p.category)))
+      .catch(() => setOutrosProjetos([]))
   }, [])
 
   return (
@@ -47,8 +55,24 @@ export default function Projetos() {
         </div>
       </section>
 
+      {outrosProjetos.length > 0 && (
+        <section className="section section--muted" id="outros-projetos">
+          <div className="container">
+            <div className="section-head">
+              <p className="eyebrow">Além dos programas</p>
+              <h2 className="section-title">Outros projetos</h2>
+            </div>
+            <div className="grid grid--2">
+              {outrosProjetos.map((projeto) => (
+                <ProjetoCard projeto={projeto} key={projeto.id} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {cases.length > 0 && (
-        <section className="section section--muted">
+        <section className={`section${outrosProjetos.length > 0 ? "" : " section--muted"}`}>
           <div className="container projetos-cases">
             <div>
               <p className="eyebrow">Cases resolvidos</p>
