@@ -166,6 +166,14 @@
   color: var(--cinza-500);
 }
 
+.projeto-card .link-arrow {
+  margin-top: 16px;
+}
+
+.projeto-card:hover {
+  border-color: var(--vermelho-icc);
+}
+
 /* ---------- Outros programas ---------- */
 
 .projeto-outro {

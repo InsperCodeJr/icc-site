@@ -121,14 +121,18 @@ export default function PerfilParceiro() {
             </div>
             <div className="grid grid--2">
               {casos.map((project) => (
-                <article className="card" key={project.id}>
+                <Link to={`/projetos/projeto/${project.id}`} className="card parceiro-caso" key={project.id}>
                   <h3 className="parceiro-caso__titulo">{project.title}</h3>
                   {project.description && <p className="parceiro-caso__descricao">{project.description}</p>}
                   <p className="parceiro-caso__meta">
                     {project.end_date && `Concluído em ${formatDateBR(project.end_date)}`}
                     {project.category && ` · ${project.category}`}
                   </p>
-                </article>
+                  <span className="link-arrow">
+                    Ver projeto
+                    <ArrowRightIcon />
+                  </span>
+                </Link>
               ))}
             </div>
           </div>

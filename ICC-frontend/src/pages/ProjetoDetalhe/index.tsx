@@ -127,7 +127,7 @@ export default function ProjetoDetalhe() {
             </div>
             <div className="grid grid--2">
               {projetos.map((projeto) => (
-                <article className="card projeto-card" key={projeto.id}>
+                <Link to={`/projetos/projeto/${projeto.id}`} className="card projeto-card" key={projeto.id}>
                   {projeto.partners.length > 0 && (
                     <p className="projeto-card__parceiros">Com {projeto.partners.join(", ")}</p>
                   )}
@@ -136,7 +136,11 @@ export default function ProjetoDetalhe() {
                   <p className="projeto-card__meta">
                     {projeto.end_date ? `Concluído em ${formatDateBR(projeto.end_date)}` : "Em andamento"}
                   </p>
-                </article>
+                  <span className="link-arrow">
+                    Ver projeto
+                    <ArrowRightIcon />
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
