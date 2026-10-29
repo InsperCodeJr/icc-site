@@ -262,7 +262,8 @@ Pedido do ICC em 29/10 (crítico para eles). O ICC escolheu o Markdown, com o co
 - [x] **Imagens do artigo** no admin: número, upload para o Cloudinary e legenda; no texto, a imagem é chamada pelo número (`![](imagem-1)`), então tudo é salvo de uma vez.
 - [x] Na página, cada imagem aparece com a legenda embaixo.
 - [x] Campo **Publicado**: artigo novo nasce como rascunho e só aparece no site depois de publicado (rascunho responde 404 na API); os artigos existentes continuaram publicados.
-- [x] Colinha de Markdown e passo a passo (imagens e conversão a partir do Word) no guia do admin.
+- [x] Fórmulas em LaTeX com KaTeX, entre `$$` (o `R$` continua texto); fórmula com erro aparece em vermelho sem quebrar a página.
+- [x] Colinha de Markdown e passo a passo (imagens, fórmulas e conversão a partir do Word) no guia do admin.
 - [x] Migration `0008` conferida com `makemigrations --check` e aplicada localmente; testados rascunho fora da lista e do detalhe, imagens na API e a tela do artigo no admin; `npm run lint` e `npm run build` passam.
 - [ ] Futuro: artigo em PDF exibido na página, se o ICC precisar (no Cloudinary gratuito, liberar antes a entrega de PDFs em *Settings → Security*).
 

@@ -148,8 +148,20 @@ Os artigos que começam com **"[Exemplo]"** são só demonstração. Apague-os q
 | Citação | `> texto citado` |
 | Tabela | `| Coluna A | Coluna B |`, depois `|---|---|`, depois uma linha por registro, no mesmo formato |
 | Linha divisória | `---` numa linha sozinha |
+| Fórmula no meio da frase | `$$rac{EBITDA}{Receita}$$` (sempre com **dois** cifrões) |
+| Fórmula em destaque | `$$` numa linha, a fórmula na linha de baixo e `$$` de novo na seguinte |
 
 O site não executa HTML colado no texto: ele aparece como texto comum.
+
+**Fórmulas:** são escritas em LaTeX e desenhadas pelo KaTeX. Use sempre **dois cifrões** (`$$`). Um cifrão sozinho é texto normal, então `R$ 10 mi` aparece como dinheiro, sem virar fórmula. Exemplo de fórmula em destaque:
+
+```
+$$
+VPL = \sum_{t=1}^{n} rac{FC_t}{(1+i)^t}
+$$
+```
+
+Se a fórmula tiver erro de digitação, ela aparece em vermelho no artigo: confira antes de publicar. Para algo que o KaTeX não desenhe, use uma imagem.
 
 ### Imagens no meio do texto
 Tudo no mesmo formulário, sem precisar salvar antes:

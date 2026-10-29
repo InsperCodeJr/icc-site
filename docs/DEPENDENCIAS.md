@@ -36,6 +36,9 @@ Todas as licenças são permissivas (MIT, BSD, Apache, PSF) ou LGPL. A LGPL perm
 | react-router-dom | 7.18.4 | MIT | Rotas e navegação |
 | react-markdown | 10.1.0 | MIT | Exibir o texto dos artigos, escrito em Markdown, sem executar HTML |
 | remark-gfm | 4.0.1 | MIT | Tabelas, listas de tarefas e links automáticos no Markdown dos artigos |
+| remark-math | 6.0.0 | MIT | Reconhecer fórmulas (`$$...$$`) no Markdown dos artigos |
+| rehype-katex | 7.0.1 | MIT | Desenhar essas fórmulas com o KaTeX |
+| katex | 0.16.47 | MIT | Biblioteca que desenha fórmulas em LaTeX (e o CSS e as fontes delas) |
 | vite | 8.3.4 | MIT | Servidor de desenvolvimento e build (dev) |
 | @vitejs/plugin-react | 6.0.1 | MIT | Suporte a React no Vite (dev) |
 | typescript | 5.9.3 | Apache-2.0 | Tipagem (dev) |
