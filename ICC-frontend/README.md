@@ -62,7 +62,8 @@ Cada página fica em `pages/<Nome>/` com o seu próprio CSS. Os nomes das pastas
 | `/` | Home (com o carrossel de parceiros) |
 | `/equipe`, `/equipe/:id` | Equipe por diretoria e perfil do membro |
 | `/parceiros`, `/parceiros/:id` | Parceiros e perfil do parceiro |
-| `/projetos`, `/projetos/:slug` | Programas e detalhe com os cases |
+| `/projetos`, `/projetos/:slug` | Programas (com "Outros projetos", os sem programa) e a página de cada programa, com projetos e cases |
+| `/projetos/projeto/:id` | Página do projeto: blocos de conteúdo, imagens, linha do tempo, parceiros e equipe |
 | `/artigos`, `/artigos/:id` | Lista de artigos e página do artigo (resumo, temas, texto, "Como citar", compartilhar). `/news` redireciona para a lista |
 | `/processo` | Processo seletivo ("Inscreva-se" ou "Inscrições encerradas", conforme o admin) |
 | `/contato` | Canais oficiais |

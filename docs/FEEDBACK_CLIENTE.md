@@ -51,7 +51,7 @@ Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal ofici
 
 | | |
 |---|---|
-| **Data** | ⚠️ DD/MM/2026 |
+| **Data** | 26/10/2026 (referências repassadas ao time) |
 | **Formato** | Mensagens: o Diretor Tech do ICC enviou o exemplo ao coordenador do projeto, e a Coordenadora Tech comentou a seção com a desenvolvedora |
 | **Participantes do ICC** | Gabriel Ávila (Gabs), Diretor Tech; Ana Beatriz da Cunha, Coordenadora Tech |
 | **Participantes da Code Jr** | Matteo Rosso (coordenador), Cynthia Yasutake |
@@ -62,7 +62,7 @@ Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal ofici
 
 **O que mudou** (PR #16, 27/10)
 - "Notícias" virou "Artigos". Cada artigo tem página própria (`/artigos/<id>`) com autores, temas, resumo, texto completo, "Como citar" e compartilhamento no LinkedIn.
-- Os 3 artigos que começam com "[Exemplo]" são só demonstração do formato. ⚠️ Aguardando o ICC enviar o primeiro artigo real; se não chegar até a entrega, os exemplos são apagados.
+- Os 3 artigos que começam com "[Exemplo]" eram só demonstração do formato. O primeiro artigo real depende da definição do formato (seção 3); sem ele, os exemplos são apagados antes da entrega.
 
 ---
 
@@ -80,7 +80,11 @@ Decisões sobre o site (aprovações, conteúdo, contas) passam pelo canal ofici
 | Data | Pedido ou sugestão do ICC | O que foi feito | PR |
 |---|---|---|---|
 | 26/10/2026 | O backend no plano gratuito do Render "dorme" depois de 15 minutos sem acesso, e o primeiro acesso fica lento. Sugestão: fazer requisições periódicas (a cada 14 minutos) para mantê-lo acordado, já que as 750 horas mensais grátis cobrem um único serviço ligado o mês inteiro | Endpoint `/api/health/`, que responde sem consultar o banco, e monitor no UptimeRobot chamando-o a cada 5 minutos; também avisa por e-mail se o site cair | #16 (27/10) |
-| ⚠️ | ⚠️ outros retornos (o que aprovou, o que pediu), ou "sem outros retornos até DD/MM" | | |
+| 29/10/2026 | **Aprovação geral:** "as pessoas do ICC para as quais mostrei o site aprovaram o site" | — | — |
+| 29/10/2026 | **Crítico:** os artigos precisam aceitar Markdown em vez de texto simples, principalmente para ter imagens no meio do texto. A Coordenadora Tech escreve um artigo assim que o formato estiver definido | Em definição com o ICC. O coordenador do projeto sugeriu aceitar o artigo em PDF, exibido dentro do site; a proposta do time é oferecer os dois formatos: Markdown no texto (negrito, títulos, listas, links) e PDF para artigos com imagens, tabelas e gráficos. Implementação após a confirmação do ICC (tarefa 16 do backlog) | — |
+| 29/10/2026 | **Desejável:** filtrar os artigos por autor ou tema (por exemplo, nome do autor clicável levando à lista de artigos filtrada) | Registrado no backlog para uma próxima gestão (tarefa 17) | — |
+| 29/10/2026 | **Projetos a cadastrar:** o challenge com a Galeazzi & Associados (Pedagógico, valendo fast pass); as visitas à Bain e à McKinsey e participações em challenges de business case, que não se encaixam nas 4 categorias. Tudo o que está no Instagram e no LinkedIn do ICC pode ser usado | 4 projetos cadastrados no admin de produção a partir dos posts do ICC: Challenge Insper com a Galeazzi (Pedagógico), capacitação de trainees na McKinsey, Interclubs Challenge com a Bain e visita à Bain. Para eles aparecerem no site, cada projeto ganhou página própria, os programas passaram a listar os seus projetos, e a página Projetos ganhou a seção "Outros projetos" para os que não pertencem a nenhum programa | #25, #26, #27 (29/10) |
+| 29/10/2026 | **Números da Home:** 31 membros atuais, 15 parceiros, fundado em 2020 | Cadastrados em Estatísticas no admin de produção; a faixa de números da Home voltou a aparecer | — |
 
 **Acesso ao admin:** em 28/10/2026, o login enviado em 26/10 passou a ser de uso exclusivo do ICC, e a equipe de desenvolvimento passou a usar logins próprios. A troca de senha foi recomendada à Coordenadora Tech, para que só o ICC a conheça. Novos acessos do ICC são criados por ela, um por pessoa, como explica o [guia do admin](GUIA_ADMIN.md#logins-para-outras-pessoas-do-icc).
 

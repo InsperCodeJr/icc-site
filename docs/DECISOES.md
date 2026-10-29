@@ -62,7 +62,10 @@ Quando e com quem cada pedido foi conversado está em [`FEEDBACK_CLIENTE.md`](FE
 | Seção de notícias usada para artigos de autoria dos membros | Seção virou "Artigos": cada artigo tem página própria (`/artigos/<id>`) com autores, temas, resumo, texto completo, "Como citar" e compartilhamento no LinkedIn. Formato inspirado em páginas de working papers (ex.: NBER) e na aba de artigos de outro consulting club |
 | GitHub do ICC junto com Instagram e LinkedIn | Link no header, no rodapé e no Contato |
 | Site lento no primeiro acesso (backend dormindo) | Endpoint `/api/health/` e monitor de uptime (seção 4) |
+| Mostrar no site os projetos do ICC (challenges, visitas e capacitações com parceiros) | Página própria para cada projeto, projetos listados na página de cada programa e seção "Outros projetos" para os que não pertencem a nenhum programa |
 
 ## 7. Artigos com texto simples, sem editor
 
 O texto do artigo é um campo de texto comum, e o site separa os parágrafos pelas linhas em branco. Um editor com formatação (negrito, títulos, imagens) exigiria guardar HTML e limpá-lo contra código malicioso, ou adicionar uma biblioteca de Markdown. Como o React exibe o texto puro escapado, o formato atual não tem esse risco. Se o ICC precisar de formatação, o caminho mais simples é Markdown com uma biblioteca que gere HTML seguro.
+
+Em 29/10, o ICC pediu formatação e imagens nos artigos. A proposta em definição com eles combina dois formatos: Markdown no texto, renderizado por uma biblioteca que não executa HTML, e o artigo completo em PDF exibido na página, para quem escreve no Word, no Docs ou no LaTeX com imagens e tabelas. O PDF evita construir um editor de imagens no admin; o Markdown mantém o texto legível no celular, onde muitos navegadores não exibem PDF dentro da página. Detalhes na tarefa 16 do [`backlog.md`](../backlog.md).
