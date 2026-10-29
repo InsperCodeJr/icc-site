@@ -62,6 +62,14 @@
   color: var(--cinza-500);
 }
 
+.parceiro-caso .link-arrow {
+  margin-top: 16px;
+}
+
+.parceiro-caso:hover {
+  border-color: var(--vermelho-icc);
+}
+
 .parceiro-outros {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

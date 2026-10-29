@@ -1,0 +1,35 @@
+.projeto-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.projeto-card__parceiros {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--vermelho-icc);
+}
+
+.projeto-card__titulo {
+  margin-top: 8px;
+  font-size: 1.125rem;
+}
+
+.projeto-card__descricao {
+  margin-top: 10px;
+  color: var(--cinza-600);
+}
+
+.projeto-card__meta {
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: var(--fs-xs);
+  color: var(--cinza-500);
+}
+
+.projeto-card .link-arrow {
+  margin-top: 16px;
+}
+
+.projeto-card:hover {
+  border-color: var(--vermelho-icc);
+}

@@ -24,6 +24,7 @@ const router = createBrowserRouter([
       { path: "parceiros", lazy: () => import('./pages/Parceiros/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "projetos", lazy: () => import('./pages/Projetos/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "projetos/:slug", lazy: () => import('./pages/ProjetoDetalhe/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "projetos/projeto/:id", lazy: () => import('./pages/Projeto/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "parceiros/:id", lazy: () => import('./pages/PerfilParceiro/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "processo", lazy: () => import('./pages/Processo/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "artigos", lazy: () => import('./pages/Noticias/index.tsx').then((m) => ({ Component: m.default })) },
