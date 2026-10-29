@@ -1,7 +1,7 @@
 
 # Backlog de tarefas do time
 
-> Atualizado em 28/10/2026 — entrega final (29/10/2026).
+> Atualizado em 29/10/2026 — entrega final (29/10/2026).
 > Legenda: ✅ concluído · 🟡 em andamento · ⬜ não iniciado · ➖ fora do escopo desta entrega
 > As conversas com o ICC e o que mudou a partir delas estão em [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md). O planejamento por cartão (responsável, size e sprint) fica no Trello do projeto.
 
@@ -32,27 +32,30 @@
 | 13 | Arquivar projetos (soft delete) | Back | ✅ |
 | 14 | Link para a área administrativa no site | Front | ✅ |
 | 15 | Remover dados pessoais do histórico do Git | Infra | 🟡 histórico reescrito; falta o pedido ao GitHub Support |
+| 16 | Artigos em Markdown e em PDF | Back e Front | ⬜ em definição com o ICC |
+| 17 | Filtrar artigos por autor ou tema | Front | ⬜ |
+| 18 | Páginas de projeto e projetos nas páginas de programa | Front | ✅ |
 
 ---
 
 ## Requisitos do case e evidências
 
-Cada requisito do case 2026.2, onde ele foi atendido e como foi verificado. As verificações em produção foram feitas em 28/10/2026.
+Cada requisito do case 2026.2, onde ele foi atendido e como foi verificado. As verificações em produção foram feitas em 28 e 29/10/2026.
 
 | Requisito do case | Onde está | Evidência |
 |---|---|---|
 | Site institucional responsivo | Tarefa A; [`ICC-frontend/`](ICC-frontend/) | Site no ar em https://icc-site.onrender.com; todas as rotas respondem 200, inclusive ao recarregar uma página interna como `/equipe` (rewrite do SPA) |
 | Área administrativa autenticada | Tarefa C; Django Admin em `/admin/` | `/admin/` em produção redireciona para a tela de login (HTTP 302) quando não há sessão; link "Área administrativa" no rodapé (tarefa 14) |
 | CRUD de membros com cargos | Tarefa C; `TeamMemberAdmin`, `MemberPositionAdmin` e `DirectorateAdmin` em [`admin.py`](ICC-backend/website/admin.py) | Membros, cargos e diretorias criados, editados e arquivados pelo admin aparecem em `/api/members/` e na página Equipe; 16 membros reais em produção |
-| CRUD de projetos | Tarefas C e 13; `ProjectAdmin` | Criar, editar, arquivar e reativar pelo admin; arquivados somem de `/api/projects/`. ⚠️ Nenhum projeto cadastrado em produção ainda (ver pendências) |
-| Banco persistente na nuvem | Tarefas G e 8; Neon (`DATABASE_URL`) | Dados reais importados e servidos pela API de produção (16 membros, 15 parceiros, 4 programas, 4 cases, 3 artigos) |
+| CRUD de projetos | Tarefas C, 13 e 18; `ProjectAdmin` | Criar, editar, arquivar e reativar pelo admin; arquivados somem de `/api/projects/`. 4 projetos reais cadastrados pelo admin de produção em 29/10 (Galeazzi, McKinsey e dois com a Bain), com blocos de conteúdo e imagens legendadas, visíveis na página Projetos, nas páginas de programa, de parceiro e do próprio projeto |
+| Banco persistente na nuvem | Tarefas G e 8; Neon (`DATABASE_URL`) | Dados reais servidos pela API de produção (16 membros, 15 parceiros, 4 programas, 4 cases, 4 projetos, 3 estatísticas) |
 | Imagens persistentes | Tarefa G; Cloudinary | Fotos e logos continuam no ar depois de vários deploys do backend; os 15 logos de produção conferidos com os arquivos recortados |
 | Deploy público | Tarefa 8; Render | Backend e frontend no ar com HTTPS; deploy automático a cada merge (PR #20 publicou sozinho) |
 | Backend disponível sem espera | Tarefa 12 | `/api/health/` responde 200; monitor do UptimeRobot verde, a cada 5 minutos |
 | Documentação | Tarefa 6 | [README](README.md), [guia do admin](docs/GUIA_ADMIN.md), [decisões](docs/DECISOES.md), [dependências](docs/DEPENDENCIAS.md), [feedback do cliente](docs/FEEDBACK_CLIENTE.md) |
 | Contas transferíveis | Tarefa 10 | Passo a passo em "Se você herdou o site", no README. ⚠️ Transferência ainda não feita |
 | Justificar refatorar × reescrever | [`docs/DECISOES.md`](docs/DECISOES.md#1-refatorar-o-projeto-anterior-em-vez-de-reescrever-do-zero) | Tabela com cada problema do projeto anterior e como foi resolvido |
-| Contato com o cliente | [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md) | Pedidos do ICC ligados aos PRs que os atenderam (#10 a #17) |
+| Contato com o cliente | [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md) | Pedidos do ICC ligados aos PRs que os atenderam (#10 a #17 e #25 a #27); aprovação do site pelo ICC em 29/10 |
 
 ---
 
@@ -172,6 +175,15 @@ O calendário era exibido na página de Atividades, que saiu do site a pedido do
 - Link "Área administrativa" no rodapé de todas as páginas, ao lado da Política de Privacidade.
 - O endereço vem do `VITE_API_URL`, então funciona localmente (`localhost:8000/admin/`) e em produção.
 
+### 18. ✅ [Front] Páginas de projeto (PRs #25, #26 e #27)
+
+A página de detalhe do projeto tinha saído junto com Atividades, e os projetos só apareciam na página do parceiro.
+- [x] Página do projeto (`/projetos/projeto/<id>`): descrição, data ou período, parceiros com link, blocos de conteúdo com imagem e legenda, galeria, linha do tempo e equipe.
+- [x] A página de cada programa lista os projetos daquele programa.
+- [x] A página Projetos mostra "Outros projetos", os que não pertencem a nenhum programa (visitas, capacitações e competições).
+- [x] Projeto de um dia só mostra "Data" em vez de um período.
+- [x] `npm run lint` e `npm run build` passam; conferido em produção com os 4 projetos cadastrados.
+
 ---
 
 ## Fora do escopo desta entrega
@@ -184,15 +196,16 @@ O case pede uma área administrativa autenticada com CRUD, e o Django Admin aten
 
 ## Até a entrega final
 
-| Data | O quê | Responsável |
-|---|---|---|
-| 28/10 | Slides da apresentação | Matteo Rosso |
-| 28/10 | Apresentar o MVP no ar ao ICC e registrar em `FEEDBACK_CLIENTE.md` | ⚠️ |
-| 28/10 | Cadastrar estatísticas e pelo menos um projeto em produção; testar o CRUD de membros e projetos no admin de produção | ⚠️ |
-| 28/10 | Trocar os 3 artigos "[Exemplo]" por um artigo real ou apagá-los; conferir os links do LinkedIn | ⚠️ |
-| 29/10 | Alinhar o Trello com este backlog (size, sprint e responsável em cada cartão) | ⚠️ |
-| 29/10 | E-mail de entrega (repositório e link de produção) | ⚠️ |
-| 30/10 | Demo | Time |
+| Data | O quê | Responsável | Situação |
+|---|---|---|---|
+| 28/10 | Slides da apresentação | Matteo Rosso | 🟡 |
+| 29/10 | Apresentar o MVP no ar ao Diretor Tech do ICC e registrar em `FEEDBACK_CLIENTE.md` | Matteo Rosso | 🟡 marcado para 29/10 |
+| 29/10 | Cadastrar estatísticas e projetos em produção, testando o CRUD no admin de produção | Cynthia Yasutake | ✅ |
+| 29/10 | Conferir os links do LinkedIn | Cynthia Yasutake | ✅ |
+| 29/10 | Trocar os 3 artigos "[Exemplo]" por um artigo real ou apagá-los | Cynthia Yasutake | 🟡 depende do formato dos artigos (tarefa 16) |
+| 29/10 | Alinhar o Trello com este backlog (size, sprint e responsável em cada cartão) | Time | ⬜ |
+| 29/10 | E-mail de entrega (repositório e link de produção) | Time | ⬜ |
+| 30/10 | Demo | Time | ⬜ |
 
 ---
 
@@ -239,5 +252,18 @@ Um arquivo `.sql` com dados de membros (nomes, datas de entrada, fotos, cargos e
 - [x] Reescrever o histórico removendo o arquivo (`git filter-repo --invert-paths --path "ICC-backend/membros_icc .sql"`) num clone espelho, e enviar todas as branches com force push (19 branches).
 - [x] Conferir com `git log --all -- "ICC-backend/membros_icc .sql"` que não sobrou nada (nenhum commit encontrado).
 - [x] Conferir que o deploy disparado pelo force push terminou e o site continua no ar.
-- [ ] Avisar o time para apagar o clone local e clonar de novo, sem fazer push de branches antigas.
+- [x] Avisar o time para apagar o clone local e clonar de novo, sem fazer push de branches antigas.
 - [ ] Pedir ao GitHub Support a remoção das cópias guardadas nos PRs antigos: até isso, o commit antigo (`35d2b12`) ainda abre pelo link direto.
+
+### 16. ⬜ [Back e Front] Artigos em Markdown e em PDF
+
+Pedido do ICC em 29/10 (crítico para eles): poder ter imagens e formatação nos artigos. Proposta em definição com o ICC (ver [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md)):
+- [ ] O campo "Texto do artigo" passa a aceitar Markdown (negrito, títulos, listas, links), com uma biblioteca que não executa HTML, e uma colinha no guia do admin.
+- [ ] Campo para enviar o PDF do artigo; a página mostra o PDF embutido e um botão "Baixar PDF" (no celular, muitos navegadores não exibem PDF dentro da página).
+- [ ] No Cloudinary, liberar a entrega de PDFs (*Settings → Security → "Allow delivery of PDF and ZIP files"*); contas gratuitas vêm com isso bloqueado.
+- [ ] Depois: upload de imagens no admin para usar dentro do Markdown.
+
+### 17. ⬜ [Front] Filtrar artigos por autor ou tema
+
+Pedido desejável do ICC em 29/10.
+- [ ] Nome do autor e temas clicáveis no artigo, levando à lista de artigos filtrada.

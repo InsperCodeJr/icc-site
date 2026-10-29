@@ -95,18 +95,27 @@ A página **Projetos** do site mostra os programas e os cases de cada um.
 1. **Título**, **Descrição**, **Categoria** (o programa) e **Data de início**.
 2. **Data de conclusão**, quando o projeto terminar.
 3. **Parceiros envolvidos**: escolha na caixa da esquerda e passe para a direita.
-4. Embaixo, se quiser: imagens, eventos da linha do tempo e blocos de conteúdo.
+4. Embaixo, se quiser, o conteúdo da página do projeto:
+   - **Blocos de conteúdo:** título, texto e, se quiser, uma imagem com legenda. A **Ordem** define a sequência. Para separar parágrafos, quebre a linha.
+   - **Imagens do projeto:** a galeria, com uma **Legenda** e uma **Ordem** para cada imagem.
+   - **Eventos da linha do tempo:** data, título e descrição de cada etapa.
 5. Salvar.
+
+**Onde o projeto aparece no site:**
+- **Página do projeto** (`/projetos/projeto/<número>`): descrição, data ou período, parceiros, blocos, imagens, linha do tempo e equipe. Quando a data de início e a de conclusão são iguais (uma visita, uma competição), a página mostra só "Data: 20 de março de 2026".
+- **Página do programa** (por exemplo, Projetos → Pedagógico), na seção "Projetos", quando o projeto tem **Categoria**.
+- **Página Projetos**, na seção **"Outros projetos"**, quando o projeto **não tem Categoria**. Use isso para visitas, capacitações e competições que não pertencem a nenhum programa.
+- **Página do parceiro**, em "Casos de sucesso", quando tem **Data de conclusão** e um parceiro.
 
 Os membros que participaram são ligados pelo cadastro de cada membro: abra o membro e, em **No ICC → Projetos participados**, passe o projeto para a caixa da direita.
 
-Um projeto com **Data de conclusão** preenchida e um parceiro em **Parceiros envolvidos** aparece na página desse parceiro, em "Casos de sucesso", e conta nos números do parceiro.
+Um projeto com **Data de conclusão** preenchida também conta nos números do parceiro.
 
 **Arquivar um projeto** (em vez de apagar):
 - na lista de Projetos, marque os projetos, escolha a ação **"Arquivar selecionados (somem do site)"** e clique em **Ir**; ou
 - desmarque **"Ativo"** direto na lista, ou dentro do projeto, e salve.
 
-O projeto arquivado some do site (da página do parceiro e do perfil dos membros), mas continua guardado. Para trazê-lo de volta, use **"Reativar selecionados"** ou marque **"Ativo"** de novo. O filtro **Ativo**, à direita da lista, separa os ativos dos arquivados.
+O projeto arquivado some do site (de todas as páginas acima e do perfil dos membros), mas continua guardado. Para trazê-lo de volta, use **"Reativar selecionados"** ou marque **"Ativo"** de novo. O filtro **Ativo**, à direita da lista, separa os ativos dos arquivados.
 
 ---
 

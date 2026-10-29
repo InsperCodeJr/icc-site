@@ -34,17 +34,17 @@ Este projeto resolve isso com:
 
 As versões exatas estão em [`ICC-backend/requirements.txt`](ICC-backend/requirements.txt) e [`ICC-frontend/package.json`](ICC-frontend/package.json); as licenças, em [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md).
 
-## Status (28/10/2026)
+## Status (29/10/2026)
 
 **No ar e em uso.** Pronto para a entrega final do case 2026.2.
 
 | | Situação |
 |---|---|
-| Site público | ✅ No ar, com os dados reais do ICC (16 membros, 15 parceiros, 4 programas, 4 cases) |
+| Site público | ✅ No ar, com os dados reais do ICC (16 membros, 15 parceiros, 4 programas, 4 cases, 4 projetos e os números da Home) e aprovado pelo ICC |
 | Área administrativa | ✅ No ar, com login; CRUD de membros, cargos, projetos e demais conteúdos |
 | Banco e imagens na nuvem | ✅ Neon e Cloudinary |
 | Deploy | ✅ Automático a cada merge na `main` |
-| Pendente | Transferir as contas para a entidade, limpar dados pessoais do histórico do Git, testes automatizados, domínio próprio |
+| Pendente | Formato dos artigos (Markdown e PDF, em definição com o ICC), transferir as contas para a entidade, pedido ao GitHub Support para apagar as cópias do histórico antigo, testes automatizados, domínio próprio |
 
 O que está pronto, com critérios de aceite e evidências, e o que ficou para depois está em [`backlog.md`](backlog.md). As conversas com o ICC e o que mudou a partir delas estão em [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md).
 
