@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { api } from "../../api"
-import type { Activity, SuccessCase, SuccessCaseParticipant } from "../../types"
+import type { Activity, Project, SuccessCase, SuccessCaseParticipant } from "../../types"
 import PageHero from "../../components/PageHero"
 import NaoEncontrada from "../NaoEncontrada"
 import { ArrowRightIcon, CheckIcon, ExternalIcon } from "../../components/Icons"
 import usePageTitle from "../../hooks/usePageTitle"
 import useProgramas from "../../hooks/useProgramas"
 import "./index.css"
+
+function formatDateBR(dateString: string) {
+  // new Date("AAAA-MM-DD") seria meia-noite UTC, que em Brasília já é o dia
+  // anterior; com ano/mês/dia separados, a data fica no fuso local.
+  const [ano, mes, dia] = dateString.split("-").map(Number)
+  return new Date(ano, mes - 1, dia).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
+}
 
 function Pessoas({ pessoas }: { pessoas: SuccessCaseParticipant[] }) {
   return (
@@ -33,6 +40,7 @@ export default function ProjetoDetalhe() {
   const programas = useProgramas()
   const [componentes, setComponentes] = useState<Activity[]>([])
   const [cases, setCases] = useState<SuccessCase[]>([])
+  const [projetos, setProjetos] = useState<Project[]>([])
 
   const programa = programas.find((p) => p.slug === slug)
   usePageTitle(programa?.label, programa?.description)
@@ -41,6 +49,7 @@ export default function ProjetoDetalhe() {
     if (!slug) return
     api.getActivities(slug).then(setComponentes).catch(() => setComponentes([]))
     api.getSuccessCases(slug).then(setCases).catch(() => setCases([]))
+    api.getProjects(slug).then(setProjetos).catch(() => setProjetos([]))
   }, [slug])
 
   // Enquanto a lista de programas não chega, ainda não dá para saber se o slug
@@ -105,6 +114,31 @@ export default function ProjetoDetalhe() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+      )}
+
+      {projetos.length > 0 && (
+        <section className="section" id="projetos">
+          <div className="container">
+            <div className="section-head">
+              <p className="eyebrow">{programa.label}</p>
+              <h2 className="section-title">Projetos</h2>
+            </div>
+            <div className="grid grid--2">
+              {projetos.map((projeto) => (
+                <article className="card projeto-card" key={projeto.id}>
+                  {projeto.partners.length > 0 && (
+                    <p className="projeto-card__parceiros">Com {projeto.partners.join(", ")}</p>
+                  )}
+                  <h3 className="projeto-card__titulo">{projeto.title}</h3>
+                  {projeto.description && <p className="projeto-card__descricao">{projeto.description}</p>}
+                  <p className="projeto-card__meta">
+                    {projeto.end_date ? `Concluído em ${formatDateBR(projeto.end_date)}` : "Em andamento"}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       )}
