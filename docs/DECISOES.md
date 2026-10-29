@@ -64,8 +64,14 @@ Quando e com quem cada pedido foi conversado está em [`FEEDBACK_CLIENTE.md`](FE
 | Site lento no primeiro acesso (backend dormindo) | Endpoint `/api/health/` e monitor de uptime (seção 4) |
 | Mostrar no site os projetos do ICC (challenges, visitas e capacitações com parceiros) | Página própria para cada projeto, projetos listados na página de cada programa e seção "Outros projetos" para os que não pertencem a nenhum programa |
 
-## 7. Artigos com texto simples, sem editor
+## 7. Artigos em Markdown, com imagens enviadas pelo admin
 
-O texto do artigo é um campo de texto comum, e o site separa os parágrafos pelas linhas em branco. Um editor com formatação (negrito, títulos, imagens) exigiria guardar HTML e limpá-lo contra código malicioso, ou adicionar uma biblioteca de Markdown. Como o React exibe o texto puro escapado, o formato atual não tem esse risco. Se o ICC precisar de formatação, o caminho mais simples é Markdown com uma biblioteca que gere HTML seguro.
+Até 29/10, o texto do artigo era texto simples, separado em parágrafos pelas linhas em branco. Naquele dia, o ICC pediu formatação e imagens no meio do texto. O time propôs dois caminhos (Markdown no texto ou o artigo em PDF exibido na página), e o ICC escolheu o **Markdown**: o conteúdo fica na própria página, com o mesmo padrão visual em todas as publicações e boa leitura no celular. O PDF ficou como possibilidade futura.
 
-Em 29/10, o ICC pediu formatação e imagens nos artigos. A proposta em definição com eles combina dois formatos: Markdown no texto, renderizado por uma biblioteca que não executa HTML, e o artigo completo em PDF exibido na página, para quem escreve no Word, no Docs ou no LaTeX com imagens e tabelas. O PDF evita construir um editor de imagens no admin; o Markdown mantém o texto legível no celular, onde muitos navegadores não exibem PDF dentro da página. Detalhes na tarefa 16 do [`backlog.md`](../backlog.md).
+Como foi feito:
+- O texto é escrito em Markdown no admin e exibido pelo `react-markdown` (com `remark-gfm`, para tabelas). A biblioteca **não executa HTML**: um `<script>` colado no texto aparece como texto, e links `javascript:` são descartados. Isso mantém a segurança do formato anterior, sem precisar guardar HTML nem limpá-lo.
+- Artigos antigos continuam iguais, porque parágrafos separados por linha em branco já são Markdown.
+- As imagens são enviadas em **Imagens do artigo**, no próprio admin, e vão para o Cloudinary como as demais. Cada uma tem um número, e o texto a chama por ele (`![](imagem-1)`), não pelo endereço. Assim, o texto e as imagens são preenchidos no mesmo formulário e salvos de uma vez, sem esperar o Cloudinary gerar o endereço, e quem publica não depende do time de desenvolvimento nem precisa de conta no Cloudinary.
+- Artigo novo nasce como **rascunho** (campo "Publicado" desmarcado) e não aparece no site nem na API até ser publicado. Isso permite salvar um artigo pela metade sem que ele apareça incompleto. Os artigos que já existiam continuaram publicados.
+- Na página, cada imagem vira uma figura com a legenda embaixo.
+- Quem escreve no Word não precisa aprender Markdown: o ICC converte na publicação (o guia do admin explica como, pelo Google Docs).

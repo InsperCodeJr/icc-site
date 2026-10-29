@@ -369,7 +369,9 @@ class Media(models.Model):
     description = models.TextField(verbose_name='Resumo', help_text='Aparece no card da lista e no topo da página do artigo.')
     content = models.TextField(
         blank=True, verbose_name='Texto do artigo',
-        help_text='Texto completo, exibido na página do artigo. Separe os parágrafos com uma linha em branco.'
+        help_text='Texto completo, em Markdown: **negrito**, ## Título, - item de lista, [link](https://...). '
+                  'Separe os parágrafos com uma linha em branco. Para pôr uma imagem, envie-a em "Imagens do artigo", '
+                  'abaixo, e escreva aqui, numa linha sozinha, ![](imagem-1), trocando 1 pelo número da imagem.'
     )
     link = models.URLField(
         blank=True, verbose_name='Link externo (opcional)',
@@ -382,6 +384,10 @@ class Media(models.Model):
     )
     date = models.DateField(null=True, blank=True, verbose_name='Data de publicação')
     order = models.IntegerField(default=0, verbose_name='Ordem de exibição')
+    published = models.BooleanField(
+        default=False, verbose_name='Publicado',
+        help_text='Desmarcado, o artigo é um rascunho: fica salvo aqui, mas não aparece no site.'
+    )
 
     class Meta:
         verbose_name = 'Artigo'
@@ -391,6 +397,36 @@ class Media(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ArticleImage(models.Model):
+    """Imagem usada dentro do texto de um artigo.
+
+    No texto, a imagem é chamada pelo número, como ![](imagem-1), e não pelo
+    endereço: assim dá para escrever o texto e enviar as imagens de uma vez,
+    sem salvar antes para descobrir o endereço gerado pelo Cloudinary.
+    """
+    article = models.ForeignKey(Media, on_delete=models.CASCADE, related_name='images', verbose_name='Artigo')
+    number = models.PositiveIntegerField(
+        verbose_name='Número',
+        help_text='No texto, escreva ![](imagem-1) para a imagem de número 1.'
+    )
+    image = models.ImageField(upload_to='articles/', verbose_name='Imagem')
+    caption = models.CharField(
+        max_length=300, blank=True, verbose_name='Legenda',
+        help_text='Aparece embaixo da imagem no artigo.'
+    )
+
+    class Meta:
+        verbose_name = 'Imagem do artigo'
+        verbose_name_plural = 'Imagens do artigo'
+        ordering = ['number']
+        constraints = [
+            models.UniqueConstraint(fields=['article', 'number'], name='numero_unico_por_artigo'),
+        ]
+
+    def __str__(self):
+        return f'imagem-{self.number}'
 
 
 class Statistic(models.Model):

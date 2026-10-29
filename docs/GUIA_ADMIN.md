@@ -127,13 +127,45 @@ Os artigos são escritos pelos membros do ICC e ficam **dentro do site**: cada u
 1. **Título** e **Autores** (separados por vírgula).
 2. **Temas** (opcional, separados por vírgula, ex.: `Estratégia, Varejo`). Aparecem como etiquetas no topo do artigo.
 3. **Resumo:** duas ou três frases. Aparece no card da lista e em destaque no topo do artigo.
-4. **Texto do artigo:** o texto completo. **Deixe uma linha em branco entre os parágrafos**: é isso que separa os parágrafos no site. O campo aceita só texto, sem negrito, títulos ou imagens no meio. Para colar do Word ou do Google Docs, cole e confira as linhas em branco.
+4. **Texto do artigo:** o texto completo, em **Markdown** (colinha e imagens logo abaixo). **Deixe uma linha em branco entre os parágrafos.**
 5. **Link externo** (opcional): se o artigo também saiu em outro lugar (revista, LinkedIn, um PDF no Drive do ICC com acesso "Qualquer pessoa com o link"). Aparece como o botão "Ver publicação original".
 6. **Publicação** (opcional): o nome da revista ou do evento, se houver.
 7. **Data de publicação** e, se quiser, **Imagem de capa** (horizontal). Sem imagem, o card mostra "ICC".
-8. Salvar. No site, os mais recentes aparecem primeiro.
+8. **Publicado:** artigo novo começa **desmarcado**, como rascunho: fica salvo no admin, mas não aparece no site. Assim dá para salvar no meio e continuar depois. Quando o artigo estiver pronto, marque **Publicado** e salve. Dá para marcar e desmarcar também direto na lista de Artigos.
+9. Salvar. No site, os mais recentes aparecem primeiro.
 
 Os artigos que começam com **"[Exemplo]"** são só demonstração. Apague-os quando os artigos reais forem cadastrados.
+
+### Colinha de Markdown
+
+| Para ter | Escreva |
+|---|---|
+| Parágrafo novo | uma linha em branco entre os parágrafos |
+| Subtítulo | `## Subtítulo` (e `### Subtítulo menor`) |
+| **Negrito** e *itálico* | `**negrito**` e `*itálico*` |
+| Lista | uma linha por item, começando com `- ` (ou `1. ` para lista numerada) |
+| Link | `[texto do link](https://endereço.com)` |
+| Citação | `> texto citado` |
+| Tabela | `| Coluna A | Coluna B |`, depois `|---|---|`, depois uma linha por registro, no mesmo formato |
+| Linha divisória | `---` numa linha sozinha |
+
+O site não executa HTML colado no texto: ele aparece como texto comum.
+
+### Imagens no meio do texto
+Tudo no mesmo formulário, sem precisar salvar antes:
+1. No artigo, desça até **Imagens do artigo**. Em cada linha, dê um **Número** (1, 2, 3...), envie a **Imagem** (JPG ou PNG) e escreva a **Legenda**.
+2. No **Texto do artigo**, onde a imagem deve aparecer, escreva numa linha sozinha `![](imagem-1)`, trocando o 1 pelo número da imagem.
+3. Salve. No site, a imagem ocupa a largura do texto, com a legenda embaixo.
+
+Se quiser outra legenda só naquele trecho, escreva-a entre os colchetes: `![Outra legenda](imagem-1)`. Um número sem imagem cadastrada não aparece no site (confira o número antes de publicar).
+
+As imagens ficam guardadas no Cloudinary, como as fotos dos membros. Para trocar uma imagem, envie a nova na mesma linha; o texto não muda.
+
+### Texto escrito no Word ou no Google Docs
+O ICC pode receber o texto em Word e converter na hora de publicar, sem que o autor precise aprender Markdown:
+- **Google Docs:** abra o arquivo (um `.docx` também abre no Docs) e use **Arquivo → Fazer download → Markdown (.md)**. Abra o `.md` no Bloco de Notas, copie e cole no **Texto do artigo**.
+- **Revise antes de salvar:** títulos, listas e negritos costumam vir certos. **Imagens não:** apague do texto o que vier no lugar delas e use **Imagens do artigo**, como acima.
+- Sem conversor, também dá para colar o texto puro e acrescentar à mão os `##` dos subtítulos e os `**` dos negritos.
 
 ---
 

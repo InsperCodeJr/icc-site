@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from .models import (
     Partner_Category, Activity, ActivityImage, ActivityContentBlock,
-    Partner, Team_Member, Media, Member_Position, Directorate,
+    Partner, Team_Member, Media, ArticleImage, Member_Position, Directorate,
     DirectorateMembership, Statistic, Participant,
     Project, ProjectImage, ProjectTimelineEvent, ProjectContentBlock,
     ActivityCategory, CalendarMonth, Contact,
@@ -316,14 +316,27 @@ class StatisticAdmin(admin.ModelAdmin):
     ordering = ('order',)
 
 
+class ArticleImageInline(admin.TabularInline):
+    model = ArticleImage
+    extra = 1
+    fields = ('number', 'image', 'caption', 'previa')
+    readonly_fields = ('previa',)
+    ordering = ('number',)
+
+    @admin.display(description='Prévia')
+    def previa(self, obj):
+        return miniatura(obj.image if obj.pk else None, 60)
+
+
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('title', 'authors', 'source', 'date', 'order')
+    list_display = ('title', 'authors', 'published', 'date', 'order')
     search_fields = ('title', 'authors', 'topics', 'description', 'content', 'source')
-    list_editable = ('order',)
-    list_filter = ('source', 'date')
+    list_editable = ('published', 'order')
+    list_filter = ('published', 'source', 'date')
     date_hierarchy = 'date'
     ordering = ('-date', 'order')
+    inlines = [ArticleImageInline]
 
 
 # ---------------------------------------------------------------------------

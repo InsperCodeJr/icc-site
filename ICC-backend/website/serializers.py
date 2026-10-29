@@ -5,7 +5,7 @@ from .models import (
     ProjectTimelineEvent, ProjectContentBlock,
     Activity, ActivityImage, ActivityContentBlock,
     ActivityCategory, CalendarMonth, DirectorateMembership,
-    Media, Contact,
+    Media, ArticleImage, Contact,
     SelectionProcess, SelectionProcessRequirement,
     SelectionProcessStage, SelectionProcessStep,
     PreparationMaterial, PreparationMaterialItem,
@@ -265,12 +265,28 @@ class StatisticSerializer(serializers.ModelSerializer):
         fields = ["id", "value", "description", "order"]
 
 
-class MediaSerializer(serializers.ModelSerializer):
+class ArticleImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
 
     class Meta:
+        model = ArticleImage
+        fields = ["number", "image_url", "caption"]
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
+
+class MediaSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    # Imagens chamadas no texto como ![](imagem-1); o site troca pelo endereço.
+    images = ArticleImageSerializer(many=True, read_only=True)
+
+    class Meta:
         model = Media
-        fields = ["id", "title", "authors", "topics", "description", "content", "link", "image_url", "source", "date", "order"]
+        fields = ["id", "title", "authors", "topics", "description", "content", "images", "link", "image_url", "source", "date", "order"]
 
     def get_image_url(self, obj):
         request = self.context.get("request")

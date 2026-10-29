@@ -44,7 +44,7 @@ As versões exatas estão em [`ICC-backend/requirements.txt`](ICC-backend/requir
 | Área administrativa | ✅ No ar, com login; CRUD de membros, cargos, projetos e demais conteúdos |
 | Banco e imagens na nuvem | ✅ Neon e Cloudinary |
 | Deploy | ✅ Automático a cada merge na `main` |
-| Pendente | Formato dos artigos (Markdown e PDF, em definição com o ICC), transferir as contas para a entidade, pedido ao GitHub Support para apagar as cópias do histórico antigo, testes automatizados, domínio próprio |
+| Pendente | Transferir as contas para a entidade, pedido ao GitHub Support para apagar as cópias do histórico antigo, testes automatizados, domínio próprio |
 
 O que está pronto, com critérios de aceite e evidências, e o que ficou para depois está em [`backlog.md`](backlog.md). As conversas com o ICC e o que mudou a partir delas estão em [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md).
 
@@ -176,8 +176,8 @@ Todos são públicos e somente leitura, exceto o `POST /api/contact/`. Itens mar
 | GET | `/api/activities/<id>/` | Detalhe de uma atividade |
 | GET | `/api/calendar/` | Calendário do semestre |
 | GET | `/api/success-cases/` | Lista cases de sucesso visíveis |
-| GET | `/api/news/` | Lista artigos (título, autores, temas, resumo, texto, link externo, data), do mais recente para o mais antigo |
-| GET | `/api/news/<id>/` | Detalhe de um artigo (usado pela página `/artigos/<id>`) |
+| GET | `/api/news/` | Lista os artigos publicados (título, autores, temas, resumo, texto em Markdown, imagens do texto, link externo, data), do mais recente para o mais antigo; rascunhos não aparecem |
+| GET | `/api/news/<id>/` | Detalhe de um artigo publicado (usado pela página `/artigos/<id>`); rascunho responde 404 |
 | GET | `/api/statistics/` | Estatísticas da home |
 | GET | `/api/selection-process/` | Processo seletivo ativo (etapas, requisitos, materiais e se as inscrições estão abertas); 404 se não houver |
 | GET | `/api/health/` | Responde `{"status": "ok"}` sem consultar o banco. Usado pelo [monitor de uptime](#monitor-de-uptime) |
@@ -429,6 +429,7 @@ docker run --rm postgres:17 pg_dump "COLE_AQUI_A_DATABASE_URL" > backup-icc-AAAA
 | Site ou admin demoram ~30 s para abrir | O backend dormiu (monitor parado) | Conferir o UptimeRobot e as horas do workspace no Render |
 | Site abre, mas sem membros, parceiros etc. | Backend fora do ar ou bloqueado por CORS | Abrir `/api/health/`; se responder, conferir `CORS_ALLOWED_ORIGINS` no Render. Ver os Logs do backend |
 | `column ... does not exist` (local) | Migration nova não aplicada | `docker-compose exec backend python manage.py migrate` |
+| `Failed to resolve import "..."` no frontend (local) | Pacote novo no `package.json`; o container guarda o `node_modules` antigo | `docker-compose up --build -V frontend` (o `-V` recria o `node_modules` do container) |
 | Erro 403/CSRF ao entrar no `/admin` | Domínio do backend fora de `CSRF_TRUSTED_ORIGINS` | Corrigir a variável no Render e fazer novo deploy |
 | Recarregar `/equipe` (ou outra página) dá 404 | Falta a regra de rewrite no serviço do frontend | No Render, em *Redirects/Rewrites* do `icc-site`: `/*` → `/index.html` (Rewrite) |
 | Imagens somem depois de um deploy | Variáveis `CLOUDINARY_*` ausentes ou erradas | Conferir no Render e reenviar as imagens |

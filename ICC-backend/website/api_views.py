@@ -152,12 +152,14 @@ class StatisticListView(generics.ListAPIView):
 
 class MediaListView(generics.ListAPIView):
     serializer_class = MediaSerializer
-    queryset = Media.objects.all()
+    # Rascunhos (Publicado desmarcado) não aparecem no site.
+    queryset = Media.objects.filter(published=True).prefetch_related("images")
 
 
 class MediaDetailView(generics.RetrieveAPIView):
     serializer_class = MediaSerializer
-    queryset = Media.objects.all()
+    # Rascunho responde 404, como se não existisse.
+    queryset = Media.objects.filter(published=True).prefetch_related("images")
 
 
 # class ContactInfoView(generics.RetrieveAPIView):

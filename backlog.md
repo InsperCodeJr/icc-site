@@ -32,7 +32,7 @@
 | 13 | Arquivar projetos (soft delete) | Back | ✅ |
 | 14 | Link para a área administrativa no site | Front | ✅ |
 | 15 | Remover dados pessoais do histórico do Git | Infra | 🟡 histórico reescrito; falta o pedido ao GitHub Support |
-| 16 | Artigos em Markdown e em PDF | Back e Front | ⬜ em definição com o ICC |
+| 16 | Artigos em Markdown, com imagens | Back e Front | ✅ (PDF fica para o futuro) |
 | 17 | Filtrar artigos por autor ou tema | Front | ⬜ |
 | 18 | Páginas de projeto e projetos nas páginas de programa | Front | ✅ |
 
@@ -255,13 +255,16 @@ Um arquivo `.sql` com dados de membros (nomes, datas de entrada, fotos, cargos e
 - [x] Avisar o time para apagar o clone local e clonar de novo, sem fazer push de branches antigas.
 - [ ] Pedir ao GitHub Support a remoção das cópias guardadas nos PRs antigos: até isso, o commit antigo (`35d2b12`) ainda abre pelo link direto.
 
-### 16. ⬜ [Back e Front] Artigos em Markdown e em PDF
+### 16. ✅ [Back e Front] Artigos em Markdown, com imagens
 
-Pedido do ICC em 29/10 (crítico para eles): poder ter imagens e formatação nos artigos. Proposta em definição com o ICC (ver [`docs/FEEDBACK_CLIENTE.md`](docs/FEEDBACK_CLIENTE.md)):
-- [ ] O campo "Texto do artigo" passa a aceitar Markdown (negrito, títulos, listas, links), com uma biblioteca que não executa HTML, e uma colinha no guia do admin.
-- [ ] Campo para enviar o PDF do artigo; a página mostra o PDF embutido e um botão "Baixar PDF" (no celular, muitos navegadores não exibem PDF dentro da página).
-- [ ] No Cloudinary, liberar a entrega de PDFs (*Settings → Security → "Allow delivery of PDF and ZIP files"*); contas gratuitas vêm com isso bloqueado.
-- [ ] Depois: upload de imagens no admin para usar dentro do Markdown.
+Pedido do ICC em 29/10 (crítico para eles). O ICC escolheu o Markdown, com o conteúdo na própria página; o PDF ficou para uma etapa futura, se for necessário.
+- [x] O "Texto do artigo" é exibido como Markdown (`react-markdown` e `remark-gfm`), sem executar HTML; testado com títulos, negrito, links, listas, tabelas, `<script>` e link `javascript:`.
+- [x] **Imagens do artigo** no admin: número, upload para o Cloudinary e legenda; no texto, a imagem é chamada pelo número (`![](imagem-1)`), então tudo é salvo de uma vez.
+- [x] Na página, cada imagem aparece com a legenda embaixo.
+- [x] Campo **Publicado**: artigo novo nasce como rascunho e só aparece no site depois de publicado (rascunho responde 404 na API); os artigos existentes continuaram publicados.
+- [x] Colinha de Markdown e passo a passo (imagens e conversão a partir do Word) no guia do admin.
+- [x] Migration `0008` conferida com `makemigrations --check` e aplicada localmente; testados rascunho fora da lista e do detalhe, imagens na API e a tela do artigo no admin; `npm run lint` e `npm run build` passam.
+- [ ] Futuro: artigo em PDF exibido na página, se o ICC precisar (no Cloudinary gratuito, liberar antes a entrega de PDFs em *Settings → Security*).
 
 ### 17. ⬜ [Front] Filtrar artigos por autor ou tema
 
