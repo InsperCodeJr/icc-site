@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       { path: "parceiros/:id", lazy: () => import('./pages/PerfilParceiro/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "processo", lazy: () => import('./pages/Processo/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "artigos", lazy: () => import('./pages/Noticias/index.tsx').then((m) => ({ Component: m.default })) },
-      { path: "artigos/:id", lazy: () => import('./pages/Artigo/index.tsx').then((m) => ({ Component: m.default })) },
+      { path: "artigos/:slugOrId", lazy: () => import('./pages/Artigo/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "news", element: <Navigate to="/artigos" replace /> },
       { path: "contato", lazy: () => import('./pages/Contato/index.tsx').then((m) => ({ Component: m.default })) },
       { path: "politica-de-privacidade", lazy: () => import('./pages/PoliticaPrivacidade/index.tsx').then((m) => ({ Component: m.default })) },

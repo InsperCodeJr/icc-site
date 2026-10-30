@@ -55,22 +55,22 @@ function componentesMarkdown(imagens: ArticleImage[]): Components {
 }
 
 export default function Artigo() {
-  const { id } = useParams<{ id: string }>()
+  const { slugOrId } = useParams<{ slugOrId: string }>()
   const [artigo, setArtigo] = useState<NewsItem | null>(null)
   const [loadedId, setLoadedId] = useState<string | undefined>()
   const [copiado, setCopiado] = useState(false)
-  const loading = loadedId !== id
-  const artigoDaRota = artigo?.id === Number(id) ? artigo : null
+  const loading = loadedId !== slugOrId
+  const artigoDaRota = artigo && (artigo.slug === slugOrId || String(artigo.id) === slugOrId) ? artigo : null
   usePageTitle(loading ? undefined : artigoDaRota?.title, loading ? undefined : artigoDaRota?.description)
 
   useEffect(() => {
-    if (!id) return
+    if (!slugOrId) return
     api
-      .getNewsItem(Number(id))
+      .getNewsItem(slugOrId)
       .then((data: NewsItem) => setArtigo(data && data.id ? data : null))
       .catch(() => setArtigo(null))
-      .finally(() => setLoadedId(id))
-  }, [id])
+      .finally(() => setLoadedId(slugOrId))
+  }, [slugOrId])
 
   if (loading) return <p className="loading">Carregando...</p>
 

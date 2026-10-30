@@ -358,6 +358,11 @@ class ActivityContentBlock(models.Model):
 
 class Media(models.Model):
     title = models.CharField(max_length=200, verbose_name='Título')
+    slug = models.SlugField(
+        max_length=200, unique=True, null=True, blank=True,
+        verbose_name='Slug da URL',
+        help_text='Opcional. Usado no link do artigo; se vazio, o site usa o ID.',
+    )
     authors = models.CharField(
         max_length=300, blank=True, verbose_name='Autores',
         help_text='Separados por vírgula. Ex.: Ana Silva, João Souza.'

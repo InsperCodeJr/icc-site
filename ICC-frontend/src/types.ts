@@ -179,6 +179,7 @@ export interface Statistic {
 
 export interface NewsItem {
   id: number
+  slug: string | null
   title: string
   description: string
   link: string

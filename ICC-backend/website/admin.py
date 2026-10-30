@@ -330,8 +330,8 @@ class ArticleImageInline(admin.TabularInline):
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('title', 'authors', 'published', 'date', 'order')
-    search_fields = ('title', 'authors', 'topics', 'description', 'content', 'source')
+    list_display = ('title', 'slug', 'authors', 'published', 'date', 'order')
+    search_fields = ('title', 'slug', 'authors', 'topics', 'description', 'content', 'source')
     list_editable = ('published', 'order')
     list_filter = ('published', 'source', 'date')
     date_hierarchy = 'date'

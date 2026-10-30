@@ -161,6 +161,20 @@ class MediaDetailView(generics.RetrieveAPIView):
     # Rascunho responde 404, como se não existisse.
     queryset = Media.objects.filter(published=True).prefetch_related("images")
 
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        identifier = self.kwargs["identifier"]
+        article = queryset.filter(slug=identifier).first()
+
+        if article is None and identifier.isdecimal():
+            article = queryset.filter(pk=int(identifier)).first()
+
+        if article is None:
+            raise Http404
+
+        self.check_object_permissions(self.request, article)
+        return article
+
 
 # class ContactInfoView(generics.RetrieveAPIView):
 #     serializer_class = ContactInfoSerializer

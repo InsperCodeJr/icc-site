@@ -286,7 +286,7 @@ class MediaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Media
-        fields = ["id", "title", "authors", "topics", "description", "content", "images", "link", "image_url", "source", "date", "order"]
+        fields = ["id", "slug", "title", "authors", "topics", "description", "content", "images", "link", "image_url", "source", "date", "order"]
 
     def get_image_url(self, obj):
         request = self.context.get("request")

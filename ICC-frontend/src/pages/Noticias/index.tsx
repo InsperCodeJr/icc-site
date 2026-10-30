@@ -44,7 +44,7 @@ export default function Noticias() {
           ) : (
             <div className="grid grid--3">
               {news.map((item) => (
-                <Link key={item.id} to={`/artigos/${item.id}`} className="news-card">
+                <Link key={item.id} to={`/artigos/${item.slug || item.id}`} className="news-card">
                   <div className="news-card__image">
                     {item.image_url ? <img src={item.image_url} alt="" loading="lazy" /> : <span>{item.source || "ICC"}</span>}
                   </div>
