@@ -60,7 +60,8 @@ export default function Artigo() {
   const [loadedId, setLoadedId] = useState<string | undefined>()
   const [copiado, setCopiado] = useState(false)
   const loading = loadedId !== id
-  usePageTitle(artigo?.title, artigo?.description)
+  const artigoDaRota = artigo?.id === Number(id) ? artigo : null
+  usePageTitle(loading ? undefined : artigoDaRota?.title, loading ? undefined : artigoDaRota?.description)
 
   useEffect(() => {
     if (!id) return
