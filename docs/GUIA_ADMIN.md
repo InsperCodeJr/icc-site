@@ -125,14 +125,15 @@ Os artigos são escritos pelos membros do ICC e ficam **dentro do site**: cada u
 
 **Artigos → Adicionar artigo**
 1. **Título** e **Autores** (separados por vírgula).
-2. **Temas** (opcional, separados por vírgula, ex.: `Estratégia, Varejo`). Aparecem como etiquetas no topo do artigo.
-3. **Resumo:** duas ou três frases. Aparece no card da lista e em destaque no topo do artigo.
-4. **Texto do artigo:** o texto completo, em **Markdown** (colinha e imagens logo abaixo). **Deixe uma linha em branco entre os parágrafos.**
-5. **Link externo** (opcional): se o artigo também saiu em outro lugar (revista, LinkedIn, um PDF no Drive do ICC com acesso "Qualquer pessoa com o link"). Aparece como o botão "Ver publicação original".
-6. **Publicação** (opcional): o nome da revista ou do evento, se houver.
-7. **Data de publicação** e, se quiser, **Imagem de capa** (horizontal). Sem imagem, o card mostra "ICC".
-8. **Publicado:** artigo novo começa **desmarcado**, como rascunho: fica salvo no admin, mas não aparece no site. Assim dá para salvar no meio e continuar depois. Quando o artigo estiver pronto, marque **Publicado** e salve. Dá para marcar e desmarcar também direto na lista de Artigos.
-9. Salvar. No site, os mais recentes aparecem primeiro.
+2. **Slug-URL**, separado por traços, sem letras maiusculas ou acentos. Caso seja deixado em branco, o url do artigo sera o id que o identifica no backend.
+3. **Temas** (opcional, separados por vírgula, ex.: `Estratégia, Varejo`). Aparecem como etiquetas no topo do artigo.
+4. **Resumo:** duas ou três frases. Aparece no card da lista e em destaque no topo do artigo.
+5. **Texto do artigo:** o texto completo, em **Markdown** (colinha e imagens logo abaixo). **Deixe uma linha em branco entre os parágrafos.**
+6. **Link externo** (opcional): se o artigo também saiu em outro lugar (revista, LinkedIn, um PDF no Drive do ICC com acesso "Qualquer pessoa com o link"). Aparece como o botão "Ver publicação original".
+7. **Publicação** (opcional): o nome da revista ou do evento, se houver.
+8. **Data de publicação** e, se quiser, **Imagem de capa** (horizontal). Sem imagem, o card mostra "ICC".
+9. **Publicado:** artigo novo começa **desmarcado**, como rascunho: fica salvo no admin, mas não aparece no site. Assim dá para salvar no meio e continuar depois. Quando o artigo estiver pronto, marque **Publicado** e salve. Dá para marcar e desmarcar também direto na lista de Artigos.
+10. Salvar. No site, os mais recentes aparecem primeiro.
 
 Os artigos que começam com **"[Exemplo]"** são só demonstração. Apague-os quando os artigos reais forem cadastrados.
 
